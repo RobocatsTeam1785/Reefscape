@@ -25,10 +25,4 @@ public class RobotContainer {
         // processor configuration
         swerveProcessor.configureProcessing();
     }
-
-    // periodic
-    public void periodic() {
-        // dashboard
-        drive.updateDashboardValues();
-    }
 }

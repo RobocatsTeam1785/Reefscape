@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -26,11 +27,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.lib.constants.DriveConstants;
 import frc.lib.constants.RobotConstants;
 
+@Logged
 public class SwerveModule {
     // hardware
     private SparkMax driveMotor, turnMotor;
@@ -45,9 +46,16 @@ public class SwerveModule {
 
     private SimpleMotorFeedforward driveFF, turnFF;
 
-    // values used to log voltage for system identification
+    // logging
     private Voltage sysIdDriveVoltage = Volts.of(0.0),
                     sysIdTurnVoltage = Volts.of(0.0);
+    
+    // used for logging via epilogue, so being unused is irrelevant
+    @SuppressWarnings("unused")
+    private double lastDriveOutput, lastDriveFeed, lastTurnOutput, lastTurnFeed;
+
+    @SuppressWarnings("unused")
+    private SwerveModuleState lastDriveState, lastTurnState, lastState;
 
     // properties
     /** name of this swerve module - used for labelling during system identification */
@@ -182,7 +190,7 @@ public class SwerveModule {
 
     // state
     /** returns the number of absolute rotations that have occurred from the CAN encoder; persists between power cycles */
-    private Angle absoluteAngle() {
+    public Angle absoluteAngle() {
         StatusSignal<Angle> signal = absEncoder.getAbsolutePosition();
         return signal.getValue();
     }
@@ -273,6 +281,11 @@ public class SwerveModule {
         final double driveFeed = driveFF.calculate(state.speedMetersPerSecond);
 
         driveMotor.setVoltage(driveOutput + driveFeed);
+
+        lastDriveOutput = driveOutput;
+        lastDriveFeed = driveFeed;
+
+        lastDriveState = state;
     }
 
     public void updateTurnSetpoint(SwerveModuleState state) {
@@ -286,10 +299,10 @@ public class SwerveModule {
 
         turnMotor.setVoltage(turnOutput + turnFeed);
 
-        // set logging values
-        if (RobotConstants.DEBUGGING) {
-            updateDashboardSetpointValues(state, turnPID.getSetpoint().position, turnPID.getSetpoint().velocity, turnOutput, turnFeed);
-        }
+        lastTurnOutput = turnOutput;
+        lastTurnFeed = turnFeed;
+
+        lastTurnState = state;
     }
 
     public void updateSetpoint(SwerveModuleState state) {
@@ -302,6 +315,8 @@ public class SwerveModule {
         
         updateDriveSetpoint(state);
         updateTurnSetpoint(state);
+
+        lastState = state;
     }
 
     // tuning
@@ -321,46 +336,5 @@ public class SwerveModule {
             DriveConstants.ROTATIONAL_KV,
             DriveConstants.ROTATIONAL_KA
         );
-    }
-
-    // dashboard
-    public void updateDashboardValues() {
-        // meters
-        // SmartDashboard.putNumber(name + " drive position", driveEncoder.getPosition());
-
-        // // m/s
-        // SmartDashboard.putNumber(name + " drive velocity", driveEncoder.getVelocity());
-
-        // radians
-        SmartDashboard.putNumber(name + " turn position error", turnPID.getPositionError());
-        SmartDashboard.putNumber(name + " turn velocity error", turnPID.getVelocityError());
-        SmartDashboard.putNumber(name + " turn accumulated error", turnPID.getAccumulatedError());
-
-        SmartDashboard.putNumber(name + " turn position", turnEncoder.getPosition());
-        SmartDashboard.putNumber(name + " absolute turn position", absoluteAngle().in(Radians));
-
-        // radians/s
-        SmartDashboard.putNumber(name + " turn velocity", turnEncoder.getVelocity());
-        
-    }
-
-    public void updateDashboardSetpointValues(SwerveModuleState state, double turnSetpointPosition, double turnSetpointVelocity, double turnOutput, double turnFeed) {
-        // // m/s
-        // SmartDashboard.putNumber(name + " drive setpoint", state.speedMetersPerSecond);
-
-        // // volts
-        // SmartDashboard.putNumber(name + " drive output", driveOutput);
-        // SmartDashboard.putNumber(name + " drive feed", driveFeed);
-
-        // radians/s
-        SmartDashboard.putNumber(name + " turn setpoint velocity", turnSetpointVelocity);
-
-        // radians
-        SmartDashboard.putNumber(name + " turn setpoint position", turnSetpointPosition);
-        SmartDashboard.putNumber(name + " turn goal", state.angle.getRadians());
-
-        // volts
-        SmartDashboard.putNumber(name + " turn output", turnOutput);
-        SmartDashboard.putNumber(name + " turn feed", turnFeed);
     }
 }

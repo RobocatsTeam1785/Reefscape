@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,7 +34,12 @@ public class Drive extends SubsystemBase {
     );
 
     // hardware
-    protected final SwerveModule[] modules;
+    @Logged protected final SwerveModule flModule = new SwerveModule("FL", DriveConstants.FL_DRIVE_ID, DriveConstants.FL_TURN_ID, DriveConstants.FL_ENCODER_ID);
+    @Logged protected final SwerveModule frModule = new SwerveModule("FR", DriveConstants.FR_DRIVE_ID, DriveConstants.FR_TURN_ID, DriveConstants.FR_ENCODER_ID);
+    @Logged protected final SwerveModule blModule = new SwerveModule("BL", DriveConstants.BL_DRIVE_ID, DriveConstants.BL_TURN_ID, DriveConstants.BL_ENCODER_ID);
+    @Logged protected final SwerveModule brModule = new SwerveModule("BR", DriveConstants.BR_DRIVE_ID, DriveConstants.BR_TURN_ID, DriveConstants.BR_ENCODER_ID);
+    
+    protected final SwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
     // initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
     // (the rectangular port in the center, below the NI or LabView logo)
@@ -44,13 +50,6 @@ public class Drive extends SubsystemBase {
 
     public Drive(double period) {
         this.period = period;
-
-        modules = new SwerveModule[]{
-            new SwerveModule("FL", DriveConstants.FL_DRIVE_ID, DriveConstants.FL_TURN_ID, DriveConstants.FL_ENCODER_ID),
-            new SwerveModule("FR", DriveConstants.FR_DRIVE_ID, DriveConstants.FR_TURN_ID, DriveConstants.FR_ENCODER_ID),
-            new SwerveModule("BL", DriveConstants.BL_DRIVE_ID, DriveConstants.BL_TURN_ID, DriveConstants.BL_ENCODER_ID),
-            new SwerveModule("BR", DriveConstants.BR_DRIVE_ID, DriveConstants.BR_TURN_ID, DriveConstants.BR_ENCODER_ID)
-        };
     }
 
     // state
@@ -58,29 +57,11 @@ public class Drive extends SubsystemBase {
     public boolean finishedAligning() {
         double totalErrorRadians = 0.0;
 
-        for (int i = 0; i < 4; i++) {
-            totalErrorRadians += modules[i].turnErrorRadians();
+        for (SwerveModule module : modules) {
+            totalErrorRadians += module.turnErrorRadians();
         }
 
         return totalErrorRadians < 0.1;
-    }
-
-    // dashboard
-    /** sets the dashboard values for all swerve modules */
-    public void updateDashboardValues() {
-        for (SwerveModule module : modules) {
-            module.updateDashboardValues();
-        }
-    }
-
-    /** sets the dashboard values for the swerve module at the specified id */
-    public void updateDashboardValues(int id) {
-        if (id < 0 || id > 3) {
-            System.out.println("[Drive#setDashboardValues(int)] cannot set the dashboard values for a swerve module with an id outside of bounds! expected an id in [0, 3], but found " + id + "!");
-            return;
-        }
-
-        modules[id].updateDashboardValues();
     }
 
     // drive
