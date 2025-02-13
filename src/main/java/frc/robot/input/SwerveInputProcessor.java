@@ -9,6 +9,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.DriveMode;
 import frc.robot.subsystems.Drive;
 
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class SwerveInputProcessor extends InputProcessor {
     // subsystems
     private final Drive drive;
@@ -17,7 +18,7 @@ public class SwerveInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged(strategy = Logged.Strategy.OPT_IN)
+    @Logged
     private final ModeState<DriveMode> driveState = new ModeState<>(DriveMode.ALIGN);
 
     public SwerveInputProcessor(final Drive drive, final CommandXboxController driver) {

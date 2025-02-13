@@ -1,9 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.input.SwerveInputProcessor;
 import frc.robot.subsystems.Drive;
 
+@Logged
 public class RobotContainer {
     // subsystems
     private final Drive drive;
