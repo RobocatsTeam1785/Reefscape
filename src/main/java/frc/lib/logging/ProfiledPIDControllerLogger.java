@@ -14,10 +14,10 @@ public class ProfiledPIDControllerLogger extends ClassSpecificLogger<ProfiledPID
     @Override
     public void update(EpilogueBackend backend, ProfiledPIDController controller) {
         backend.log("Error (units)", controller.getPositionError());
-        backend.log("Error over time (units/s)", controller.getVelocityError());
+        backend.log("Error over time (units per second)", controller.getVelocityError());
         backend.log("Accumulated error (units)", controller.getAccumulatedError());
 
         backend.log("Setpoint position (units)", controller.getSetpoint().position);
-        backend.log("Setpoint velocity (units/s)", controller.getSetpoint().velocity);
+        backend.log("Setpoint velocity (units per second)", controller.getSetpoint().velocity);
     }
 }
