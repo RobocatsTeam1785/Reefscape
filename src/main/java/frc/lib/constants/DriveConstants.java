@@ -78,8 +78,6 @@ public class DriveConstants {
         ROTATIONAL_KS = 0.18342,
         ROTATIONAL_KV = 0.8, // 2.6252,
         ROTATIONAL_KA = 0*0.18483;//0.28483;
-
-        
     
     // hardware constants - we're using the MK4i Swerve Module from Swerve Drive Specialties with the L2 gear ratio
     public final static double
