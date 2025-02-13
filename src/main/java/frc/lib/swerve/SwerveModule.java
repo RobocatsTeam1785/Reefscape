@@ -138,7 +138,11 @@ public class SwerveModule {
     }
 
     public void initAbsEncoder(int id) {
+        absEncoder = new CANcoder(id);
+
+        // get the stored config
         CANcoderConfiguration config = new CANcoderConfiguration();
+        absEncoder.getConfigurator().refresh(config);
 
         // set the range for the absolute position to [0, 1]
         config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.0;
@@ -146,7 +150,7 @@ public class SwerveModule {
         // make CCW rotation positive
         config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
-        absEncoder = new CANcoder(id);
+        // apply the original config with the modifications
         absEncoder.getConfigurator().apply(config);
     }
 
