@@ -59,13 +59,34 @@ public class Constants {
             // ROTATIONAL_KV = 16.405,
             // ROTATIONAL_KA = 1.4434;
 
-            ROTATIONAL_KP = 1.0,
-            ROTATIONAL_KI = 0.0,
-            ROTATIONAL_KD = 0.0,
+            // experimental values
+            // ROTATIONAL_KP = 1.0,
+            // ROTATIONAL_KI = 0.0,
+            // ROTATIONAL_KD = 0.5,
 
-            ROTATIONAL_KS = 0.0,
-            ROTATIONAL_KV = 0.0,
-            ROTATIONAL_KA = 0.0;
+            // ROTATIONAL_KS = 0.6,
+            // ROTATIONAL_KV = 0.1,
+            // ROTATIONAL_KA = 0.0;
+
+            // experimental values
+            // ROTATIONAL_KP = 2.0,
+            // ROTATIONAL_KI = 0.0,
+            // ROTATIONAL_KD = 0.0,
+
+            // ROTATIONAL_KS = 0.4,
+            // ROTATIONAL_KV = 1.0,
+            // ROTATIONAL_KA = 1.0;
+
+            // calculated using the log generated at 4:05 PM on 2/11/25
+            ROTATIONAL_KP = 2.0, // 41.137,
+            ROTATIONAL_KI = 0.0,
+            ROTATIONAL_KD = 0.1, // 4.0337,
+
+            ROTATIONAL_KS = 0.18342,
+            ROTATIONAL_KV = 0.8, // 2.6252,
+            ROTATIONAL_KA = 0*0.18483;//0.28483;
+
+            
         
         // hardware constants - we're using the MK4i Swerve Module from Swerve Drive Specialties with the L2 gear ratio
         public final static double
