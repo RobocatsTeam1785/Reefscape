@@ -31,7 +31,7 @@ public class RobotContainer {
 
     // commands
     private void configureCommands() {
-        // buttons
+        // mode-switching
         // d-pad up: a is swerve, and b is align
         driveState.registerSwitch(DriveMode.SWERVE, driver.povUp().and(driver.a()));
         driveState.registerSwitch(DriveMode.ALIGN, driver.povUp().and(driver.b()));
@@ -42,6 +42,7 @@ public class RobotContainer {
         driveState.registerSwitch(DriveMode.BL_ONLY, driver.povRight().and(driver.x()));
         driveState.registerSwitch(DriveMode.BR_ONLY, driver.povRight().and(driver.a()));
 
+        // buttons
         // when a is pressed and in a single-module-only mode, zero the relative turn encoder
         // d-pad is negated to avoid collision with mode-switching
         driver.a().and(driveState.noSwitchesActive()).onTrue(new InstantCommand(() -> {
@@ -52,6 +53,7 @@ public class RobotContainer {
             }
         }));
 
+        // state-based
         // zero turn voltage when the right trigger is lifted
         driver.rightTrigger(0.5).negate().onTrue(new InstantCommand(() -> {
             DriveMode mode = driveState.mode();
