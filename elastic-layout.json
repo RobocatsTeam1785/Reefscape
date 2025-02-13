@@ -82,7 +82,7 @@
             "x": 0.0,
             "y": 190.0,
             "width": 150.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/flModule/drivePID/Error over time (units per second)",
@@ -94,7 +94,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 0.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 170.0,
             "height": 80.0,
             "type": "Text Display",
@@ -152,7 +152,7 @@
             "x": 170.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/flModule/turnPID/Error over time (units per second)",
@@ -164,7 +164,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 170.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -178,7 +178,7 @@
           {
             "title": "Setpoint position (units)",
             "x": 170.0,
-            "y": 350.0,
+            "y": 360.0,
             "width": 160.0,
             "height": 90.0,
             "type": "Text Display",
@@ -192,9 +192,9 @@
           {
             "title": "Setpoint velocity (units per second)",
             "x": 170.0,
-            "y": 440.0,
+            "y": 450.0,
             "width": 150.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/flModule/turnPID/Setpoint velocity (units per second)",
@@ -278,7 +278,7 @@
             "x": 390.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/frModule/drivePID/Error over time (units per second)",
@@ -290,7 +290,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 390.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -348,7 +348,7 @@
             "x": 560.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/frModule/turnPID/Error over time (units per second)",
@@ -360,7 +360,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 560.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -374,7 +374,7 @@
           {
             "title": "Setpoint position (units)",
             "x": 500.0,
-            "y": 350.0,
+            "y": 360.0,
             "width": 160.0,
             "height": 90.0,
             "type": "Text Display",
@@ -388,9 +388,9 @@
           {
             "title": "Setpoint velocity (units per second)",
             "x": 500.0,
-            "y": 440.0,
+            "y": 450.0,
             "width": 150.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/frModule/turnPID/Setpoint velocity (units per second)",
@@ -460,7 +460,7 @@
             "x": 790.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/blModule/drivePID/Error over time (units per second)",
@@ -472,7 +472,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 790.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -544,7 +544,7 @@
             "x": 960.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/blModule/turnPID/Error over time (units per second)",
@@ -556,7 +556,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 960.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -570,7 +570,7 @@
           {
             "title": "Setpoint position (units)",
             "x": 960.0,
-            "y": 350.0,
+            "y": 360.0,
             "width": 160.0,
             "height": 90.0,
             "type": "Text Display",
@@ -584,9 +584,9 @@
           {
             "title": "Setpoint velocity (units per second)",
             "x": 960.0,
-            "y": 440.0,
+            "y": 450.0,
             "width": 150.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/blModule/turnPID/Setpoint velocity (units per second)",
@@ -656,7 +656,7 @@
             "x": 1160.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/brModule/drivePID/Error over time (units per second)",
@@ -668,7 +668,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 1160.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -740,7 +740,7 @@
             "x": 1330.0,
             "y": 190.0,
             "width": 140.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/brModule/turnPID/Error over time (units per second)",
@@ -752,7 +752,7 @@
           {
             "title": "Accumulated error (units)",
             "x": 1330.0,
-            "y": 270.0,
+            "y": 280.0,
             "width": 160.0,
             "height": 80.0,
             "type": "Text Display",
@@ -766,7 +766,7 @@
           {
             "title": "Setpoint position (units)",
             "x": 1330.0,
-            "y": 350.0,
+            "y": 360.0,
             "width": 160.0,
             "height": 90.0,
             "type": "Text Display",
@@ -780,9 +780,9 @@
           {
             "title": "Setpoint velocity (units per second)",
             "x": 1330.0,
-            "y": 440.0,
+            "y": 450.0,
             "width": 150.0,
-            "height": 80.0,
+            "height": 90.0,
             "type": "Text Display",
             "properties": {
               "topic": "Robot/container/drive/brModule/turnPID/Setpoint velocity (units per second)",
