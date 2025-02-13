@@ -17,19 +17,19 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.constants.DriveConstants;
 import frc.lib.swerve.SwerveModule;
-import frc.robot.Constants;
 
 public class Drive extends SubsystemBase {
     // filters and kinematics
     protected final SlewRateLimiter
-        xSpeedLimiter = new SlewRateLimiter(Constants.Drive.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        ySpeedLimiter = new SlewRateLimiter(Constants.Drive.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        rotSpeedLimiter = new SlewRateLimiter(Constants.Drive.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
+        xSpeedLimiter = new SlewRateLimiter(DriveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        ySpeedLimiter = new SlewRateLimiter(DriveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        rotSpeedLimiter = new SlewRateLimiter(DriveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
     
     protected final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        Constants.Drive.FL_POS, Constants.Drive.FR_POS,
-        Constants.Drive.BL_POS, Constants.Drive.BR_POS
+        DriveConstants.FL_POS, DriveConstants.FR_POS,
+        DriveConstants.BL_POS, DriveConstants.BR_POS
     );
 
     // hardware
@@ -46,10 +46,10 @@ public class Drive extends SubsystemBase {
         this.period = period;
 
         modules = new SwerveModule[]{
-            new SwerveModule("FL", Constants.Drive.FL_DRIVE_ID, Constants.Drive.FL_TURN_ID, Constants.Drive.FL_ENCODER_ID),
-            new SwerveModule("FR", Constants.Drive.FR_DRIVE_ID, Constants.Drive.FR_TURN_ID, Constants.Drive.FR_ENCODER_ID),
-            new SwerveModule("BL", Constants.Drive.BL_DRIVE_ID, Constants.Drive.BL_TURN_ID, Constants.Drive.BL_ENCODER_ID),
-            new SwerveModule("BR", Constants.Drive.BR_DRIVE_ID, Constants.Drive.BR_TURN_ID, Constants.Drive.BR_ENCODER_ID)
+            new SwerveModule("FL", DriveConstants.FL_DRIVE_ID, DriveConstants.FL_TURN_ID, DriveConstants.FL_ENCODER_ID),
+            new SwerveModule("FR", DriveConstants.FR_DRIVE_ID, DriveConstants.FR_TURN_ID, DriveConstants.FR_ENCODER_ID),
+            new SwerveModule("BL", DriveConstants.BL_DRIVE_ID, DriveConstants.BL_TURN_ID, DriveConstants.BL_ENCODER_ID),
+            new SwerveModule("BR", DriveConstants.BR_DRIVE_ID, DriveConstants.BR_TURN_ID, DriveConstants.BR_ENCODER_ID)
         };
     }
 
@@ -88,14 +88,14 @@ public class Drive extends SubsystemBase {
     public void arcadeDrive(double xSpeed, double ySpeed, double rotSpeed) {
         // deadband x, y, and rotation speeds
         // TODO figure out why andrew implemented a deadband, to see if I can remove it
-        xSpeed = MathUtil.applyDeadband(xSpeed, Constants.Drive.TRANSLATIONAL_SPEED_DEADBAND);
-        ySpeed = MathUtil.applyDeadband(ySpeed, Constants.Drive.TRANSLATIONAL_SPEED_DEADBAND);
-        rotSpeed = MathUtil.applyDeadband(rotSpeed, Constants.Drive.ROTATIONAL_SPEED_DEADBAND);
+        xSpeed = MathUtil.applyDeadband(xSpeed, DriveConstants.TRANSLATIONAL_SPEED_DEADBAND);
+        ySpeed = MathUtil.applyDeadband(ySpeed, DriveConstants.TRANSLATIONAL_SPEED_DEADBAND);
+        rotSpeed = MathUtil.applyDeadband(rotSpeed, DriveConstants.ROTATIONAL_SPEED_DEADBAND);
 
         // convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
-        LinearVelocity xVel = Constants.Drive.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
-        LinearVelocity yVel = Constants.Drive.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
-        AngularVelocity angVel = Constants.Drive.ROTATIONAL_MAX_SPEED.times(rotSpeed);
+        LinearVelocity xVel = DriveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
+        LinearVelocity yVel = DriveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
+        AngularVelocity angVel = DriveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
 
         drive(xVel, yVel, angVel);
     }
@@ -147,7 +147,7 @@ public class Drive extends SubsystemBase {
         }
 
         // convert controller speed to speed in m/s
-        LinearVelocity vel = Constants.Drive.TRANSLATIONAL_MAX_SPEED.times(speed);
+        LinearVelocity vel = DriveConstants.TRANSLATIONAL_MAX_SPEED.times(speed);
 
         // compose speed and angle into a swerve module state
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), new Rotation2d(position));
@@ -170,7 +170,7 @@ public class Drive extends SubsystemBase {
         }
 
         // convert controller speed to speed in m/s
-        LinearVelocity vel = Constants.Drive.TRANSLATIONAL_MAX_SPEED.times(speed);
+        LinearVelocity vel = DriveConstants.TRANSLATIONAL_MAX_SPEED.times(speed);
 
         // compose speed into a swerve module state
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), null);

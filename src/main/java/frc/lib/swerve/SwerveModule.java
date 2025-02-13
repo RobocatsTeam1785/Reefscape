@@ -28,7 +28,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
-import frc.robot.Constants;
+import frc.lib.constants.DriveConstants;
+import frc.lib.constants.RobotConstants;
 
 public class SwerveModule {
     // hardware
@@ -84,7 +85,7 @@ public class SwerveModule {
 
             // in summary, if B/A is the gear ratio and C is the wheel circumference:
             //             N drive rotations * (A driven rotations/B drive rotations) * (C meters/1 driven rotation) = N / (B/A) * C meters
-            double rotationsToMeters = 1 / Constants.Drive.DRIVE_GEAR_RATIO * Constants.Drive.WHEEL_CIRCUMFERENCE.in(Meters);
+            double rotationsToMeters = 1 / DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
 
             // to convert rpm to m/s, we perform the same logic to convert rotations to meters, but we divide by 60 to convert minutes to seconds
             // i.e., N RPM * (X meters/rotation) * (1 minute/60 seconds) = N * X / 60 m/s
@@ -98,7 +99,7 @@ public class SwerveModule {
 
             // i.e., if B/A is the turn gear ratio:
             //       N drive rotations * (A driven rotations/B drive rotations) * (2pi radians/1 driven rotation) = N / (B/A) * 2pi
-            double rotationsToRadians = 1 / Constants.Drive.TURN_GEAR_RATIO * (2 * Math.PI);
+            double rotationsToRadians = 1 / DriveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
 
             // and we use the same method to convert rpm to radians/s
             // i.e., N RPM * (X radians/rotation) * (1 minute/60 seconds) = N * X / 60 radians/s
@@ -147,29 +148,29 @@ public class SwerveModule {
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2 * Math.PI * 5, 2 * Math.PI * 5);
 
         drivePID = new PIDController(
-            Constants.Drive.TRANSLATIONAL_KP,
-            Constants.Drive.TRANSLATIONAL_KI,
-            Constants.Drive.TRANSLATIONAL_KD
+            DriveConstants.TRANSLATIONAL_KP,
+            DriveConstants.TRANSLATIONAL_KI,
+            DriveConstants.TRANSLATIONAL_KD
         );
 
         // use a profiled controller to generate setpoints to smoothly interpolate to the actual setpoint
         turnPID = new ProfiledPIDController(
-            Constants.Drive.ROTATIONAL_KP,
-            Constants.Drive.ROTATIONAL_KI,
-            Constants.Drive.ROTATIONAL_KD,
+            DriveConstants.ROTATIONAL_KP,
+            DriveConstants.ROTATIONAL_KI,
+            DriveConstants.ROTATIONAL_KD,
             constraints
         );
 
         driveFF = new SimpleMotorFeedforward(
-            Constants.Drive.TRANSLATIONAL_KS,
-            Constants.Drive.TRANSLATIONAL_KV,
-            Constants.Drive.TRANSLATIONAL_KA
+            DriveConstants.TRANSLATIONAL_KS,
+            DriveConstants.TRANSLATIONAL_KV,
+            DriveConstants.TRANSLATIONAL_KA
         );
 
         turnFF = new SimpleMotorFeedforward(
-            Constants.Drive.ROTATIONAL_KS,
-            Constants.Drive.ROTATIONAL_KV,
-            Constants.Drive.ROTATIONAL_KA
+            DriveConstants.ROTATIONAL_KS,
+            DriveConstants.ROTATIONAL_KV,
+            DriveConstants.ROTATIONAL_KA
         );
 
         // enable continuous input to make error calculation more accurate
@@ -286,14 +287,14 @@ public class SwerveModule {
         turnMotor.setVoltage(turnOutput + turnFeed);
 
         // set logging values
-        if (Constants.DEBUGGING) {
+        if (RobotConstants.DEBUGGING) {
             updateDashboardSetpointValues(state, turnPID.getSetpoint().position, turnPID.getSetpoint().velocity, turnOutput, turnFeed);
         }
     }
 
     public void updateSetpoint(SwerveModuleState state) {
         // update PID values
-        if (Constants.TUNING) {
+        if (RobotConstants.TUNING) {
             updateConstants();
         }
 
@@ -306,19 +307,19 @@ public class SwerveModule {
     // tuning
     /** updates PID and feedforward constants - used for hot reloading constant changes when tuning */
     public void updateConstants() {
-        drivePID.setPID(Constants.Drive.TRANSLATIONAL_KP, Constants.Drive.TRANSLATIONAL_KI, Constants.Drive.TRANSLATIONAL_KD);
-        turnPID.setPID(Constants.Drive.ROTATIONAL_KP, Constants.Drive.ROTATIONAL_KI, Constants.Drive.ROTATIONAL_KD);
+        drivePID.setPID(DriveConstants.TRANSLATIONAL_KP, DriveConstants.TRANSLATIONAL_KI, DriveConstants.TRANSLATIONAL_KD);
+        turnPID.setPID(DriveConstants.ROTATIONAL_KP, DriveConstants.ROTATIONAL_KI, DriveConstants.ROTATIONAL_KD);
 
         driveFF = new SimpleMotorFeedforward(
-            Constants.Drive.TRANSLATIONAL_KS,
-            Constants.Drive.TRANSLATIONAL_KV,
-            Constants.Drive.TRANSLATIONAL_KA
+            DriveConstants.TRANSLATIONAL_KS,
+            DriveConstants.TRANSLATIONAL_KV,
+            DriveConstants.TRANSLATIONAL_KA
         );
 
         turnFF = new SimpleMotorFeedforward(
-            Constants.Drive.ROTATIONAL_KS,
-            Constants.Drive.ROTATIONAL_KV,
-            Constants.Drive.ROTATIONAL_KA
+            DriveConstants.ROTATIONAL_KS,
+            DriveConstants.ROTATIONAL_KV,
+            DriveConstants.ROTATIONAL_KA
         );
     }
 
