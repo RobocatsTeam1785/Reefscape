@@ -1,6 +1,10 @@
 package frc.robot.modes;
 
-public enum DriveMode {
+import edu.wpi.first.epilogue.Logged;
+import frc.lib.mode.Mode;
+
+@Logged
+public enum DriveMode implements Mode {
     /** normal swerve driving with simultaneous translation and rotation */
     SWERVE(-1),
     
