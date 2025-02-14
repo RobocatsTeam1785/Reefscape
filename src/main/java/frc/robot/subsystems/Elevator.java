@@ -27,11 +27,11 @@ public class Elevator extends SubsystemBase {
     protected RelativeEncoder leftEncoder, rightEncoder;
 
     // loop control
-    private ProfiledPIDController leftPID, rightPID;
-    private ElevatorFeedforward leftFF, rightFF;
+    protected ProfiledPIDController leftPID, rightPID;
+    protected ElevatorFeedforward leftFF, rightFF;
 
     // logging
-    private Voltage sysIdVoltage;
+    protected Voltage sysIdVoltage;
 
     public Elevator(int leftId, int rightId) {
         initMotors(leftId, rightId);
@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase {
     }
 
     // initialization
-    private void initMotors(int leftId, int rightId) {
+    protected void initMotors(int leftId, int rightId) {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
@@ -72,7 +72,7 @@ public class Elevator extends SubsystemBase {
         rightEncoder = rightMotor.getEncoder();
     }
 
-    private void initControl() {
+    protected void initControl() {
         // set the maximum speed and acceleration of the generated setpoints to the constant values
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
             ElevatorConstants.MAX_SPEED.in(MetersPerSecond),
