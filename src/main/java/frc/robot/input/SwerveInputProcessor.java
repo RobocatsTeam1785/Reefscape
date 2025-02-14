@@ -6,6 +6,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.mode.ModeState;
+import frc.lib.utility.CommandUtils;
 import frc.robot.modes.DriveMode;
 import frc.robot.subsystems.Drive;
 
@@ -63,14 +64,14 @@ public class SwerveInputProcessor extends InputProcessor {
         }));
 
         // default commands
-        drive.setDefaultCommand(driveState.selectRunnable(Map.of(
-            DriveMode.SWERVE, this::driveSwerve,
-            DriveMode.ALIGN, this::driveAlign,
+        CommandUtils.selectDefault(drive, driveState, Map.of(
+            DriveMode.SWERVE,  this::driveSwerve,
+            DriveMode.ALIGN,   this::driveAlign,
             DriveMode.FL_ONLY, () -> driveOnly(0),
             DriveMode.FR_ONLY, () -> driveOnly(1),
             DriveMode.BL_ONLY, () -> driveOnly(2),
             DriveMode.BR_ONLY, () -> driveOnly(3)
-        ), drive));
+        ));
     }
 
     // driving
