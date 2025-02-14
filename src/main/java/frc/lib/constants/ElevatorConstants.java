@@ -16,13 +16,14 @@ public class ElevatorConstants {
     
     // PID and FF constants
     public final static double
-        KP = 0.1,
+        KP = 0.0,
         KI = 0.0,
         KD = 0.0,
 
-        KS = 0.1,
-        KV = 3.0,
-        KA = 0.1;
+        KG = 0.0,
+        KS = 0.0,
+        KV = 0.0,
+        KA = 0.0;
     
     // TODO measure the necessary values to calculate this and split it into multiple variables, if necessary
     /** conversion factor between a single rotation of an elevator motor and the vertical meters the elevator travels */
