@@ -8,10 +8,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Swerve;
 
 /** drive subsystem to perform system identification for the drive feedforward and PID controller */
-public class SysIdDrive extends Drive {
+public class SysIdDrive extends Swerve {
     private final SysIdRoutine routine;
 
     // initialization

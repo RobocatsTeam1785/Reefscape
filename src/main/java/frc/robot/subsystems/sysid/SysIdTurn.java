@@ -6,10 +6,10 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Swerve;
 
 /** drive subsystem to perform system identification for the turn feedforward and PID controller */
-public class SysIdTurn extends Drive {
+public class SysIdTurn extends Swerve {
     private final SysIdRoutine routine;
 
     // initialization

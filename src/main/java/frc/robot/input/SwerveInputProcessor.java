@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.mode.ModeState;
 import frc.lib.utility.CommandUtils;
 import frc.robot.modes.DriveMode;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class SwerveInputProcessor extends InputProcessor {
     // subsystems
-    private final Drive drive;
+    private final Swerve swerve;
 
     // controllers
     private final CommandXboxController driver;
@@ -22,8 +22,8 @@ public class SwerveInputProcessor extends InputProcessor {
     @Logged
     private final ModeState<DriveMode> driveState = new ModeState<>(DriveMode.ALIGN);
 
-    public SwerveInputProcessor(final Drive drive, final CommandXboxController driver) {
-        this.drive = drive;
+    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver) {
+        this.swerve = swerve;
         this.driver = driver;
     }
 
@@ -47,7 +47,7 @@ public class SwerveInputProcessor extends InputProcessor {
             DriveMode mode = driveState.mode();
 
             if (mode.oneModuleOnly()) {
-                drive.zeroRelTurnEncoder(mode.id);
+                swerve.zeroRelTurnEncoder(mode.id);
             }
         }));
 
@@ -57,14 +57,14 @@ public class SwerveInputProcessor extends InputProcessor {
             DriveMode mode = driveState.mode();
 
             if (mode.oneModuleOnly()) {
-                drive.zeroTurnVoltage(mode.id);
+                swerve.zeroTurnVoltage(mode.id);
             } else if (mode == DriveMode.ALIGN) {
-                drive.zeroTurnVoltage();
+                swerve.zeroTurnVoltage();
             }
         }));
 
         // default commands
-        CommandUtils.selectDefault(drive, driveState, Map.of(
+        CommandUtils.selectDefault(swerve, driveState, Map.of(
             DriveMode.SWERVE,  this::driveSwerve,
             DriveMode.ALIGN,   this::driveAlign,
             DriveMode.FL_ONLY, () -> driveOnly(0),
@@ -88,7 +88,7 @@ public class SwerveInputProcessor extends InputProcessor {
         // associated with CW rotation, so it requires inversion
         double rotSpeed = -driver.getRightX();
 
-        drive.arcadeDrive(xSpeed, ySpeed, rotSpeed);
+        swerve.arcadeDrive(xSpeed, ySpeed, rotSpeed);
     }
 
     /**
@@ -100,7 +100,7 @@ public class SwerveInputProcessor extends InputProcessor {
     public void driveAlign() {
         if (driver.getRightTriggerAxis() <= 0.5) return;
 
-        drive.align(leftAlignAngle(driver));
+        swerve.align(leftAlignAngle(driver));
     }
 
     /**
@@ -117,9 +117,9 @@ public class SwerveInputProcessor extends InputProcessor {
         double speed = -driver.getLeftY();
 
         if (alignEnabled) {
-            drive.only(moduleId, speed, rightAlignAngle(driver));
+            swerve.only(moduleId, speed, rightAlignAngle(driver));
         } else {
-            drive.only(moduleId, speed);
+            swerve.only(moduleId, speed);
         }
     }
 }
