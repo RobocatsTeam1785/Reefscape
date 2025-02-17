@@ -38,7 +38,7 @@ public class DriveConstants {
     // feedforward and PID constants
     // TODO use sysid to calculate these constants
         public final static double
-        TRANSLATIONAL_KP = 0.0,
+        TRANSLATIONAL_KP = 2.0,
         TRANSLATIONAL_KI = 0.0,
         TRANSLATIONAL_KD = 0.0,
 
