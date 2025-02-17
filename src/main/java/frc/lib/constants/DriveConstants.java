@@ -99,7 +99,7 @@ public class DriveConstants {
     public final static double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
     // TODO test these 4 constants to ensure accuracy
-    public final static LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(6);
+    public final static LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(2);
     public final static AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(1);
 
     public final static LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(5);
