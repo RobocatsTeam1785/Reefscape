@@ -54,7 +54,7 @@ public class SwerveModule {
     
     // used for logging via epilogue, so being unused is irrelevant
     @SuppressWarnings("unused")
-    private double lastDriveOutput, lastDriveFeed, lastTurnOutput, lastTurnFeed;
+    private double lastDriveOutput, lastDriveFeed, lastDriveVoltage, lastTurnOutput, lastTurnFeed, lastTurnVoltage;
 
     @SuppressWarnings("unused")
     private SwerveModuleState lastDriveState, lastTurnState, lastState;
@@ -298,6 +298,7 @@ public class SwerveModule {
     /** sets the drive motor voltage for system identification */
     public void sysIdDrive(Voltage voltage) {
         // update the last recorded sysid voltage for logging
+        lastDriveVoltage = voltage.in(Volts);
         sysIdDriveVoltage = voltage;
 
         // set the motor voltage
@@ -307,6 +308,7 @@ public class SwerveModule {
     /** sets the turn motor voltage for system identification */
     public void sysIdTurn(Voltage voltage) {
         // update the last recorded sysid voltage for logging
+        lastTurnVoltage = voltage.in(Volts);
         sysIdTurnVoltage = voltage;
 
         // set the motor voltage
@@ -375,6 +377,7 @@ public class SwerveModule {
 
         lastDriveOutput = driveOutput;
         lastDriveFeed = driveFeed;
+        lastDriveVoltage = driveOutput + driveFeed;
 
         lastDriveState = state;
 
@@ -394,6 +397,7 @@ public class SwerveModule {
 
         lastTurnOutput = turnOutput;
         lastTurnFeed = turnFeed;
+        lastTurnVoltage = turnOutput + turnFeed;
 
         lastTurnState = state;
     }
