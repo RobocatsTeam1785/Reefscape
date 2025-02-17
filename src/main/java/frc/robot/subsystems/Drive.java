@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.DriveConstants;
 import frc.lib.swerve.SwerveModule;
 
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class Drive extends SubsystemBase {
     // filters and kinematics
     protected final SlewRateLimiter

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
+@Logged
 public class Robot extends TimedRobot {
   @SuppressWarnings("unused")
   // pass the period so the drive subsystem can discretize the chassis speeds with it
@@ -25,6 +28,8 @@ public class Robot extends TimedRobot {
   public Robot() {
     container = new RobotContainer(getPeriod());
     // bot = new SysIdBot(getPeriod());
+
+    Epilogue.bind(this);
   }
 
   @Override

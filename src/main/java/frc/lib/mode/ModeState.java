@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class ModeState<M extends Mode> {
     /** cache to store triggers comparing current and possible modes, to avoid creating an arbitrary number of redundant Triggers */
     private final HashMap<M, Trigger> isCache = new HashMap<>();
