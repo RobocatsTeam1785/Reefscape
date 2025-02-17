@@ -16,5 +16,13 @@ public class AngleLogger extends ClassSpecificLogger<Angle> {
     @Override
     public void update(EpilogueBackend backend, Angle angle) {
         backend.log("Radians", angle.in(Radians));
+
+        // apply modulo
+        double constrainedRadians = angle.in(Radians) % (2 * Math.PI);
+
+        // modulo alone produces both a negative and positive region, so we need to move the negative region into the positive
+        if (constrainedRadians < 0) constrainedRadians += (2 * Math.PI);
+
+        backend.log("Radians (modulo)", constrainedRadians);
     }
 }
