@@ -194,6 +194,12 @@ public class SwerveModule {
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
     }
 
+    // logging
+    // TODO fix hacky actual state logging
+    public SwerveModuleState getDepictedState() {
+        return new SwerveModuleState(driveEncoder.getVelocity(), new Rotation2d(encoderAngle()));
+    }
+
     // state
     /** returns the number of absolute rotations that have occurred from the CAN encoder; persists between power cycles */
     public Angle absoluteAngle() {

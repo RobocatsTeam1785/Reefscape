@@ -73,6 +73,17 @@ public class Swerve extends SubsystemBase {
         return totalErrorRadians < 0.1;
     }
 
+    // TODO fix hacky actual state logging
+    @Logged
+    public SwerveModuleState[] getDepictedStates() {
+        return new SwerveModuleState[]{
+            flModule.getDepictedState(),
+            frModule.getDepictedState(),
+            blModule.getDepictedState(),
+            brModule.getDepictedState()
+        };
+    }
+
     // drive
     /** drives the robot with the given robot-relative x controller speed, y controller speed, and controller rotational velocity */
     public void arcadeDrive(double xSpeed, double ySpeed, double rotSpeed) {
