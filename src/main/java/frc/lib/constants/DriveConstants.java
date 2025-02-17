@@ -100,10 +100,10 @@ public class DriveConstants {
 
     // TODO test these 4 constants to ensure accuracy
     public final static LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(2);
-    public final static AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(1);
+    public final static AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(0.5);
 
-    public final static LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(5);
-    public final static AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(1);
+    public final static LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
+    public final static AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(0.5);
 
     // position constants
     // distance from the robot's center to the center of a side, in meters
