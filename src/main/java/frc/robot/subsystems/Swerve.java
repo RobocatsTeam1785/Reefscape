@@ -57,6 +57,7 @@ public class Swerve extends SubsystemBase {
 
         // TODO fix hacky inversion
         // flModule.invertDriveMotor();
+        frModule.invertDriveMotor();
         // blModule.invertDriveMotor();
         // brModule.invertDriveMotor();
     }
