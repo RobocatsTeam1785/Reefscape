@@ -49,6 +49,9 @@ public class Swerve extends SubsystemBase {
     /** time between each call of robotPeriodic() */
     protected final double period;
 
+    // logging
+    @Logged private SwerveModuleState[] lastStates;
+
     public Swerve(double period) {
         this.period = period;
     }
@@ -99,6 +102,9 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         
         // update swerve module setpoints
+        // TODO fix hacky logging
+        lastStates = states;
+
         for (int i = 0; i < 4; i++) {
             modules[i].updateSetpoint(states[i]);
         }
@@ -108,6 +114,10 @@ public class Swerve extends SubsystemBase {
     public void align(Angle position) {
         // set the setpoint's angle to be the same as the robot's direction, so all motors move forward
         SwerveModuleState state = new SwerveModuleState(0.0, new Rotation2d(position));
+
+        // update setpoints
+        // TODO fix hacky logging
+        lastStates = new SwerveModuleState[]{ state, state, state, state };
 
         for (int i = 0; i < 4; i++) {
             modules[i].updateSetpoint(state);
@@ -134,6 +144,10 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), new Rotation2d(position));
 
         // update the setpoint
+        // TODO fix this somewhat cursed hack for logging states
+        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+        lastStates[moduleId] = state;
+
         modules[moduleId].updateSetpoint(state);
     }
 
@@ -157,6 +171,10 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), null);
 
         // update the setpoint
+        // TODO fix hacky logging
+        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+        lastStates[moduleId] = state;
+
         modules[moduleId].updateDriveSetpoint(state);
     }
 
@@ -174,6 +192,9 @@ public class Swerve extends SubsystemBase {
     // zeroing voltage
     /** zeroes the voltage of all modules */
     public void zeroVoltage() {
+        // TODO fix hacky logging
+        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+
         for (SwerveModule module : modules) {
             module.zeroVoltage();
         }
@@ -186,6 +207,9 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
+        // TODO fix hacky logging
+        lastStates[moduleId] = new SwerveModuleState();
+
         modules[moduleId].zeroVoltage();
     }
 
@@ -193,6 +217,11 @@ public class Swerve extends SubsystemBase {
     public void zeroDriveVoltage() {
         for (SwerveModule module : modules) {
             module.zeroDriveVoltage();
+        }
+
+        // TODO fix hacky logging
+        for (SwerveModuleState state : lastStates) {
+            state.speedMetersPerSecond = 0.0;
         }
     }
 
@@ -203,6 +232,8 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
+        // TODO fix hacky logging
+        lastStates[moduleId].speedMetersPerSecond = 0.0;
         modules[moduleId].zeroDriveVoltage();
     }
 
@@ -210,6 +241,11 @@ public class Swerve extends SubsystemBase {
     public void zeroTurnVoltage() {
         for (SwerveModule module : modules) {
             module.zeroTurnVoltage();
+        }
+
+        // TODO fix hacky logging
+        for (int i = 0; i < 4; i++) {
+            lastStates[i].angle = new Rotation2d(modules[i].encoderAngle());
         }
     }
 
@@ -220,6 +256,8 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
+        // TODO fix hacky logging
+        lastStates[moduleId].angle = new Rotation2d(modules[moduleId].encoderAngle());
         modules[moduleId].zeroTurnVoltage();
     }
 }

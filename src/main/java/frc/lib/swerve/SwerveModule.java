@@ -206,6 +206,11 @@ public class SwerveModule {
         return turnPID.getPositionError();
     }
 
+    /** returns the current rotation of the turn encoder */
+    public Angle encoderAngle() {
+        return Radians.of(turnEncoder.getPosition());
+    }
+
     // state modification
     /** zeroes the relative drive encoder */
     public void zeroRelDriveEncoder() {
