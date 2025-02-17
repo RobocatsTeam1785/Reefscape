@@ -2,8 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-// import frc.robot.subsystems.SysIdDrive;
-import frc.robot.subsystems.SysIdTurn;
+import frc.robot.subsystems.sysid.SysIdTurn;
 
 public class SysIdBot {
     private final SysIdTurn drive;
