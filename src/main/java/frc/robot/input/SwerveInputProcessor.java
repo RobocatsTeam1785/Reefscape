@@ -51,6 +51,21 @@ public class SwerveInputProcessor extends InputProcessor {
             }
         }));
 
+        // when b is pressed:
+        //      in a single-module-only mode, set the turn encoder value
+        //      to the absolute encoder value to rezero it
+        //
+        //      outside a single-module-only mode, rezero all turn encoders
+        driver.b().and(driveState.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+            DriveMode mode = driveState.mode();
+
+            if (mode.oneModuleOnly()) {
+                swerve.recoverAbsAngle(mode.id);
+            } else {
+                swerve.recoverAbsAngles();
+            }
+        }));
+
         // state-based
         // zero turn voltage when the right trigger is lifted
         driver.rightTrigger(0.5).negate().onTrue(new InstantCommand(() -> {

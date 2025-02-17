@@ -205,6 +205,23 @@ public class Swerve extends SubsystemBase {
         modules[moduleId].zeroRelTurnEncoder();
     }
 
+    /** recovers the absolute angle of the specified module */
+    public void recoverAbsAngle(int moduleId) {
+        if (moduleId < 0 || moduleId > 4) {
+            System.out.println("[Drive#zeroRelTurnEncoder] Cannot recover the absolute angle of a single module with an id outside [0, 3]!");
+            return;
+        }
+
+        modules[moduleId].recoverAbsAngle();
+    }
+
+    /** recovers the absolute angle of every module */
+    public void recoverAbsAngles() {
+        for (SwerveModule module : modules) {
+            module.recoverAbsAngle();
+        }
+    }
+
     // zeroing voltage
     /** zeroes the voltage of all modules */
     public void zeroVoltage() {

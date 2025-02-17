@@ -228,6 +228,11 @@ public class SwerveModule {
         turnEncoder.setPosition(0.0);
     }
 
+    /** recovers the angle from the absolute encoder */
+    public void recoverAbsAngle() {
+        turnEncoder.setPosition(absoluteAngle().in(Radians));
+    }
+
     // TODO fix hacky inversion
     public void invertDriveMotor() {
         // ! this resets the spark max configuration every time the robot code runs, so be aware that
