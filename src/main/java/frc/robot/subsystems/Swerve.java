@@ -44,13 +44,16 @@ public class Swerve extends SubsystemBase {
 
     // initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
     // (the rectangular port in the center, below the NI or LabView logo)
-    protected final AHRS navX2 = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    @Logged protected final AHRS navX2 = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
     /** time between each call of robotPeriodic() */
     protected final double period;
 
     // logging
     @Logged private SwerveModuleState[] lastStates;
+
+    @Logged private double lastDifference;
+    @Logged private double lastAverageDifference;
 
     public Swerve(double period) {
         this.period = period;
@@ -125,6 +128,29 @@ public class Swerve extends SubsystemBase {
         for (int i = 0; i < 4; i++) {
             modules[i].updateSetpoint(states[i]);
         }
+
+        // print range of speeds
+        // average drive velocity
+        double average = 0.0;
+
+        for (SwerveModule module : modules) {
+            average += module.driveEncoder.getVelocity();
+        }
+
+        average /= 4.0;
+
+        // total difference from the average drive velocity
+        double difference = 0.0;
+
+        for (SwerveModule module : modules) {
+            difference += Math.abs(module.driveEncoder.getVelocity() - average);
+        }
+
+        // average difference from the average drive velocity
+        double averageDifference = difference / 4.0;
+
+        lastDifference = difference;
+        lastAverageDifference = averageDifference;
     }
 
     /** aligns the wheels to face a single direction, where zero is defined as the yaw the robot had when the navX was last zeroed */

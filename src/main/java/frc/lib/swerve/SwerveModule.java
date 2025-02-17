@@ -35,7 +35,9 @@ import frc.lib.constants.RobotConstants;
 public class SwerveModule {
     // hardware
     private SparkMax driveMotor, turnMotor;
-    private RelativeEncoder driveEncoder, turnEncoder;
+
+    // TODO fix hacky drive velocity access
+    public RelativeEncoder driveEncoder, turnEncoder;
 
     // we use an additional encoder so that rotational information persists between reboots
     private CANcoder absEncoder;
