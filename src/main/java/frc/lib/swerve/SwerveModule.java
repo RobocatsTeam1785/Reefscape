@@ -314,7 +314,7 @@ public class SwerveModule {
     public void updateSetpoint(SwerveModuleState state) {
         // update PID values
         if (RobotConstants.TUNING) {
-            updateConstants();
+            tune();
         }
 
         // state = optimizeState(state);
@@ -327,7 +327,7 @@ public class SwerveModule {
 
     // tuning
     /** updates PID and feedforward constants - used for hot reloading constant changes when tuning */
-    public void updateConstants() {
+    public void tune() {
         drivePID.setPID(DriveConstants.TRANSLATIONAL_KP, DriveConstants.TRANSLATIONAL_KI, DriveConstants.TRANSLATIONAL_KD);
         turnPID.setPID(DriveConstants.ROTATIONAL_KP, DriveConstants.ROTATIONAL_KI, DriveConstants.ROTATIONAL_KD);
 
