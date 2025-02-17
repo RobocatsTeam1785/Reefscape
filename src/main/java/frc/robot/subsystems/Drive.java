@@ -67,8 +67,7 @@ public class Drive extends SubsystemBase {
     // drive
     /** drives the robot with the given robot-relative x controller speed, y controller speed, and controller rotational velocity */
     public void arcadeDrive(double xSpeed, double ySpeed, double rotSpeed) {
-        // deadband x, y, and rotation speeds
-        // TODO figure out why andrew implemented a deadband, to see if I can remove it
+        // deadband x, y, and rotation speeds to avoid accidental idle drift
         xSpeed = MathUtil.applyDeadband(xSpeed, DriveConstants.TRANSLATIONAL_SPEED_DEADBAND);
         ySpeed = MathUtil.applyDeadband(ySpeed, DriveConstants.TRANSLATIONAL_SPEED_DEADBAND);
         rotSpeed = MathUtil.applyDeadband(rotSpeed, DriveConstants.ROTATIONAL_SPEED_DEADBAND);
