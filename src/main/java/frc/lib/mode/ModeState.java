@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class ModeState<M> {
+public class ModeState<M extends Mode> {
     /** cache to store triggers comparing current and possible modes, to avoid creating an arbitrary number of redundant Triggers */
     private final HashMap<M, Trigger> isCache = new HashMap<>();
 
@@ -26,7 +26,7 @@ public class ModeState<M> {
     public final M defaultMode;
 
     /** the current mode the controller is using */
-    @Logged private M currentMode;
+    private M currentMode;
 
     public ModeState(M defaultMode) {
         this.defaultMode = defaultMode;
@@ -37,6 +37,12 @@ public class ModeState<M> {
     /** returns the current mode */
     public M mode() {
         return currentMode;
+    }
+
+    @Logged
+    /** returns the name of the current mode */
+    public String modeName() {
+        return currentMode.name();
     }
 
     // switching
