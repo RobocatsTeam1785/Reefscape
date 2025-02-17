@@ -14,6 +14,7 @@ public class ElevatorConstants {
         LEFT_MOTOR = 0,
         RIGHT_MOTOR = 0;
     
+    // TODO tune these
     // PID and FF constants
     public final static double
         KP = 0.0,
