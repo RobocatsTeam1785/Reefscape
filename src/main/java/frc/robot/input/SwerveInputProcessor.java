@@ -43,11 +43,16 @@ public class SwerveInputProcessor extends InputProcessor {
         // buttons
         // when a is pressed and in a single-module-only mode, zero the relative turn encoder
         // d-pad is negated to avoid collision with mode-switching
+        // outside a single-module-only mode, literally rezero all relative turn encoders
         driver.a().and(driveState.noSwitchesActive()).onTrue(new InstantCommand(() -> {
             DriveMode mode = driveState.mode();
 
             if (mode.oneModuleOnly()) {
                 swerve.zeroRelTurnEncoder(mode.id);
+            } else {
+                for (int i = 0; i < 4; i++) {
+                    swerve.zeroRelTurnEncoder(i);
+                }
             }
         }));
 
