@@ -54,6 +54,11 @@ public class Swerve extends SubsystemBase {
 
     public Swerve(double period) {
         this.period = period;
+
+        // TODO fix hacky inversion
+        flModule.invertDriveMotor();
+        blModule.invertDriveMotor();
+        brModule.invertDriveMotor();
     }
 
     // state

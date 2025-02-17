@@ -222,6 +222,60 @@ public class SwerveModule {
         turnEncoder.setPosition(0.0);
     }
 
+    // TODO fix hacky inversion
+    public void invertDriveMotor() {
+        // ! this resets the spark max configuration every time the robot code runs, so be aware that
+        // ! changes made outside of this code will be reset unless moved here, instead
+        SparkMaxConfig driveConfig = new SparkMaxConfig();
+        driveConfig
+            // TODO figure out why we use a current limit of 45A
+            .smartCurrentLimit(45)
+            // TODO test a coast idle mode to see how it feels
+            .idleMode(IdleMode.kBrake)
+            .inverted(!driveMotor.configAccessor.getInverted());
+        
+        // the gear ratio is the reciprocal of the rotation ratio, so we divide by it to get the number of driven rotations
+        // then, we multiply by the wheel's circumference to get the number of meters the wheel has travelled
+
+        // in summary, if B/A is the gear ratio and C is the wheel circumference:
+        //             N drive rotations * (A driven rotations/B drive rotations) * (C meters/1 driven rotation) = N / (B/A) * C meters
+        double rotationsToMeters = 1 / DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
+
+        // to convert rpm to m/s, we perform the same logic to convert rotations to meters, but we divide by 60 to convert minutes to seconds
+        // i.e., N RPM * (X meters/rotation) * (1 minute/60 seconds) = N * X / 60 m/s
+        double rpmToMetersPerSecond = rotationsToMeters / 60.0;
+
+        driveConfig.encoder
+            .positionConversionFactor(rotationsToMeters)
+            .velocityConversionFactor(rpmToMetersPerSecond);
+
+        driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public void invertTurnMotor() {
+        SparkMaxConfig turnConfig = new SparkMaxConfig();
+        turnConfig
+            .smartCurrentLimit(40)
+            .idleMode(IdleMode.kBrake)
+            .inverted(!turnMotor.configAccessor.getInverted());
+        
+        // we apply the turn gear ratio in a similar manner, and then multiply by 2pi to convert to radians, as well as dividing by 60 to convert RPM to radians/s
+
+        // i.e., if B/A is the turn gear ratio:
+        //       N drive rotations * (A driven rotations/B drive rotations) * (2pi radians/1 driven rotation) = N / (B/A) * 2pi
+        double rotationsToRadians = 1 / DriveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
+
+        // and we use the same method to convert rpm to radians/s
+        // i.e., N RPM * (X radians/rotation) * (1 minute/60 seconds) = N * X / 60 radians/s
+        double rpmToRadiansPerSecond = rotationsToRadians / 60.0;
+
+        turnConfig.encoder
+            .positionConversionFactor(rotationsToRadians)
+            .velocityConversionFactor(rpmToRadiansPerSecond);
+        
+        turnMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
     // system identification
     /** sets the drive motor voltage for system identification */
     public void sysIdDrive(Voltage voltage) {
