@@ -59,6 +59,9 @@ public class SwerveModule {
     @SuppressWarnings("unused")
     private SwerveModuleState lastDriveState, lastTurnState, lastState;
 
+    @SuppressWarnings("unused")
+    private double lastDriveSetpointVelocity;
+
     // properties
     /** name of this swerve module - used for labelling during system identification */
     public final String name;
@@ -84,12 +87,14 @@ public class SwerveModule {
                 // TODO figure out why we use a current limit of 45A
                 .smartCurrentLimit(45)
                 // TODO test a coast idle mode to see how it feels
-                .idleMode(IdleMode.kBrake);
+                .idleMode(IdleMode.kBrake)
+                .inverted(true);
             
             SparkMaxConfig turnConfig = new SparkMaxConfig();
             turnConfig
                 .smartCurrentLimit(40)
-                .idleMode(IdleMode.kBrake);
+                .idleMode(IdleMode.kBrake)
+                .inverted(true);
         
         // encoder config
             // the gear ratio is the reciprocal of the rotation ratio, so we divide by it to get the number of driven rotations
@@ -367,6 +372,8 @@ public class SwerveModule {
         lastDriveFeed = driveFeed;
 
         lastDriveState = state;
+
+        lastDriveSetpointVelocity = state.speedMetersPerSecond;
     }
 
     public void updateTurnSetpoint(SwerveModuleState state) {
@@ -392,7 +399,7 @@ public class SwerveModule {
             tune();
         }
 
-        // state = optimizeState(state);
+        state = optimizeState(state);
         
         updateDriveSetpoint(state);
         updateTurnSetpoint(state);
