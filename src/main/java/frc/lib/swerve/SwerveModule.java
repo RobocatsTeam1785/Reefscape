@@ -154,7 +154,7 @@ public class SwerveModule {
         absEncoder.getConfigurator().refresh(config);
 
         // set the range for the absolute position to [0, 1]
-        config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.0;
+        config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
 
         // make CCW rotation positive
         config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -208,7 +208,7 @@ public class SwerveModule {
     }
 
     // state
-    /** returns the number of absolute rotations that have occurred from the CAN encoder; persists between power cycles */
+    /** returns the number of absolute rotations that have occurred from the CAN encoder; persists between power cycles - this value is in the range [0, 2pi] when in radians */
     public Angle absoluteAngle() {
         StatusSignal<Angle> signal = absEncoder.getAbsolutePosition();
         return signal.getValue();
