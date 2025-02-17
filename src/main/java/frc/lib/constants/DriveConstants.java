@@ -14,6 +14,9 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 
 public class DriveConstants {
+    /** whether to optimize swerve module states, e.g., reversing the motor speed instead of rotating 180 degrees and applying normal speed - used for testing when having the same sign is desirable */
+    public final static boolean OPTIMIZE_STATES = false;
+
     // CAN ids - set using Rev Hardware Client and Phoenix Tuner X
     public final static int
         FL_ENCODER_ID = 1,
@@ -34,7 +37,7 @@ public class DriveConstants {
 
     // feedforward and PID constants
     // TODO use sysid to calculate these constants
-    public final static double
+        public final static double
         TRANSLATIONAL_KP = 0.1,
         TRANSLATIONAL_KI = 0.0,
         TRANSLATIONAL_KD = 0.0,

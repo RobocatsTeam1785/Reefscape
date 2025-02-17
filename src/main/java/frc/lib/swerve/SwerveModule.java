@@ -353,16 +353,21 @@ public class SwerveModule {
         // minimize rotational movement required by taking the shorter path to the setpoint, if possible
         state.optimize(relativeAngle);
 
-        // if perfectly aligned with the setpoint, use normal speed, but if perpendicular, apply zero speed, with the area between following the cosine curve
-        // while state.angle - relativeAngle technically produces somewhat unintuitive values (negative for CCW, positive for CW), the graph of cosine
-        // between -90 degrees and 90 degrees is symmetrical, making their order irrelevant
-        state.speedMetersPerSecond *= state.angle.minus(relativeAngle).getCos();
-
         return state;
     }
 
     // setpoints
     public void updateDriveSetpoint(SwerveModuleState state) {
+        // apply cosine compensation
+        // the value of turnEncoder.getPosition() is in radians, as we set the CF to use radians instead of rotations using positionConversionFactor()
+        Rotation2d relativeAngle = Rotation2d.fromRadians(turnEncoder.getPosition());
+
+        // if perfectly aligned with the setpoint, use normal speed, but if perpendicular, apply zero speed, with the area between following the cosine curve
+        // while state.angle - relativeAngle technically produces somewhat unintuitive values (negative for CCW, positive for CW), the graph of cosine
+        // between -90 degrees and 90 degrees is symmetrical, making their order irrelevant
+        state.speedMetersPerSecond *= state.angle.minus(relativeAngle).getCos();
+
+        // calculate voltage
         final double driveOutput = drivePID.calculate(driveEncoder.getVelocity(), state.speedMetersPerSecond);
         final double driveFeed = driveFF.calculate(state.speedMetersPerSecond);
 
@@ -395,11 +400,11 @@ public class SwerveModule {
 
     public void updateSetpoint(SwerveModuleState state) {
         // update PID values
-        if (RobotConstants.TUNING) {
+        if (RobotConstants.TUNING)
             tune();
-        }
 
-        state = optimizeState(state);
+        if (DriveConstants.OPTIMIZE_STATES)
+            state = optimizeState(state);
         
         updateDriveSetpoint(state);
         updateTurnSetpoint(state);
