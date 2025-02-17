@@ -62,7 +62,7 @@ public class Swerve extends SubsystemBase {
         // flModule.invertDriveMotor();
         frModule.invertDriveMotor();
         // blModule.invertDriveMotor();
-        // brModule.invertDriveMotor();
+        brModule.invertDriveMotor();
     }
 
     // state
