@@ -14,7 +14,7 @@ public class PIDControllerLogger extends ClassSpecificLogger<PIDController> {
     @Override
     public void update(EpilogueBackend backend, PIDController controller) {
         backend.log("Error (units)", controller.getError());
-        backend.log("Error over time (units/s)", controller.getErrorDerivative());
+        backend.log("Error over time (units per second)", controller.getErrorDerivative());
         backend.log("Accumulated error (units)", controller.getAccumulatedError());
     }
 }
