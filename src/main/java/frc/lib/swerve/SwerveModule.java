@@ -323,6 +323,7 @@ public class SwerveModule {
     }
 
     // drive
+    // zeroing
     public void zeroVoltage() {
         driveMotor.setVoltage(0);
         turnMotor.setVoltage(0);
@@ -336,6 +337,7 @@ public class SwerveModule {
         turnMotor.setVoltage(0);
     }
 
+    // utility
     // for understanding this code, see https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html
     public SwerveModuleState optimizeState(SwerveModuleState state) {
         // the value of turnEncoder.getPosition() is in radians, as we set the CF to use radians instead of rotations using positionConversionFactor()
@@ -352,6 +354,7 @@ public class SwerveModule {
         return state;
     }
 
+    // setpoints
     public void updateDriveSetpoint(SwerveModuleState state) {
         final double driveOutput = drivePID.calculate(driveEncoder.getVelocity(), state.speedMetersPerSecond);
         final double driveFeed = driveFF.calculate(state.speedMetersPerSecond);
