@@ -387,7 +387,7 @@ public class SwerveModule {
             tune();
         }
 
-        // state = optimizeState(state);
+        state = optimizeState(state);
         
         updateDriveSetpoint(state);
         updateTurnSetpoint(state);
