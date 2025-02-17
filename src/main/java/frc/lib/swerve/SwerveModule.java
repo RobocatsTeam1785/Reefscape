@@ -75,11 +75,13 @@ public class SwerveModule {
             // TODO see if inverting the drive and turn motors is necessary - andrew did it, but it appears that
             // TODO (cont.) he did it for every single motor, so it seems redundant
 
-            // TODO figure out why we use a current limit of 45A
-            // TODO test a coast idle mode to see how it feels
+            // ! this resets the spark max configuration every time the robot code runs, so be aware that
+            // ! changes made outside of this code will be reset unless moved here, instead
             SparkMaxConfig driveConfig = new SparkMaxConfig();
             driveConfig
+                // TODO figure out why we use a current limit of 45A
                 .smartCurrentLimit(45)
+                // TODO test a coast idle mode to see how it feels
                 .idleMode(IdleMode.kBrake);
             
             SparkMaxConfig turnConfig = new SparkMaxConfig();
