@@ -22,7 +22,7 @@ public class CoralArmConstants {
         KA = 0.0;
 
     // TODO measure the necessary values to calculate this and split it into multiple variables, if necessary
-    /** conversion factor between a single rotation of the arm motor and the rotation of the arm */
+    /** conversion factor between a single rotation of the arm motor and the rotation of the arm, in radians */
     public final static double ARM_CF = 1.0;
 
     // TODO measure and determine these
