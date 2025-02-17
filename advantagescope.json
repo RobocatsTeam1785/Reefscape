@@ -7,7 +7,7 @@
       "height": 840,
       "state": {
         "sidebar": {
-          "width": 300,
+          "width": 302,
           "expanded": [
             "/Shuffleboard/.recording",
             "/Shuffleboard/.metadata",
@@ -15,9 +15,6 @@
             "/SmartDashboard",
             "/Robot/container",
             "/Robot/container/swerve/frModule/driveEncoder",
-            "/Robot/container/swerve/blModule/driveEncoder",
-            "/Robot/container/swerve",
-            "/Robot/container/swerve/flModule/turnEncoder",
             "/Robot/container/swerve/frModule/turnEncoder",
             "/Robot/container/swerve/blModule/turnEncoder",
             "/Robot/container/swerve/brModule/turnEncoder",
@@ -25,17 +22,23 @@
             "/Robot/container/swerve/frModule/lastState",
             "/Robot/container/swerve/blModule/lastState",
             "/Robot/container/swerve/brModule/lastState",
-            "/Robot/container/swerve/brModule/encoderAngle",
-            "/Robot/container/swerve/flModule/encoderAngle",
             "/Robot/container/swerve/frModule/encoderAngle",
             "/Robot/container/swerve/blModule/encoderAngle",
             "/SmartDashboard/difference",
-            "/Robot/container/swerve/blModule",
-            "/SmartDashboard/average difference"
+            "/SmartDashboard/average difference",
+            "/Robot",
+            "/Robot/container/swerve/flModule/turnEncoder",
+            "/Robot/container/swerve/flModule/encoderAngle",
+            "/Robot/container/swerve/frModule/absoluteAngle",
+            "/Robot/container/swerve/flModule/absoluteAngle",
+            "/Robot/container/swerve/flModule/driveEncoder",
+            "/Robot/container/swerve/brModule/driveEncoder",
+            "/Robot/container/swerve/blModule/driveEncoder",
+            "/Robot/container/swerve/brModule"
           ]
         },
         "tabs": {
-          "selected": 3,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
@@ -94,7 +97,7 @@
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:Robot/container/swerve/flModule/lastState/speed",
+                    "logKey": "NT:Robot/container/swerve/flModule/lastDriveSetpointVelocity",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -104,7 +107,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:Robot/container/swerve/frModule/lastState/speed",
+                    "logKey": "NT:Robot/container/swerve/frModule/lastDriveSetpointVelocity",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -114,7 +117,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:Robot/container/swerve/blModule/lastState/speed",
+                    "logKey": "NT:Robot/container/swerve/blModule/lastDriveSetpointVelocity",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -124,7 +127,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:Robot/container/swerve/brModule/lastState/speed",
+                    "logKey": "NT:Robot/container/swerve/brModule/lastDriveSetpointVelocity",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -135,11 +138,11 @@
                 ],
                 "discreteSources": [],
                 "leftLockedRange": [
-                  0,
+                  -3,
                   3
                 ],
                 "rightLockedRange": [
-                  0,
+                  -3,
                   3
                 ],
                 "leftUnitConversion": {
@@ -158,6 +161,342 @@
               "controllerUUID": "7zs7lgbcj04iy39nbwtbafax0ohkc56m",
               "renderer": null,
               "controlsHeight": 252
+            },
+            {
+              "type": 1,
+              "title": "abs drive velocity",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/flModule/driveEncoder/Absolute velocity (units per second)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/frModule/driveEncoder/Absolute velocity (units per second)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/blModule/driveEncoder/Absolute velocity (units per second)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/brModule/driveEncoder/Absolute velocity (units per second)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/flModule/lastAbsDriveSetpointVelocity",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/frModule/lastAbsDriveSetpointVelocity",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/blModule/lastAbsDriveSetpointVelocity",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/brModule/lastAbsDriveSetpointVelocity",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": [
+                  0,
+                  4
+                ],
+                "rightLockedRange": [
+                  0,
+                  4
+                ],
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "y7xdvmn64s21gayw0tg711x4ahd4lw55",
+              "renderer": null,
+              "controlsHeight": 243
+            },
+            {
+              "type": 1,
+              "title": "drive velocity vs voltage",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/flModule/driveEncoder/Velocity (units per second)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/frModule/driveEncoder/Velocity (units per second)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/blModule/driveEncoder/Velocity (units per second)",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/brModule/driveEncoder/Velocity (units per second)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/flModule/lastDriveVoltage",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/frModule/lastDriveVoltage",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/blModule/lastDriveVoltage",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/brModule/lastDriveVoltage",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": [
+                  -3,
+                  3
+                ],
+                "rightLockedRange": [
+                  -6,
+                  6
+                ],
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "lbol3uizv13mbkljhjnswqzyn7rjou5u",
+              "renderer": null,
+              "controlsHeight": 238
+            },
+            {
+              "type": 1,
+              "title": "relative vs absolute encoder",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/flModule/turnEncoder/Position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/frModule/turnEncoder/Position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/blModule/turnEncoder/Position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/swerve/brModule/turnEncoder/Position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "bold"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "points",
+                    "logKey": "NT:Robot/container/swerve/flModule/absoluteAngle/Radians",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "points",
+                    "logKey": "NT:Robot/container/swerve/frModule/absoluteAngle/Radians",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "points",
+                    "logKey": "NT:Robot/container/swerve/blModule/absoluteAngle/Radians",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "points",
+                    "logKey": "NT:Robot/container/swerve/brModule/absoluteAngle/Radians",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": [
+                  0,
+                  6.28
+                ],
+                "rightLockedRange": [
+                  0,
+                  6.28
+                ],
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "axcihliu5z0n6v0xa5ze086730j1z44j",
+              "renderer": null,
+              "controlsHeight": 236
             },
             {
               "type": 1,
@@ -229,7 +568,7 @@
             },
             {
               "type": 1,
-              "title": "Line Graph",
+              "title": "heading",
               "controller": {
                 "leftSources": [
                   {
@@ -319,40 +658,6 @@
       }
     }
   ],
-  "satellites": [
-    {
-      "x": 20,
-      "y": 120,
-      "width": 456,
-      "height": 511,
-      "state": {
-        "type": 1,
-        "visualizer": null
-      },
-      "uuid": "7zs7lgbcj04iy39nbwtbafax0ohkc56m"
-    },
-    {
-      "x": 468,
-      "y": 124,
-      "width": 576,
-      "height": 512,
-      "state": {
-        "type": 1,
-        "visualizer": null
-      },
-      "uuid": "eviyx733uoyaxhr9yd9tnazurcccw1e9"
-    },
-    {
-      "x": 1038,
-      "y": 124,
-      "width": 480,
-      "height": 508,
-      "state": {
-        "type": 1,
-        "visualizer": null
-      },
-      "uuid": "u8a8gkdogt8pewtebeb479caf1dl36s4"
-    }
-  ],
+  "satellites": [],
   "version": "4.1.1"
 }

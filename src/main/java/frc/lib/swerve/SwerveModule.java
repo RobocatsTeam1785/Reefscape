@@ -60,7 +60,7 @@ public class SwerveModule {
     private SwerveModuleState lastDriveState, lastTurnState, lastState;
 
     @SuppressWarnings("unused")
-    private double lastDriveSetpointVelocity;
+    private double lastDriveSetpointVelocity, lastAbsDriveSetpointVelocity;
 
     // properties
     /** name of this swerve module - used for labelling during system identification */
@@ -382,6 +382,7 @@ public class SwerveModule {
         lastDriveState = state;
 
         lastDriveSetpointVelocity = state.speedMetersPerSecond;
+        lastAbsDriveSetpointVelocity = Math.abs(lastDriveSetpointVelocity);
     }
 
     public void updateTurnSetpoint(SwerveModuleState state) {

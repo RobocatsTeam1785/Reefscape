@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class DriveConstants {
     /** whether to optimize swerve module states, e.g., reversing the motor speed instead of rotating 180 degrees and applying normal speed - used for testing when having the same sign is desirable */
-    public final static boolean OPTIMIZE_STATES = false;
+    public final static boolean OPTIMIZE_STATES = true;
 
     // CAN ids - set using Rev Hardware Client and Phoenix Tuner X
     public final static int
