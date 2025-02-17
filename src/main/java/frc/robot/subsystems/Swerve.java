@@ -56,9 +56,9 @@ public class Swerve extends SubsystemBase {
         this.period = period;
 
         // TODO fix hacky inversion
-        flModule.invertDriveMotor();
-        blModule.invertDriveMotor();
-        brModule.invertDriveMotor();
+        // flModule.invertDriveMotor();
+        // blModule.invertDriveMotor();
+        // brModule.invertDriveMotor();
     }
 
     // state
