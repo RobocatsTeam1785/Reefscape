@@ -15,10 +15,10 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class DriveConstants {
     /** whether to optimize swerve module states, e.g., reversing the motor speed instead of rotating 180 degrees and applying normal speed - used for testing when having the same sign is desirable */
-    public final static boolean OPTIMIZE_STATES = true;
+    public static final boolean OPTIMIZE_STATES = true;
 
     // CAN ids - set using Rev Hardware Client and Phoenix Tuner X
-    public final static int
+    public static final int
         FL_ENCODER_ID = 1,
         FL_DRIVE_ID = 2,
         FL_TURN_ID = 3,
@@ -37,7 +37,7 @@ public class DriveConstants {
 
     // feedforward and PID constants
     // TODO use sysid to calculate these constants
-        public final static double
+        public static final double
         TRANSLATIONAL_KP = 2.0,
         TRANSLATIONAL_KI = 0.0,
         TRANSLATIONAL_KD = 0.0,
@@ -83,7 +83,7 @@ public class DriveConstants {
         ROTATIONAL_KA = 0*0.18483;//0.28483;
     
     // hardware constants - we're using the MK4i Swerve Module from Swerve Drive Specialties with the L2 gear ratio
-    public final static double
+    public static final double
         // both ratios are from https://www.swervedrivespecialties.com/collections/kits/products/mk4i-swerve-module?variant=39598777270385
         // or, if that link dies, https://web.archive.org/web/20250208143202/https://www.swervedrivespecialties.com/collections/kits/products/mk4i-swerve-module?variant=39598777270385
 
@@ -95,23 +95,23 @@ public class DriveConstants {
 
     // speed and acceleration constants
     // converts speed from [-x, x] to [-x, -0.1) U (0.1, x]
-    public final static double TRANSLATIONAL_SPEED_DEADBAND = 0.1;
-    public final static double ROTATIONAL_SPEED_DEADBAND = 0.1;
+    public static final double TRANSLATIONAL_SPEED_DEADBAND = 0.1;
+    public static final double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
     // TODO test these 4 constants to ensure accuracy
-    public final static LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(2);
-    public final static AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(0.5);
+    public static final LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(2);
+    public static final AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(0.5);
 
-    public final static LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
-    public final static AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(0.5);
+    public static final LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
+    public static final AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(0.5);
 
     // position constants
     // distance from the robot's center to the center of a side, in meters
     // the robot is 29in wide, so the apothem is simply 29/2 in
-    public final static Distance ROBOT_APOTHEM = Inches.of(29.0).div(2.0);
+    public static final Distance ROBOT_APOTHEM = Inches.of(29.0).div(2.0);
 
-    public final static Distance WHEEL_RADIUS = Inches.of(2);
-    public final static Distance WHEEL_CIRCUMFERENCE = WHEEL_RADIUS.times(2.0 * Math.PI);
+    public static final Distance WHEEL_RADIUS = Inches.of(2);
+    public static final Distance WHEEL_CIRCUMFERENCE = WHEEL_RADIUS.times(2.0 * Math.PI);
     
     /* explanation of the WPILib coordinate system:
     *
@@ -125,7 +125,7 @@ public class DriveConstants {
     * 
     * (using https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html)
     */
-    public final static Translation2d
+    public static final Translation2d
         FL_POS = new Translation2d(ROBOT_APOTHEM, ROBOT_APOTHEM),
         FR_POS = new Translation2d(ROBOT_APOTHEM, ROBOT_APOTHEM.unaryMinus()),
         BL_POS = new Translation2d(ROBOT_APOTHEM.unaryMinus(), ROBOT_APOTHEM),

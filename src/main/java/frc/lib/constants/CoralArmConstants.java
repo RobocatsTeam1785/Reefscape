@@ -11,7 +11,7 @@ import edu.wpi.first.units.measure.Angle;
 public class CoralArmConstants {
     // TODO tune these
     // PID and FF constants
-    public final static double
+    public static final double
         KP = 0.0,
         KI = 0.0,
         KD = 0.0,
@@ -23,15 +23,15 @@ public class CoralArmConstants {
 
     // TODO measure the necessary values to calculate this and split it into multiple variables, if necessary
     /** conversion factor between a single rotation of the arm motor and the rotation of the arm, in radians */
-    public final static double ARM_CF = 1.0;
+    public static final double ARM_CF = 1.0;
 
     // TODO measure and determine these
     // maximum speed and acceleration
-    public final static AngularVelocity MAX_SPEED = RadiansPerSecond.of(1.0);
-    public final static AngularAcceleration MAX_ACCELERATION = RadiansPerSecondPerSecond.of(1.0);
+    public static final AngularVelocity MAX_SPEED = RadiansPerSecond.of(1.0);
+    public static final AngularAcceleration MAX_ACCELERATION = RadiansPerSecondPerSecond.of(1.0);
 
     // TODO measure these more specifically
     // range of motion
-    public final static Angle MAX_ANGLE = Degrees.of(30);
-    public final static Angle MIN_ANGLE = Degrees.of(-90);
+    public static final Angle MAX_ANGLE = Degrees.of(30);
+    public static final Angle MIN_ANGLE = Degrees.of(-90);
 }
