@@ -46,7 +46,6 @@ public class Elevator extends SubsystemBase {
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
 
-        // see logic in SwerveModule#initMotors for an explanation involving units
         double rotationsToMeters = ElevatorConstants.ELEVATOR_CF;
         double rpmToMetersPerSecond = rotationsToMeters / 60.0;
 
