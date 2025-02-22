@@ -47,6 +47,6 @@ public class CoralArmConstants {
 
     // TODO measure these more specifically
     // range of motion
-    public static final Angle MAX_ANGLE = Degrees.of(30);
+    public static final Angle MAX_ANGLE = Degrees.of(55);
     public static final Angle MIN_ANGLE = Degrees.of(-90);
 }
