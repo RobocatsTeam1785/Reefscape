@@ -52,12 +52,16 @@ public class ElevatorConstants {
      */
     public static final double ELEVATOR_CF = 1.0 / GEAR_RATIO * REEL_DIAMETER.in(Meters) * CARRIAGE_SPEED_SCALE;
 
+    // voltage limitations
+    public static final double SPEED_DEADBAND = 0.1;
+
     // TODO measure and determine these
     // TODO decide whether zero height will be defined as the floor or the lowest height the elevator can reach
     public static final Distance MAX_HEIGHT = Meters.of(0.0);
     public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(0.2);
     public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(0.1);
 
+    // scoring/intake-relevant heights
     // TODO measure these
     public static final Distance
         // coral intake and score height
