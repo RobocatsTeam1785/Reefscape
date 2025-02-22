@@ -65,8 +65,8 @@ public class Elevator extends SubsystemBase {
             .velocityConversionFactor(rpmToMetersPerSecond);
         
         // initialize motors and configure them
-        leftMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR, MotorType.kBrushless);
-        rightMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR, MotorType.kBrushless);
+        leftMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+        rightMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 
         leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

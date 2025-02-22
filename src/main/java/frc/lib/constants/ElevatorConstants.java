@@ -11,9 +11,10 @@ import edu.wpi.first.units.measure.LinearVelocity;
 
 public class ElevatorConstants {
     // CAN ids via Rev Hardware Client
+    // TODO decide on these
     public static final int
-        LEFT_MOTOR = 0,
-        RIGHT_MOTOR = 0;
+        LEFT_MOTOR_ID = 0,
+        RIGHT_MOTOR_ID = 0;
     
     // TODO tune these
     // PID and FF constants
