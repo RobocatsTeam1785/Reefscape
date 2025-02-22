@@ -15,8 +15,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,9 +30,11 @@ public class Elevator extends SubsystemBase {
     protected SparkMax leftMotor, rightMotor;
     protected RelativeEncoder leftEncoder, rightEncoder;
 
-    // loop control
+    // control/filtering
     protected ProfiledPIDController leftPID, rightPID;
     protected ElevatorFeedforward leftFF, rightFF;
+
+    protected SlewRateLimiter rateLimiter;
 
     // logging
     protected Voltage sysIdVoltage;
@@ -73,6 +77,7 @@ public class Elevator extends SubsystemBase {
     }
 
     protected void initControl() {
+        // loop control
         // set the maximum speed and acceleration of the generated setpoints to the constant values
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
             ElevatorConstants.MAX_SPEED.in(MetersPerSecond),
@@ -85,6 +90,10 @@ public class Elevator extends SubsystemBase {
 
         leftFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
         rightFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
+
+        // filtering
+        // set the maximum acceleration of provided setpoints
+        rateLimiter = new SlewRateLimiter(ElevatorConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
     // system identification
@@ -112,6 +121,28 @@ public class Elevator extends SubsystemBase {
     }
 
     // drive
+    /** applies feedforward-only control to apply the provided speed to the elevator motors, within the maximum speed and acceleration */
+    public void updateSetpoint(LinearVelocity speed) {
+        // ! applying voltage outside the acceptable range of motion risks damage to the robot
+        // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
+        // TODO update units if necessary
+        // clamp to maximum speed
+        if (speed.in(MetersPerSecond) > ElevatorConstants.MAX_SPEED.in(MetersPerSecond)) {
+            speed = ElevatorConstants.MAX_SPEED;
+        }
+
+        // clamp to maximum acceleration
+        speed = MetersPerSecond.of(rateLimiter.calculate(speed.in(MetersPerSecond)));
+
+        // use the provided setpoint
+        final double leftFeed = leftFF.calculate(speed.in(MetersPerSecond));
+        final double rightFeed = rightFF.calculate(speed.in(MetersPerSecond));
+
+        leftMotor.setVoltage(leftFeed);
+        rightMotor.setVoltage(rightFeed);
+    }
+
+    /** applies feedforward and PID control to reach the desired height, within the maximum speed and acceleration */
     public void updateSetpoint(Distance height) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot
         // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
