@@ -93,9 +93,9 @@ public class Elevator extends SubsystemBase {
         sysIdVoltage = voltage;
 
         // ! applying voltage outside the acceptable range of motion risks damage to the robot
-        // TODO implement a safety mechanism that disables movement outside of safe ranges before uncommenting
-        // leftMotor.setVoltage(voltage);
-        // rightMotor.setVoltage(voltage);
+        // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
+        leftMotor.setVoltage(voltage);
+        rightMotor.setVoltage(voltage);
     }
 
     public void sysIdLog(SysIdRoutineLog log) {
@@ -114,18 +114,18 @@ public class Elevator extends SubsystemBase {
     // drive
     public void updateSetpoint(Distance height) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot
-        // TODO implement a safety mechanism that disables movement outside of safe ranges before uncommenting
-        // // TODO update units if necessary
-        // final double leftOutput = leftPID.calculate(leftEncoder.getPosition(), height.in(Meters));
-        // final double rightOutput = rightPID.calculate(rightEncoder.getPosition(), height.in(Meters));
+        // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
+        // TODO update units if necessary
+        final double leftOutput = leftPID.calculate(leftEncoder.getPosition(), height.in(Meters));
+        final double rightOutput = rightPID.calculate(rightEncoder.getPosition(), height.in(Meters));
 
-        // // FF requires a velocity argument which is not directly provided by a height, so we use the motion profile in the ProfiledPIDControllers
-        // // to smoothly generate setpoints that the FF can use, hence, the .getSetpoint().velocity
-        // final double leftFeed = leftFF.calculate(leftPID.getSetpoint().velocity);
-        // final double rightFeed = rightFF.calculate(rightPID.getSetpoint().velocity);
+        // FF requires a velocity argument which is not directly provided by a height, so we use the motion profile in the ProfiledPIDControllers
+        // to smoothly generate setpoints that the FF can use, hence, the .getSetpoint().velocity
+        final double leftFeed = leftFF.calculate(leftPID.getSetpoint().velocity);
+        final double rightFeed = rightFF.calculate(rightPID.getSetpoint().velocity);
 
-        // leftMotor.setVoltage(leftOutput + leftFeed);
-        // rightMotor.setVoltage(rightOutput + rightFeed);
+        leftMotor.setVoltage(leftOutput + leftFeed);
+        rightMotor.setVoltage(rightOutput + rightFeed);
     }
 
     // tuning
