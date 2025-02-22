@@ -2,6 +2,8 @@ package frc.robot.input;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
@@ -78,8 +80,8 @@ public class SubsystemInputProcessor {
 
     /** configure trigger-based commands */
     public void configureTriggers() {
-        swerveProcessor.configureTriggers();
-        elevatorProcessor.configureTriggers();
+        swerveProcessor.configureTriggers(this::isModeActive);
+        elevatorProcessor.configureTriggers(this::isModeActive);
     }
 
     /** configure default commands */
@@ -107,5 +109,10 @@ public class SubsystemInputProcessor {
 
     private void setActiveState(ModeState<?> state) {
         this.activeState = state;
+    }
+
+    // triggers
+    public BooleanSupplier isModeActive(ModeState<?> state) {
+        return () -> (state == getActiveState());
     }
 }

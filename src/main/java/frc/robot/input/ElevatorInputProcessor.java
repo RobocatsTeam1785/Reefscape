@@ -2,6 +2,8 @@ package frc.robot.input;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -32,7 +34,7 @@ public class ElevatorInputProcessor extends InputProcessor {
     }
 
     @Override
-    public void configureTriggers() {
+    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
         // buttons
         // state-based
     }

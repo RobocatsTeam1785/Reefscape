@@ -3,6 +3,8 @@ package frc.lib.input;
 import static edu.wpi.first.units.Units.Radians;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,8 +14,8 @@ import frc.lib.mode.ModeState;
 
 /** an object that transforms controller inputs into subsystem setpoints */
 public abstract class InputProcessor {
-    /** configure trigger-based commands */
-    public abstract void configureTriggers();
+    /** configure trigger-based commands with a function that returns a boolean supplier returning whether the passed mode state is active */
+    public abstract void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive);
 
     /** add per-mode subsystem default commands */
     public abstract void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults);

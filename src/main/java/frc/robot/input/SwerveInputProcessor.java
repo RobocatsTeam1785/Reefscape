@@ -2,6 +2,8 @@ package frc.robot.input;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,12 +32,19 @@ public class SwerveInputProcessor extends InputProcessor {
     }
 
     @Override
-    public void configureTriggers() {
+    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        // defined suppliers
+        BooleanSupplier isActive = isModeActive.apply(state);
+
+        // ! all triggers must be logically ANDed with state.noSwitchesActive() and isActive in order to ensure that they
+        // ! do not conflict with mode-switching triggers and only run when the current mode state is active
+        // TODO ideally find a way to do this automatically
+
         // buttons
         // when a is pressed and in a single-module-only mode, zero the relative turn encoder
         // d-pad is negated to avoid collision with mode-switching
         // outside a single-module-only mode, literally rezero all relative turn encoders
-        driver.a().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+        driver.a().and(state.noSwitchesActive()).and(isActive).onTrue(new InstantCommand(() -> {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
@@ -52,7 +61,7 @@ public class SwerveInputProcessor extends InputProcessor {
         //      to the absolute encoder value to rezero it
         //
         //      outside a single-module-only mode, rezero all turn encoders
-        driver.b().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+        driver.b().and(state.noSwitchesActive()).and(isActive).onTrue(new InstantCommand(() -> {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
@@ -64,7 +73,7 @@ public class SwerveInputProcessor extends InputProcessor {
 
         // state-based
         // zero turn voltage when the right trigger is lifted
-        driver.rightTrigger(0.5).negate().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+        driver.rightTrigger(0.5).negate().and(state.noSwitchesActive()).and(isActive).onTrue(new InstantCommand(() -> {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
