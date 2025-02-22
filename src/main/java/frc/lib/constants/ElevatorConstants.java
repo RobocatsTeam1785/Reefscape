@@ -46,7 +46,7 @@ public class ElevatorConstants {
      * conversion factor between a single rotation of an elevator motor and the vertical meters the elevator travels
      * 
      * <ol>
-     *   <li>divide by gear ratio, as the ratio of input rotations to output rotations is the inverse of the gear ratio</li>
+     *   <li>divide by gear ratio, as the ratio of output rotations to input rotations is the inverse of the gear ratio</li>
      *   <li>multiply by reel circumference, as the elevator height equals the distance the reel travels, not the number of rotations</li>
      *   <li>multiply by the carriage speed scale to account for the speedup caused by changing stages three times, each increasing the speed</li>
      * </ol>
