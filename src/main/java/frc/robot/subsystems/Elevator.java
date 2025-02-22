@@ -39,13 +39,13 @@ public class Elevator extends SubsystemBase {
     // logging
     protected Voltage sysIdVoltage;
 
-    public Elevator(int leftId, int rightId) {
-        initMotors(leftId, rightId);
+    public Elevator() {
+        initMotors();
         initControl();
     }
 
     // initialization
-    protected void initMotors(int leftId, int rightId) {
+    protected void initMotors() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
@@ -65,8 +65,8 @@ public class Elevator extends SubsystemBase {
             .velocityConversionFactor(rpmToMetersPerSecond);
         
         // initialize motors and configure them
-        leftMotor = new SparkMax(leftId, MotorType.kBrushless);
-        rightMotor = new SparkMax(rightId, MotorType.kBrushless);
+        leftMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR, MotorType.kBrushless);
+        rightMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR, MotorType.kBrushless);
 
         leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
