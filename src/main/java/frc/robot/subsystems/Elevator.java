@@ -61,7 +61,6 @@ public class Elevator extends SubsystemBase {
             .velocityConversionFactor(rpmToMetersPerSecond);
         
         // initialize motors and configure them
-        // TODO check whether we're still using brushless motors
         leftMotor = new SparkMax(leftId, MotorType.kBrushless);
         rightMotor = new SparkMax(rightId, MotorType.kBrushless);
 
