@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.input.SwerveInputProcessor;
+import frc.robot.input.SubsystemInputProcessor;
 import frc.robot.subsystems.Swerve;
 
 @Logged
@@ -15,16 +15,14 @@ public class RobotContainer {
         driver = new CommandXboxController(0);
     
     // input processors
-    private final SwerveInputProcessor swerveProcessor;
+    private final SubsystemInputProcessor processor;
 
     public RobotContainer(double period) {
         // subsystems
         swerve = new Swerve(period);
 
         // processors
-        swerveProcessor = new SwerveInputProcessor(swerve, driver);
-
-        // processor configuration
-        swerveProcessor.configureProcessing();
+        processor = new SubsystemInputProcessor(swerve, driver);
+        processor.configure();
     }
 }

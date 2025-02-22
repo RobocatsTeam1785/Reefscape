@@ -1,17 +1,17 @@
 package frc.robot.input;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.input.InputProcessor;
 import frc.lib.mode.ModeState;
-import frc.lib.utility.CommandUtils;
 import frc.robot.modes.DriveMode;
 import frc.robot.subsystems.Swerve;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
 public class SwerveInputProcessor extends InputProcessor {
     // subsystems
     private final Swerve swerve;
@@ -20,33 +20,23 @@ public class SwerveInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged
-    private final ModeState<DriveMode> driveState = new ModeState<>(DriveMode.ALIGN);
+    private final ModeState<DriveMode> state;
 
-    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver) {
+    // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
+    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state) {
         this.swerve = swerve;
         this.driver = driver;
+        this.state = state;
     }
 
     @Override
-    public void configureProcessing() {
-        // mode-switching
-        // d-pad up: a is swerve, and b is align
-        driveState.registerSwitch(DriveMode.SWERVE, driver.povUp().and(driver.a()));
-        driveState.registerSwitch(DriveMode.ALIGN, driver.povUp().and(driver.b()));
-        
-        // d-pad right: y is FL, b is FR, x is BL, a is BR, so normal directions but rotated 45 degrees CW
-        driveState.registerSwitch(DriveMode.FL_ONLY, driver.povRight().and(driver.y()));
-        driveState.registerSwitch(DriveMode.FR_ONLY, driver.povRight().and(driver.b()));
-        driveState.registerSwitch(DriveMode.BL_ONLY, driver.povRight().and(driver.x()));
-        driveState.registerSwitch(DriveMode.BR_ONLY, driver.povRight().and(driver.a()));
-
+    public void configureTriggers() {
         // buttons
         // when a is pressed and in a single-module-only mode, zero the relative turn encoder
         // d-pad is negated to avoid collision with mode-switching
         // outside a single-module-only mode, literally rezero all relative turn encoders
-        driver.a().and(driveState.noSwitchesActive()).onTrue(new InstantCommand(() -> {
-            DriveMode mode = driveState.mode();
+        driver.a().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+            DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
                 swerve.zeroRelTurnEncoder(mode.id);
@@ -62,8 +52,8 @@ public class SwerveInputProcessor extends InputProcessor {
         //      to the absolute encoder value to rezero it
         //
         //      outside a single-module-only mode, rezero all turn encoders
-        driver.b().and(driveState.noSwitchesActive()).onTrue(new InstantCommand(() -> {
-            DriveMode mode = driveState.mode();
+        driver.b().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+            DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
                 swerve.recoverAbsAngle(mode.id);
@@ -74,8 +64,8 @@ public class SwerveInputProcessor extends InputProcessor {
 
         // state-based
         // zero turn voltage when the right trigger is lifted
-        driver.rightTrigger(0.5).negate().onTrue(new InstantCommand(() -> {
-            DriveMode mode = driveState.mode();
+        driver.rightTrigger(0.5).negate().and(state.noSwitchesActive()).onTrue(new InstantCommand(() -> {
+            DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
                 swerve.zeroTurnVoltage(mode.id);
@@ -83,16 +73,20 @@ public class SwerveInputProcessor extends InputProcessor {
                 swerve.zeroTurnVoltage();
             }
         }));
+    }
 
-        // default commands
-        CommandUtils.selectDefault(swerve, driveState, Map.of(
+    @Override
+    public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {
+        Map<ModeState<?>, Command> commands = defaults.putIfAbsent(swerve, new HashMap<>());
+
+        commands.put(state, state.selectRunnable(Map.of(
             DriveMode.SWERVE,  this::driveSwerve,
             DriveMode.ALIGN,   this::driveAlign,
             DriveMode.FL_ONLY, () -> driveOnly(0),
             DriveMode.FR_ONLY, () -> driveOnly(1),
             DriveMode.BL_ONLY, () -> driveOnly(2),
             DriveMode.BR_ONLY, () -> driveOnly(3)
-        ));
+        ), swerve));
     }
 
     // driving

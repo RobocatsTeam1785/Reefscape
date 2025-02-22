@@ -3,6 +3,7 @@ package frc.lib.mode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.epilogue.Logged;
@@ -56,6 +57,15 @@ public class ModeState<M extends Mode> {
         trigger.onTrue(new InstantCommand(() -> {
             currentMode = mode;
         }));
+    }
+
+    /** registers a mode switch that sets the provided active state to this and the current mode to the specified mode when the trigger becomes true */
+    public void registerSwitch(Consumer<ModeState<?>> setActiveState, M mode, Trigger trigger) {
+        // set active state
+        setActiveState.accept(this);
+
+        // register switch
+        registerSwitch(mode, trigger);
     }
 
     // triggers

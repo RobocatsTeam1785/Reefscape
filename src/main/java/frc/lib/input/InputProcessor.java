@@ -2,12 +2,21 @@ package frc.lib.input;
 
 import static edu.wpi.first.units.Units.Radians;
 
+import java.util.Map;
+
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.mode.ModeState;
 
 /** an object that transforms controller inputs into subsystem setpoints */
 public abstract class InputProcessor {
-    public abstract void configureProcessing();
+    /** configure trigger-based commands */
+    public abstract void configureTriggers();
+
+    /** add per-mode subsystem default commands */
+    public abstract void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults);
 
     // utility functions
     /**
