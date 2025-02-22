@@ -27,8 +27,18 @@ public class CoralArmConstants {
         KA = 0.0;
 
     // TODO measure the necessary values to calculate this and split it into multiple variables, if necessary
-    /** conversion factor between a single rotation of the arm motor and the rotation of the arm, in radians */
-    public static final double ARM_CF = 1.0;
+    // 20:1 gear ratio
+    public static final double GEAR_RATIO = 20.0;
+
+    /**
+     * conversion factor between a single rotation of the arm motor and the rotation of the arm, in radians
+     * 
+     * <ol>
+     *   <li>divide by gear ratio, as the ratio of output rotations to input rotations is the reciprocal of the gear ratio</li>
+     *   <li>multiply by 2pi to convert to radians, as 2pi radians = 1 rotation</li>
+     * </ol>
+     */
+    public static final double ARM_CF = 1.0 / GEAR_RATIO * (2 * Math.PI);
 
     // TODO measure and determine these
     // maximum speed and acceleration
