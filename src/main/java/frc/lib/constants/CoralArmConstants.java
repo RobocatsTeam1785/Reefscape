@@ -26,7 +26,6 @@ public class CoralArmConstants {
         KV = 0.0,
         KA = 0.0;
 
-    // TODO measure the necessary values to calculate this and split it into multiple variables, if necessary
     // 20:1 gear ratio
     public static final double GEAR_RATIO = 20.0;
 
@@ -45,7 +44,6 @@ public class CoralArmConstants {
     public static final AngularVelocity MAX_SPEED = RadiansPerSecond.of(1.0);
     public static final AngularAcceleration MAX_ACCELERATION = RadiansPerSecondPerSecond.of(1.0);
 
-    // TODO measure these more specifically
     // range of motion
     public static final Angle MAX_ANGLE = Degrees.of(55);
     public static final Angle MIN_ANGLE = Degrees.of(-90);
