@@ -5,6 +5,7 @@ import java.util.Map;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.input.InputProcessor;
 import frc.lib.mode.ModeState;
 import frc.lib.utility.CommandUtils;
 import frc.robot.modes.DriveMode;

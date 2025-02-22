@@ -1,4 +1,4 @@
-package frc.robot.input;
+package frc.lib.input;
 
 import static edu.wpi.first.units.Units.Radians;
 
