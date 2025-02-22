@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.mode.ModeState;
 import frc.robot.modes.DriveMode;
+import frc.robot.modes.ElevatorMode;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
@@ -18,6 +20,7 @@ public class SubsystemInputProcessor {
 
     // modes
     @Logged private final ModeState<DriveMode> swerveState;
+    @Logged private final ModeState<ElevatorMode> elevatorState;
 
     // TODO implement a more elegant solution that avoids the possibility of overlapping mode switches, as that's currently undefined behavior
     /** the state that was most recently switched to, e.g., the state that controls how default commands behave */
@@ -25,19 +28,26 @@ public class SubsystemInputProcessor {
     
     // processors
     private final SwerveInputProcessor swerveProcessor;
+    private final ElevatorInputProcessor elevatorProcessor;
 
-    public SubsystemInputProcessor(final Swerve swerve, final CommandXboxController driver) {
+    public SubsystemInputProcessor(
+        final Swerve swerve,
+        final Elevator elevator,
+        final CommandXboxController driver
+    ) {
         // properties
         // - controllers
         this.driver = driver;
 
         // - states
         this.swerveState = new ModeState<>(DriveMode.ALIGN);
+        this.elevatorState = new ModeState<>(ElevatorMode.MANUAL);
 
         this.activeState = swerveState;
 
         // - processors
         this.swerveProcessor = new SwerveInputProcessor(swerve, driver, swerveState);
+        this.elevatorProcessor = new ElevatorInputProcessor(elevator, driver, elevatorState);
     }
 
     // configuration
@@ -60,11 +70,16 @@ public class SubsystemInputProcessor {
         swerveState.registerSwitch(this::setActiveState, DriveMode.FR_ONLY, driver.povRight().and(driver.b()));
         swerveState.registerSwitch(this::setActiveState, DriveMode.BL_ONLY, driver.povRight().and(driver.x()));
         swerveState.registerSwitch(this::setActiveState, DriveMode.BR_ONLY, driver.povRight().and(driver.a()));
+
+        // elevator state
+        // d-pad left: a is manual
+        elevatorState.registerSwitch(this::setActiveState, ElevatorMode.MANUAL, driver.povLeft().and(driver.a()));
     }
 
     /** configure trigger-based commands */
     public void configureTriggers() {
         swerveProcessor.configureTriggers();
+        elevatorProcessor.configureTriggers();
     }
 
     /** configure default commands */
@@ -74,6 +89,7 @@ public class SubsystemInputProcessor {
 
         // add commands to map
         swerveProcessor.configureDefaults(defaults);
+        elevatorProcessor.configureDefaults(defaults);
 
         // set per-mode active-state-dependent default commands
         for (Map.Entry<Subsystem, Map<ModeState<?>, Command>> entry : defaults.entrySet()) {
