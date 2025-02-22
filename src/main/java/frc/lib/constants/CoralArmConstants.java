@@ -9,6 +9,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Angle;
 
 public class CoralArmConstants {
+    // CAN ids via Rev Hardware Client
+    // TODO decide on this
+    public static final int
+        MOTOR_ID = 0;
+
     // TODO tune these
     // PID and FF constants
     public static final double
