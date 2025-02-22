@@ -35,6 +35,9 @@ public class ElevatorConstants {
     /** diameter of the reel the motor rotates */
     public static final Distance REEL_DIAMETER = Inches.of(2.25);
 
+    /** circumference of the reel */
+    public static final Distance REEL_CIRCUMFERENCE = REEL_DIAMETER.times(Math.PI);
+
     /**
      * factor the carriage speed is multiplied by in comparison to the base pulley speed
      * <p>
@@ -51,7 +54,7 @@ public class ElevatorConstants {
      *   <li>multiply by the carriage speed scale to account for the speedup caused by changing stages three times, each increasing the speed</li>
      * </ol>
      */
-    public static final double ELEVATOR_CF = 1.0 / GEAR_RATIO * REEL_DIAMETER.in(Meters) * CARRIAGE_SPEED_SCALE;
+    public static final double ELEVATOR_CF = 1.0 / GEAR_RATIO * REEL_CIRCUMFERENCE.in(Meters) * CARRIAGE_SPEED_SCALE;
 
     // voltage limitations
     public static final double SPEED_DEADBAND = 0.1;
