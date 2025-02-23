@@ -24,15 +24,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.utility.CumulativeDutyCycleEncoder;
 
-@Logged
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class CoralArm extends SubsystemBase {
     // hardware
     protected SparkMax armMotor;
-    protected RelativeEncoder armEncoder;
-    protected CumulativeDutyCycleEncoder hexEncoder;
+    @Logged protected RelativeEncoder armEncoder;
+    @Logged protected CumulativeDutyCycleEncoder hexEncoder;
 
     // loop control
-    protected ProfiledPIDController armPID;
+    @Logged protected ProfiledPIDController armPID;
     protected ArmFeedforward armFF;
 
     // logging
