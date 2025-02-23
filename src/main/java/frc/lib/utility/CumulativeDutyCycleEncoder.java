@@ -23,22 +23,29 @@ public class CumulativeDutyCycleEncoder {
      * initializes an accumulative wrapper around a DutyCycleEncoder that detects rollovers (i.e., sudden changes in a domain-constrained value that indicate
      * the value "rolled over" the boundary) and tracks how many times that has occurred to give an accumulated position value
      * <p>
-     * warning: if the encoder value changes more (or equivalently) rapidly than the maximum encoder value divided by the time between checking .get(),
-     * this class will not work, as the value could roll over to the same value (or slightly more or less than) it was before, making rollovers undetectable
+     * the max change parameter is used to calculate the rollover threshold by subtracting it from the range parameter, as the change for a rollover
+     * equals the absolute difference between the range and the actual change, and thus, the max rollover change equals the absolute difference between
+     * the range and the max change. unfortunately, <b>this value must be less than half the range</b>, as values higher could make valid changes below
+     * the max change falsely recognized as rollovers if they occurred entirely within range (e.g., for range 1 and maxChange 0.6, rollOverThreshold would
+     * by necessity be 0.4, making changes between 0.4 and 0.6 falsely recognized as rollovers), making the revolution count inaccurate
+     * <p>
+     * <b>warning</b>: if the encoder value changes by more than the range, this class <b>will not work</b>, as the value could roll over to the same value
+     * (or slightly more or less than) it was before, making rollovers undetectable. furthermore, if it changes by more than half the range, it also <b>will
+     * not work</b>, because rollovers with changes that high cannot be detected without introducing false positives, which make the revolution count inaccurate
      * 
      * @param encoder the DutyCycleEncoder to wrap around
-     * @param range the maximum encoder value
-     * @param rollOverThreshold the value-change threshold, above which a rollover is detected and recorded - cannot be higher than the maximum encoder value
+     * @param range the maximum encoder value, where range > 0
+     * @param maxChange the maximum change in value possible in situations where revolution accuracy is necessary, where 0 < maxChange < range / 2
      */
-    public CumulativeDutyCycleEncoder(DutyCycleEncoder encoder, double range, double rollOverThreshold) {
-        if (rollOverThreshold > range) {
-            throw new IllegalArgumentException("rollOverThreshold cannot be higher than the maximum encoder value!");
+    public CumulativeDutyCycleEncoder(DutyCycleEncoder encoder, double range, double maxChange) {
+        if (maxChange >= range / 2) {
+            throw new IllegalArgumentException("maxChange cannot be greater than half the range!");
         }
 
         // initialization
         this.encoder = encoder;
         this.range = range;
-        this.rollOverThreshold = rollOverThreshold;
+        this.rollOverThreshold = range - maxChange;
 
         // initial state hydration
         lastValue = encoder.get();
