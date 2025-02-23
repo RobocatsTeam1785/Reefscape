@@ -47,6 +47,7 @@ public class AlgaeArm extends SubsystemBase {
     // initialization
     protected void initMotor() {
         // motor config
+        // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
 
         // see logic in SwerveModule#initMotors for an explanation involving units

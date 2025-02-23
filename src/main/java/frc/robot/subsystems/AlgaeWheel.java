@@ -47,7 +47,7 @@ public class AlgaeWheel extends SubsystemBase {
     // initialization
     protected void initMotors() {
         // motor config
-        // TODO include warning for every subsystem that uses sparks that doing this resets the existing config
+        // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         SparkMaxConfig rightConfig = new SparkMaxConfig();
 
