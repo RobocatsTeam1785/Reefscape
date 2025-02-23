@@ -54,8 +54,10 @@ public class CumulativeDutyCycleEncoder {
     // state modification
     /** compares the previous value to the current value to determine whether or not a rollover has occurred, and, if so, to record it */
     public void update() {
+        // get current value
         double value = encoder.get();
 
+        // detect and record rollover, if present
         if (Math.abs(value - lastValue) > rollOverThreshold) {
             if (value > lastValue) {
                 revolutions--;
@@ -64,6 +66,7 @@ public class CumulativeDutyCycleEncoder {
             }
         }
 
+        // update last value
         lastValue = value;
     }
 
