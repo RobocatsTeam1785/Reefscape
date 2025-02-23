@@ -71,6 +71,9 @@ public class CoralArm extends SubsystemBase {
 
         // initialize encoder
         armEncoder = armMotor.getEncoder();
+
+        // the coral arm should be facing straight down when the robot initializes, so the initial encoder value should be a quarter rotation down
+        armEncoder.setPosition(CoralArmConstants.MIN_ANGLE.in(Radians));
     }
 
     protected void initHexEncoder() {
