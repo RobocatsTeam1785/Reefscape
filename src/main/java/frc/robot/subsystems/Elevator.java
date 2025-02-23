@@ -32,7 +32,8 @@ public class Elevator extends SubsystemBase {
 
     // control/filtering
     @Logged protected ProfiledPIDController leftPID, rightPID;
-    protected ElevatorFeedforward leftFF, rightFF;
+
+    protected ElevatorFeedforward ff;
 
     protected SlewRateLimiter rateLimiter;
 
@@ -88,8 +89,7 @@ public class Elevator extends SubsystemBase {
         leftPID = new ProfiledPIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD, constraints);
         rightPID = new ProfiledPIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD, constraints);
 
-        leftFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
-        rightFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
+        ff = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
 
         // filtering
         // set the maximum acceleration of provided setpoints
@@ -135,11 +135,10 @@ public class Elevator extends SubsystemBase {
         speed = MetersPerSecond.of(rateLimiter.calculate(speed.in(MetersPerSecond)));
 
         // use the provided setpoint
-        final double leftFeed = leftFF.calculate(speed.in(MetersPerSecond));
-        final double rightFeed = rightFF.calculate(speed.in(MetersPerSecond));
+        final double feed = ff.calculate(speed.in(MetersPerSecond));
 
-        leftMotor.setVoltage(leftFeed);
-        rightMotor.setVoltage(rightFeed);
+        leftMotor.setVoltage(feed);
+        rightMotor.setVoltage(feed);
     }
 
     /** applies feedforward and PID control to reach the desired height, within the maximum speed and acceleration */
@@ -152,8 +151,8 @@ public class Elevator extends SubsystemBase {
 
         // FF requires a velocity argument which is not directly provided by a height, so we use the motion profile in the ProfiledPIDControllers
         // to smoothly generate setpoints that the FF can use, hence, the .getSetpoint().velocity
-        final double leftFeed = leftFF.calculate(leftPID.getSetpoint().velocity);
-        final double rightFeed = rightFF.calculate(rightPID.getSetpoint().velocity);
+        final double leftFeed = ff.calculate(leftPID.getSetpoint().velocity);
+        final double rightFeed = ff.calculate(rightPID.getSetpoint().velocity);
 
         leftMotor.setVoltage(leftOutput + leftFeed);
         rightMotor.setVoltage(rightOutput + rightFeed);
@@ -165,7 +164,6 @@ public class Elevator extends SubsystemBase {
         leftPID.setPID(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
         rightPID.setPID(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
 
-        leftFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
-        rightFF = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
+        ff = new ElevatorFeedforward(ElevatorConstants.KS, ElevatorConstants.KG, ElevatorConstants.KV, ElevatorConstants.KA);
     }
 }
