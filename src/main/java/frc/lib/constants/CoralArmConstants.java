@@ -14,6 +14,10 @@ public class CoralArmConstants {
     public static final int
         MOTOR_ID = 0;
 
+    // digital port, as physically configured in the RoboRIO DIO ports
+    // TODO determine which one this is
+    public static final int HEX_ENCODER_PORT = 0;
+
     // TODO tune these
     // PID and FF constants
     public static final double
