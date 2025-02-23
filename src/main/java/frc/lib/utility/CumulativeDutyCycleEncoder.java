@@ -3,15 +3,21 @@ package frc.lib.utility;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class CumulativeDutyCycleEncoder {
+    // hardware
     /** the encoder to wrap around */
     private final DutyCycleEncoder encoder;
 
+    // calculation
     /** the maximum encoder value */
     private final double range;
 
     /** the value-change threshold, above which a rollover is detected and recorded */
     private final double rollOverThreshold;
 
+    /** the conversion factor that the returned accumulated position is multiplied by */
+    private double positionConversionFactor = 1.0;
+
+    // state
     /** the value recorded the last time .update() or the constructor was called */
     private double lastValue;
 
@@ -70,6 +76,11 @@ public class CumulativeDutyCycleEncoder {
         lastValue = value;
     }
 
+    /** sets the position conversion factor */
+    public void setPositionConversionFactor(double cf) {
+        positionConversionFactor = cf;
+    }
+
     // state
     /** the number of accumulated revolutions */
     public int getRevolutions() {
@@ -78,6 +89,9 @@ public class CumulativeDutyCycleEncoder {
 
     /** the accumulated position */
     public double getAccumulatedPosition() {
-        return encoder.get() + revolutions * range;
+        double accumulatedPosition = encoder.get() + revolutions * range;
+        double converted = accumulatedPosition * positionConversionFactor;
+
+        return converted;
     }
 }
