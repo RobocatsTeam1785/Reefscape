@@ -98,7 +98,7 @@ public class CoralWheel extends SubsystemBase {
     }
 
     // drive
-    /** updates the wheel velocity to the desired velocity setpoint */
+    /** updates the wheel velocity to the desired velocity setpoint, within the maximum speed and acceleration */
     public void updateSetpoint(LinearVelocity velocity) {
         // clamp to maximum speed
         if (velocity.in(MetersPerSecond) > CoralWheelConstants.MAX_SPEED.in(MetersPerSecond)) {

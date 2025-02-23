@@ -124,8 +124,7 @@ public class AlgaeWheel extends SubsystemBase {
     }
 
     // drive
-    // TODO include warning for elevator, algae wheel, and coral wheel that the updateSetpoint method has its own speed and acceleration clamping
-    /** updates the wheel velocity to the desired velocity setpoint */
+    /** updates the wheel velocity to the desired velocity setpoint, within the maximum speed and acceleration */
     public void updateSetpoint(LinearVelocity velocity) {
         // clamp to maximum speed
         if (velocity.in(MetersPerSecond) > AlgaeWheelConstants.MAX_SPEED.in(MetersPerSecond)) {
