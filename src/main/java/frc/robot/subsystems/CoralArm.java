@@ -27,13 +27,13 @@ import frc.lib.sensor.CumulativeDutyCycleEncoder;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CoralArm extends SubsystemBase {
     // hardware
-    protected SparkMax armMotor;
-    @Logged protected RelativeEncoder armEncoder;
+    protected SparkMax motor;
+    @Logged protected RelativeEncoder relativeEncoder;
     @Logged protected CumulativeDutyCycleEncoder hexEncoder;
 
     // loop control
-    @Logged protected ProfiledPIDController armPID;
-    protected ArmFeedforward armFF;
+    @Logged protected ProfiledPIDController pid;
+    protected ArmFeedforward ff;
 
     // logging
     protected Voltage sysIdVoltage;
@@ -66,14 +66,14 @@ public class CoralArm extends SubsystemBase {
 
         // initialize motor and configure it
         // TODO check whether we're still using brushless motors
-        armMotor = new SparkMax(CoralArmConstants.MOTOR_ID, MotorType.kBrushless);
-        armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor = new SparkMax(CoralArmConstants.MOTOR_ID, MotorType.kBrushless);
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // initialize encoder
-        armEncoder = armMotor.getEncoder();
+        relativeEncoder = motor.getEncoder();
 
         // the coral arm should be facing straight down when the robot initializes, so the initial encoder value should be a quarter rotation down
-        armEncoder.setPosition(CoralArmConstants.MIN_ANGLE.in(Radians));
+        relativeEncoder.setPosition(CoralArmConstants.MIN_ANGLE.in(Radians));
     }
 
     protected void initHexEncoder() {
@@ -102,8 +102,8 @@ public class CoralArm extends SubsystemBase {
         );
 
         // configure PID and FF using constants and constraints
-        armPID = new ProfiledPIDController(CoralArmConstants.KP, CoralArmConstants.KI, CoralArmConstants.KD, constraints);
-        armFF = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
+        pid = new ProfiledPIDController(CoralArmConstants.KP, CoralArmConstants.KI, CoralArmConstants.KD, constraints);
+        ff = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
     }
 
     // system identification
@@ -114,7 +114,7 @@ public class CoralArm extends SubsystemBase {
         sysIdVoltage = voltage;
 
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
-        armMotor.setVoltage(voltage);
+        motor.setVoltage(voltage);
     }
 
     public void sysIdLog(SysIdRoutineLog log) {
@@ -122,8 +122,8 @@ public class CoralArm extends SubsystemBase {
         log.motor("arm")
             .voltage(sysIdVoltage)
             // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
-            .angularPosition(Radians.of(armEncoder.getPosition()))
-            .angularVelocity(RadiansPerSecond.of(armEncoder.getVelocity()));
+            .angularPosition(Radians.of(relativeEncoder.getPosition()))
+            .angularVelocity(RadiansPerSecond.of(relativeEncoder.getVelocity()));
     }
 
     // drive
@@ -131,16 +131,16 @@ public class CoralArm extends SubsystemBase {
     public void updateSetpoint(Angle angle) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
-        final double output = armPID.calculate(armEncoder.getPosition(), angle.in(Radians));
-        final double feed = armFF.calculate(angle.in(Radians), armPID.getSetpoint().velocity);
+        final double output = pid.calculate(relativeEncoder.getPosition(), angle.in(Radians));
+        final double feed = ff.calculate(angle.in(Radians), pid.getSetpoint().velocity);
 
-        armMotor.setVoltage(output + feed);
+        motor.setVoltage(output + feed);
     }
 
     // tuning
     /** update constants; intended for use when hand-tuning constants using a debugger and hot code replace */
     public void tune() {
-        armPID.setPID(CoralArmConstants.KP, CoralArmConstants.KI, CoralArmConstants.KD);
-        armFF = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
+        pid.setPID(CoralArmConstants.KP, CoralArmConstants.KI, CoralArmConstants.KD);
+        ff = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
     }
 }
