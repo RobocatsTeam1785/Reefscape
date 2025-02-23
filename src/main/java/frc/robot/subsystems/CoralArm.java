@@ -18,15 +18,18 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.CoralArmConstants;
+import frc.lib.utility.CumulativeDutyCycleEncoder;
 
 @Logged
 public class CoralArm extends SubsystemBase {
     // hardware
     protected SparkMax armMotor;
     protected RelativeEncoder armEncoder;
+    protected CumulativeDutyCycleEncoder hexEncoder;
 
     // loop control
     protected ProfiledPIDController armPID;
@@ -37,6 +40,7 @@ public class CoralArm extends SubsystemBase {
 
     public CoralArm() {
         initMotor();
+        initHexEncoder();
         initControl();
     }
 
@@ -67,6 +71,20 @@ public class CoralArm extends SubsystemBase {
 
         // initialize encoder
         armEncoder = armMotor.getEncoder();
+    }
+
+    protected void initHexEncoder() {
+        // the [0, 1] restricted encoder
+        DutyCycleEncoder restrictedEncoder = new DutyCycleEncoder(CoralArmConstants.HEX_ENCODER_PORT, 1.0, 0.0);
+
+        // the cumulative encoder - due to restrictions imposed by rollover detection, the mechanism cannot move faster than 450°/s
+        // without introducing inaccuracies in the revolution count; fortunately, however, it's unlikely that it will, considering its purpose
+
+        // the 450°/s comes from (360°)/2 being the maximum change value in motor rotation degrees, divided by the gear ratio, 20, to get
+        // mechanism rotation degrees, finally divided by the roboRIO period time, 20ms, to get the maximum speed
+
+        // in summary, (360°)/2 = 180° / 20 = 9° / 20ms = 450°/s
+        hexEncoder = new CumulativeDutyCycleEncoder(restrictedEncoder, 1.0, 0.5);
     }
 
     protected void initControl() {
