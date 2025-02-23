@@ -104,31 +104,33 @@ public class CoralArm extends SubsystemBase {
     }
 
     // system identification
+    /** sets arm motor voltage for system identification; because applying voltage outside the acceptable range of motion risks damage to the robot,
+     * be <b>extremely careful</b> when using this method, and ensure some mechanism exists to avoid damaging the robot */
     public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
 
-        // ! applying voltage outside the acceptable range of motion risks damage to the robot
-        // TODO implement a safety mechanism that disables movement outside of safe ranges before uncommenting
-        // armMotor.setVoltage(voltage);
+        // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
+        armMotor.setVoltage(voltage);
     }
 
     public void sysIdLog(SysIdRoutineLog log) {
         // TODO update these units if the conversion factor units change
         log.motor("arm")
             .voltage(sysIdVoltage)
+            // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
             .angularPosition(Radians.of(armEncoder.getPosition()))
             .angularVelocity(RadiansPerSecond.of(armEncoder.getVelocity()));
     }
 
     // drive
     public void updateSetpoint(Angle angle) {
-        // ! applying voltage outside the acceptable range of motion risks damage to the robot
-        // TODO implement a safety mechanism that disables movement outside of safe ranges before uncommenting
-        // final double output = armPID.calculate(armEncoder.getPosition(), angle.in(Radians));
-        // final double feed = armFF.calculate(armPID.getSetpoint().velocity);
+        // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
+        // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
+        final double output = armPID.calculate(armEncoder.getPosition(), angle.in(Radians));
+        final double feed = armFF.calculate(angle.in(Radians), armPID.getSetpoint().velocity);
 
-        // armMotor.setVoltage(output + feed);
+        armMotor.setVoltage(output + feed);
     }
 
     // tuning
