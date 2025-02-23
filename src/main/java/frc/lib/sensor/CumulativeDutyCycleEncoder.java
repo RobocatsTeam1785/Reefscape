@@ -1,4 +1,4 @@
-package frc.lib.utility;
+package frc.lib.sensor;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
