@@ -1,7 +1,9 @@
 package frc.lib.utility;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
+@Logged
 public class CumulativeDutyCycleEncoder {
     // hardware
     /** the encoder to wrap around */
