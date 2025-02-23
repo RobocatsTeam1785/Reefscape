@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -34,23 +35,23 @@ import frc.lib.constants.RobotConstants;
 @Logged
 public class SwerveModule {
     // hardware
-    private SparkMax driveMotor, turnMotor;
+    @NotLogged private SparkMax driveMotor, turnMotor;
 
     // TODO fix hacky drive velocity access
     public RelativeEncoder driveEncoder, turnEncoder;
 
     // we use an additional encoder so that rotational information persists between reboots
-    private CANcoder absEncoder;
+    @NotLogged private CANcoder absEncoder;
 
     // loop control
     private PIDController drivePID;
     private ProfiledPIDController turnPID;
 
-    private SimpleMotorFeedforward driveFF, turnFF;
+    @NotLogged private SimpleMotorFeedforward driveFF, turnFF;
 
     // logging
-    private Voltage sysIdDriveVoltage = Volts.of(0.0),
-                    sysIdTurnVoltage = Volts.of(0.0);
+    @NotLogged private Voltage sysIdDriveVoltage = Volts.of(0.0),
+                               sysIdTurnVoltage = Volts.of(0.0);
     
     // used for logging via epilogue, so being unused is irrelevant
     @SuppressWarnings("unused")
