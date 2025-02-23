@@ -74,7 +74,7 @@ public class CumulativeDutyCycleEncoder {
     }
 
     /** the accumulated position */
-    public double get() {
+    public double getAccumulatedPosition() {
         return encoder.get() + revolutions * range;
     }
 }
