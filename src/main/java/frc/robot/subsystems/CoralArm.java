@@ -75,6 +75,7 @@ public class CoralArm extends SubsystemBase {
 
     protected void initHexEncoder() {
         // the [0, 1] restricted encoder
+        // TODO adjust expected zero if necessary
         DutyCycleEncoder restrictedEncoder = new DutyCycleEncoder(CoralArmConstants.HEX_ENCODER_PORT, 1.0, 0.0);
 
         // the cumulative encoder - due to restrictions imposed by rollover detection, the mechanism cannot move faster than 450°/s
