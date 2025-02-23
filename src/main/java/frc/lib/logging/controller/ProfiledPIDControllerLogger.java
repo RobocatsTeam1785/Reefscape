@@ -1,4 +1,4 @@
-package frc.lib.logging;
+package frc.lib.logging.controller;
 
 import edu.wpi.first.epilogue.CustomLoggerFor;
 import edu.wpi.first.epilogue.logging.ClassSpecificLogger;

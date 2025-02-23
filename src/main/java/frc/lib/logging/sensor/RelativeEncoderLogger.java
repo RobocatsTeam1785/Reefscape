@@ -1,4 +1,4 @@
-package frc.lib.logging;
+package frc.lib.logging.sensor;
 
 import com.revrobotics.RelativeEncoder;
 
