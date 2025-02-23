@@ -106,6 +106,12 @@ public class CoralArm extends SubsystemBase {
         ff = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
     }
 
+    // periodic
+    public void periodic() {
+        // check for and record rollovers
+        hexEncoder.update();
+    }
+
     // system identification
     /** sets arm motor voltage for system identification; because applying voltage outside the acceptable range of motion risks damage to the robot,
      * be <b>extremely careful</b> when using this method, and ensure some mechanism exists to avoid damaging the robot */
