@@ -85,6 +85,9 @@ public class CoralArm extends SubsystemBase {
 
         // in summary, (360°)/2 = 180° / 20 = 9° / 20ms = 450°/s
         hexEncoder = new CumulativeDutyCycleEncoder(restrictedEncoder, 1.0, 0.5);
+
+        // convert from motor rotations to mechanism radians
+        hexEncoder.setPositionConversionFactor(CoralArmConstants.ARM_CF);
     }
 
     protected void initControl() {
