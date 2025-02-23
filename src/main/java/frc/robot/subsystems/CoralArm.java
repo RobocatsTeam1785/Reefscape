@@ -79,7 +79,7 @@ public class CoralArm extends SubsystemBase {
     protected void initHexEncoder() {
         // the [0, 1] restricted encoder
         // TODO adjust expected zero if necessary
-        DutyCycleEncoder restrictedEncoder = new DutyCycleEncoder(CoralArmConstants.HEX_ENCODER_PORT, 1.0, 0.0);
+        DutyCycleEncoder restrictedEncoder = new DutyCycleEncoder(CoralArmConstants.HEX_ENCODER_CHANNEL, 1.0, 0.0);
 
         // the cumulative encoder - due to restrictions imposed by rollover detection, the mechanism cannot move faster than (or equal in speed to) 450°/s
         // without introducing inaccuracies in the revolution count; fortunately, however, it's unlikely that it will, considering its purpose
