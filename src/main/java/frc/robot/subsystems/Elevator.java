@@ -24,14 +24,14 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.ElevatorConstants;
 
-@Logged
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class Elevator extends SubsystemBase {
     // hardware
     protected SparkMax leftMotor, rightMotor;
-    protected RelativeEncoder leftEncoder, rightEncoder;
+    @Logged protected RelativeEncoder leftEncoder, rightEncoder;
 
     // control/filtering
-    protected ProfiledPIDController leftPID, rightPID;
+    @Logged protected ProfiledPIDController leftPID, rightPID;
     protected ElevatorFeedforward leftFF, rightFF;
 
     protected SlewRateLimiter rateLimiter;
