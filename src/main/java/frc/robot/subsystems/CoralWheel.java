@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -14,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -26,9 +28,11 @@ public class CoralWheel extends SubsystemBase {
     protected SparkMax motor;
     @Logged protected RelativeEncoder encoder;
 
-    // loop control
+    // control/filtering
     @Logged protected PIDController pid;
     protected SimpleMotorFeedforward ff;
+
+    protected SlewRateLimiter rateLimiter;
 
     // logging
     protected Voltage sysIdVoltage;
@@ -71,6 +75,10 @@ public class CoralWheel extends SubsystemBase {
         // configure PID and FF using constants
         pid = new PIDController(CoralWheelConstants.KP, CoralWheelConstants.KI, CoralWheelConstants.KD);
         ff = new SimpleMotorFeedforward(CoralWheelConstants.KS, CoralWheelConstants.KV, CoralWheelConstants.KA);
+
+        // filtering
+        // set the maximum acceleration of provided setpoints
+        rateLimiter = new SlewRateLimiter(CoralWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
     // system identification
@@ -92,6 +100,14 @@ public class CoralWheel extends SubsystemBase {
     // drive
     /** updates the wheel velocity to the desired velocity setpoint */
     public void updateSetpoint(LinearVelocity velocity) {
+        // clamp to maximum speed
+        if (velocity.in(MetersPerSecond) > CoralWheelConstants.MAX_SPEED.in(MetersPerSecond)) {
+            velocity = CoralWheelConstants.MAX_SPEED;
+        }
+
+        // clamp to maximum acceleration
+        velocity = MetersPerSecond.of(rateLimiter.calculate(velocity.in(MetersPerSecond)));
+
         final double output = pid.calculate(encoder.getVelocity(), velocity.in(MetersPerSecond));
         final double feed = ff.calculate(velocity.in(MetersPerSecond));
 
