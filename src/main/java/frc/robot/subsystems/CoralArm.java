@@ -124,6 +124,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     // drive
+    /** updates the arm motor position setpoint to the provided angle from horizontal, where positive rotation is upwards rotation */
     public void updateSetpoint(Angle angle) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
