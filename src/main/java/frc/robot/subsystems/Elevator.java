@@ -109,12 +109,12 @@ public class Elevator extends SubsystemBase {
 
     public void sysIdLog(SysIdRoutineLog log) {
         // TODO update these units if the conversion factor units change
-        log.motor("left")
+        log.motor("elevator_left")
             .voltage(sysIdVoltage)
             .linearPosition(Meters.of(leftEncoder.getPosition()))
             .linearVelocity(MetersPerSecond.of(leftEncoder.getVelocity()));
         
-        log.motor("right")
+        log.motor("elevator_right")
             .voltage(sysIdVoltage)
             .linearPosition(Meters.of(rightEncoder.getPosition()))
             .linearVelocity(MetersPerSecond.of(rightEncoder.getVelocity()));

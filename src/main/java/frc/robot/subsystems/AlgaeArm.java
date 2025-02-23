@@ -125,7 +125,7 @@ public class AlgaeArm extends SubsystemBase {
 
     public void sysIdLog(SysIdRoutineLog log) {
         // TODO update these units if the conversion factor units change
-        log.motor("arm")
+        log.motor("algae_arm")
             .voltage(sysIdVoltage)
             // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
             .angularPosition(Radians.of(relativeEncoder.getPosition()))

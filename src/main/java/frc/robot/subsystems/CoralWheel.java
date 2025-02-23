@@ -83,7 +83,7 @@ public class CoralWheel extends SubsystemBase {
 
     public void sysIdLog(SysIdRoutineLog log) {
         // TODO update these units if the conversion factor units change
-        log.motor("wheel")
+        log.motor("coral_wheel")
             .voltage(sysIdVoltage)
             .linearPosition(Meters.of(encoder.getPosition()))
             .linearVelocity(MetersPerSecond.of(encoder.getVelocity()));
