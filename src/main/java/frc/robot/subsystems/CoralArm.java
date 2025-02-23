@@ -35,13 +35,13 @@ public class CoralArm extends SubsystemBase {
     // logging
     protected Voltage sysIdVoltage;
 
-    public CoralArm(int motorId) {
-        initMotor(motorId);
+    public CoralArm() {
+        initMotor();
         initControl();
     }
 
     // initialization
-    protected void initMotor(int motorId) {
+    protected void initMotor() {
         // motor config
         SparkMaxConfig config = new SparkMaxConfig();
 
@@ -62,7 +62,7 @@ public class CoralArm extends SubsystemBase {
 
         // initialize motor and configure it
         // TODO check whether we're still using brushless motors
-        armMotor = new SparkMax(motorId, MotorType.kBrushless);
+        armMotor = new SparkMax(CoralArmConstants.MOTOR_ID, MotorType.kBrushless);
         armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // initialize encoder
