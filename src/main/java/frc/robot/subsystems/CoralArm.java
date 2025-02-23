@@ -81,14 +81,14 @@ public class CoralArm extends SubsystemBase {
         // TODO adjust expected zero if necessary
         DutyCycleEncoder restrictedEncoder = new DutyCycleEncoder(CoralArmConstants.HEX_ENCODER_PORT, 1.0, 0.0);
 
-        // the cumulative encoder - due to restrictions imposed by rollover detection, the mechanism cannot move faster than 450°/s
+        // the cumulative encoder - due to restrictions imposed by rollover detection, the mechanism cannot move faster than (or equal in speed to) 450°/s
         // without introducing inaccuracies in the revolution count; fortunately, however, it's unlikely that it will, considering its purpose
 
         // the 450°/s comes from (360°)/2 being the maximum change value in motor rotation degrees, divided by the gear ratio, 20, to get
         // mechanism rotation degrees, finally divided by the roboRIO period time, 20ms, to get the maximum speed
 
         // in summary, (360°)/2 = 180° / 20 = 9° / 20ms = 450°/s
-        hexEncoder = new CumulativeDutyCycleEncoder(restrictedEncoder, 1.0, 0.5);
+        hexEncoder = new CumulativeDutyCycleEncoder(restrictedEncoder, 1.0, 0.499);
 
         // convert from motor rotations to mechanism radians
         hexEncoder.setPositionConversionFactor(CoralArmConstants.ARM_CF);
