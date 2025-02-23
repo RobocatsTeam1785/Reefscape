@@ -89,11 +89,13 @@ public class CumulativeDutyCycleEncoder {
         return revolutions;
     }
 
-    /** the accumulated position */
-    public double getAccumulatedPosition() {
-        double accumulatedPosition = encoder.get() + revolutions * range;
-        double converted = accumulatedPosition * positionConversionFactor;
+    /** the accumulated position, without the position conversion factor applied */
+    public double getRawAccumulatedPosition() {
+        return encoder.get() + revolutions * range;
+    }
 
-        return converted;
+    /** the accumulated position, with the position conversion factor applied */
+    public double getAccumulatedPosition() {
+        return positionConversionFactor * getRawAccumulatedPosition();
     }
 }
