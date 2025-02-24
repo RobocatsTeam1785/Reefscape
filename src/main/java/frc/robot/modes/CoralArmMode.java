@@ -8,7 +8,7 @@ public enum CoralArmMode implements Mode {
     /**
      * pressing the b button sets the angle to a constant value that can be hot-reloaded for tuning
      * <p>
-     * pressing the y button increments the angle by 10°, and pressing the a button decrements it by 10°
+     * pressing the y button increments the angle by 10°, pressing the a button decrements it by 10°, and pressing x applies the change
      */
     MANUAL;
 }
