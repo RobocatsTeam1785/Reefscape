@@ -29,7 +29,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
-import frc.lib.constants.DriveConstants;
+import frc.lib.constants.SwerveConstants;
 import frc.lib.constants.RobotConstants;
 
 @Logged
@@ -103,7 +103,7 @@ public class SwerveModule {
 
             // in summary, if B/A is the gear ratio and C is the wheel circumference:
             //             N drive rotations * (A driven rotations/B drive rotations) * (C meters/1 driven rotation) = N / (B/A) * C meters
-            double rotationsToMeters = 1 / DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
+            double rotationsToMeters = 1 / SwerveConstants.DRIVE_GEAR_RATIO * SwerveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
 
             // to convert rpm to m/s, we perform the same logic to convert rotations to meters, but we divide by 60 to convert minutes to seconds
             // i.e., N RPM * (X meters/rotation) * (1 minute/60 seconds) = N * X / 60 m/s
@@ -117,7 +117,7 @@ public class SwerveModule {
 
             // i.e., if B/A is the turn gear ratio:
             //       N drive rotations * (A driven rotations/B drive rotations) * (2pi radians/1 driven rotation) = N / (B/A) * 2pi
-            double rotationsToRadians = 1 / DriveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
+            double rotationsToRadians = 1 / SwerveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
 
             // and we use the same method to convert rpm to radians/s
             // i.e., N RPM * (X radians/rotation) * (1 minute/60 seconds) = N * X / 60 radians/s
@@ -170,29 +170,29 @@ public class SwerveModule {
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2 * Math.PI * 5, 2 * Math.PI * 5);
 
         drivePID = new PIDController(
-            DriveConstants.TRANSLATIONAL_KP,
-            DriveConstants.TRANSLATIONAL_KI,
-            DriveConstants.TRANSLATIONAL_KD
+            SwerveConstants.TRANSLATIONAL_KP,
+            SwerveConstants.TRANSLATIONAL_KI,
+            SwerveConstants.TRANSLATIONAL_KD
         );
 
         // use a profiled controller to generate setpoints to smoothly interpolate to the actual setpoint
         turnPID = new ProfiledPIDController(
-            DriveConstants.ROTATIONAL_KP,
-            DriveConstants.ROTATIONAL_KI,
-            DriveConstants.ROTATIONAL_KD,
+            SwerveConstants.ROTATIONAL_KP,
+            SwerveConstants.ROTATIONAL_KI,
+            SwerveConstants.ROTATIONAL_KD,
             constraints
         );
 
         driveFF = new SimpleMotorFeedforward(
-            DriveConstants.TRANSLATIONAL_KS,
-            DriveConstants.TRANSLATIONAL_KV,
-            DriveConstants.TRANSLATIONAL_KA
+            SwerveConstants.TRANSLATIONAL_KS,
+            SwerveConstants.TRANSLATIONAL_KV,
+            SwerveConstants.TRANSLATIONAL_KA
         );
 
         turnFF = new SimpleMotorFeedforward(
-            DriveConstants.ROTATIONAL_KS,
-            DriveConstants.ROTATIONAL_KV,
-            DriveConstants.ROTATIONAL_KA
+            SwerveConstants.ROTATIONAL_KS,
+            SwerveConstants.ROTATIONAL_KV,
+            SwerveConstants.ROTATIONAL_KA
         );
 
         // enable continuous input to make error calculation more accurate
@@ -258,7 +258,7 @@ public class SwerveModule {
 
         // in summary, if B/A is the gear ratio and C is the wheel circumference:
         //             N drive rotations * (A driven rotations/B drive rotations) * (C meters/1 driven rotation) = N / (B/A) * C meters
-        double rotationsToMeters = 1 / DriveConstants.DRIVE_GEAR_RATIO * DriveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
+        double rotationsToMeters = 1 / SwerveConstants.DRIVE_GEAR_RATIO * SwerveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
 
         // to convert rpm to m/s, we perform the same logic to convert rotations to meters, but we divide by 60 to convert minutes to seconds
         // i.e., N RPM * (X meters/rotation) * (1 minute/60 seconds) = N * X / 60 m/s
@@ -282,7 +282,7 @@ public class SwerveModule {
 
         // i.e., if B/A is the turn gear ratio:
         //       N drive rotations * (A driven rotations/B drive rotations) * (2pi radians/1 driven rotation) = N / (B/A) * 2pi
-        double rotationsToRadians = 1 / DriveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
+        double rotationsToRadians = 1 / SwerveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
 
         // and we use the same method to convert rpm to radians/s
         // i.e., N RPM * (X radians/rotation) * (1 minute/60 seconds) = N * X / 60 radians/s
@@ -409,7 +409,7 @@ public class SwerveModule {
         if (RobotConstants.TUNING)
             tune();
 
-        if (DriveConstants.OPTIMIZE_STATES)
+        if (SwerveConstants.OPTIMIZE_STATES)
             state = optimizeState(state);
         
         updateDriveSetpoint(state);
@@ -421,19 +421,19 @@ public class SwerveModule {
     // tuning
     /** updates PID and feedforward constants - used for hot reloading constant changes when tuning */
     public void tune() {
-        drivePID.setPID(DriveConstants.TRANSLATIONAL_KP, DriveConstants.TRANSLATIONAL_KI, DriveConstants.TRANSLATIONAL_KD);
-        turnPID.setPID(DriveConstants.ROTATIONAL_KP, DriveConstants.ROTATIONAL_KI, DriveConstants.ROTATIONAL_KD);
+        drivePID.setPID(SwerveConstants.TRANSLATIONAL_KP, SwerveConstants.TRANSLATIONAL_KI, SwerveConstants.TRANSLATIONAL_KD);
+        turnPID.setPID(SwerveConstants.ROTATIONAL_KP, SwerveConstants.ROTATIONAL_KI, SwerveConstants.ROTATIONAL_KD);
 
         driveFF = new SimpleMotorFeedforward(
-            DriveConstants.TRANSLATIONAL_KS,
-            DriveConstants.TRANSLATIONAL_KV,
-            DriveConstants.TRANSLATIONAL_KA
+            SwerveConstants.TRANSLATIONAL_KS,
+            SwerveConstants.TRANSLATIONAL_KV,
+            SwerveConstants.TRANSLATIONAL_KA
         );
 
         turnFF = new SimpleMotorFeedforward(
-            DriveConstants.ROTATIONAL_KS,
-            DriveConstants.ROTATIONAL_KV,
-            DriveConstants.ROTATIONAL_KA
+            SwerveConstants.ROTATIONAL_KS,
+            SwerveConstants.ROTATIONAL_KV,
+            SwerveConstants.ROTATIONAL_KA
         );
     }
 }
