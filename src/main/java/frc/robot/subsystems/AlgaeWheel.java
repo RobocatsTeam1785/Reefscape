@@ -34,7 +34,7 @@ public class AlgaeWheel extends SubsystemBase {
     // only one feedforward instance is necessary as feedforward is state-independent
     protected SimpleMotorFeedforward ff;
 
-    protected SlewRateLimiter rateLimiter;
+    protected SlewRateLimiter leftRateLimiter, rightRateLimiter;
 
     // logging
     protected Voltage sysIdVoltage;
@@ -98,7 +98,8 @@ public class AlgaeWheel extends SubsystemBase {
 
         // filtering
         // set the maximum acceleration of provided setpoints
-        rateLimiter = new SlewRateLimiter(AlgaeWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
+        leftRateLimiter = new SlewRateLimiter(AlgaeWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
+        rightRateLimiter = new SlewRateLimiter(AlgaeWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
     // system identification
@@ -132,15 +133,49 @@ public class AlgaeWheel extends SubsystemBase {
         }
 
         // clamp to maximum acceleration
-        velocity = MetersPerSecond.of(rateLimiter.calculate(velocity.in(MetersPerSecond)));
+        LinearVelocity leftVelocity = MetersPerSecond.of(leftRateLimiter.calculate(velocity.in(MetersPerSecond)));
+        LinearVelocity righVelocity = MetersPerSecond.of(rightRateLimiter.calculate(velocity.in(MetersPerSecond)));
 
-        final double leftOutput = leftPID.calculate(leftEncoder.getVelocity(), velocity.in(MetersPerSecond));
-        final double rightOutput = rightPID.calculate(rightEncoder.getVelocity(), velocity.in(MetersPerSecond));
+        final double leftOutput = leftPID.calculate(leftEncoder.getVelocity(), leftVelocity.in(MetersPerSecond));
+        final double rightOutput = rightPID.calculate(rightEncoder.getVelocity(), righVelocity.in(MetersPerSecond));
 
+        final double leftFeed = ff.calculate(leftVelocity.in(MetersPerSecond));
+        final double rightFeed = ff.calculate(righVelocity.in(MetersPerSecond));
+
+        leftMotor.setVoltage(leftOutput + leftFeed);
+        rightMotor.setVoltage(rightOutput + rightFeed);
+    }
+
+    /** updates the left wheel velocity to the desired velocity setpoint, within the maximum speed and acceleration */
+    public void updateLeftSetpoint(LinearVelocity velocity) {
+        // clamp to maximum speed
+        if (velocity.in(MetersPerSecond) > AlgaeWheelConstants.MAX_SPEED.in(MetersPerSecond)) {
+            velocity = AlgaeWheelConstants.MAX_SPEED;
+        }
+
+        // clamp to maximum acceleration
+        velocity = MetersPerSecond.of(leftRateLimiter.calculate(velocity.in(MetersPerSecond)));
+
+        final double output = leftPID.calculate(leftEncoder.getVelocity(), velocity.in(MetersPerSecond));
         final double feed = ff.calculate(velocity.in(MetersPerSecond));
 
-        leftMotor.setVoltage(leftOutput + feed);
-        rightMotor.setVoltage(rightOutput + feed);
+        leftMotor.setVoltage(output + feed);
+    }
+
+    /** updates the right wheel velocity to the desired velocity setpoint, within the maximum speed and acceleration */
+    public void updateRightSetpoint(LinearVelocity velocity) {
+        // clamp to maximum speed
+        if (velocity.in(MetersPerSecond) > AlgaeWheelConstants.MAX_SPEED.in(MetersPerSecond)) {
+            velocity = AlgaeWheelConstants.MAX_SPEED;
+        }
+
+        // clamp to maximum acceleration
+        velocity = MetersPerSecond.of(rightRateLimiter.calculate(velocity.in(MetersPerSecond)));
+
+        final double output = rightPID.calculate(rightEncoder.getVelocity(), velocity.in(MetersPerSecond));
+        final double feed = ff.calculate(velocity.in(MetersPerSecond));
+
+        rightMotor.setVoltage(output + feed);
     }
 
     // tuning
