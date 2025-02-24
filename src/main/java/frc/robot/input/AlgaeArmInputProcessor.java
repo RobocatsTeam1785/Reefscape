@@ -29,7 +29,7 @@ public class AlgaeArmInputProcessor extends InputProcessor {
 
     // debug values
     // TODO implement a less hacky method of testing angles
-    private static final double DEBUG_ANGLE_DEGREES = 0.0;
+    private static final double DEBUG_ANGLE_DEGREES = -20.0;
 
     private static final double ANGLE_INCREMENT_DEGREES = 10.0;
     @Logged private double manualAngle = DEBUG_ANGLE_DEGREES;
