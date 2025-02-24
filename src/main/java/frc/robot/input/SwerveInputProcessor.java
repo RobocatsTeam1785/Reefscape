@@ -54,7 +54,7 @@ public class SwerveInputProcessor extends InputProcessor {
                     swerve.zeroRelTurnEncoder(i);
                 }
             }
-        }));
+        }, swerve));
 
         // when b is pressed:
         //      in a single-module-only mode, set the turn encoder value
@@ -69,7 +69,7 @@ public class SwerveInputProcessor extends InputProcessor {
             } else {
                 swerve.recoverAbsAngles();
             }
-        }));
+        }, swerve));
 
         // state-based
         // zero turn voltage when the right trigger is lifted
@@ -81,7 +81,7 @@ public class SwerveInputProcessor extends InputProcessor {
             } else if (mode == DriveMode.ALIGN) {
                 swerve.zeroTurnVoltage();
             }
-        }));
+        }, swerve));
     }
 
     @Override
