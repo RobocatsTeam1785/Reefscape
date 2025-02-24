@@ -24,7 +24,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
-public class SubsystemInputProcessor {
+public class DebugInputProcessor {
     // controllers
     private final CommandXboxController driver;
 
@@ -52,7 +52,7 @@ public class SubsystemInputProcessor {
     @Logged private final AlgaeArmInputProcessor algaeArmProcessor;
     @Logged private final AlgaeWheelInputProcessor algaeWheelProcessor;
 
-    public SubsystemInputProcessor(
+    public DebugInputProcessor(
         final Swerve swerve,
         final Elevator elevator,
 

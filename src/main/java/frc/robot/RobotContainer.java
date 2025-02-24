@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.input.SubsystemInputProcessor;
+import frc.robot.input.DebugInputProcessor;
 // import frc.robot.subsystems.AlgaeArm;
 // import frc.robot.subsystems.AlgaeWheel;
 // import frc.robot.subsystems.CoralArm;
@@ -29,7 +29,7 @@ public class RobotContainer {
     // private final CommandXboxController driver = new CommandXboxController(0);
     
     // input processors
-    @Logged private SubsystemInputProcessor processor;
+    @Logged private DebugInputProcessor processor;
 
     public RobotContainer(double period) {
         // subsystems
