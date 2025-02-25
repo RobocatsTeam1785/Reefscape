@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -136,22 +135,6 @@ public class Swerve extends SubsystemBase {
     }
 
     // drive
-    // TODO migrate this function to SwerveInputProcessor, as it deals with controller values, when this subsystem should only deal with velocities and positions
-    /** drives the robot with the given robot-relative x controller speed, y controller speed, and controller rotational velocity */
-    public void arcadeDrive(double xSpeed, double ySpeed, double rotSpeed) {
-        // deadband x, y, and rotation speeds to avoid accidental idle drift
-        xSpeed = MathUtil.applyDeadband(xSpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
-        ySpeed = MathUtil.applyDeadband(ySpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
-        rotSpeed = MathUtil.applyDeadband(rotSpeed, SwerveConstants.ROTATIONAL_SPEED_DEADBAND);
-
-        // convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
-        LinearVelocity xVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
-        LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
-        AngularVelocity angVel = SwerveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
-
-        drive(xVel, yVel, angVel);
-    }
-
     /** drives the robot with the given robot-relative x velocity, y velocity, and angular velocity */
     public void drive(LinearVelocity xVel, LinearVelocity yVel, AngularVelocity angVel) {
         // limit maximum acceleration (change in speed over time) to avoid damaging the robot

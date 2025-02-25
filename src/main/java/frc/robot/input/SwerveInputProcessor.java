@@ -5,10 +5,14 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.constants.SwerveConstants;
 import frc.lib.input.InputProcessor;
 import frc.lib.mode.ModeState;
 import frc.lib.swerve.TalonSwerveModule;
@@ -100,18 +104,30 @@ public class SwerveInputProcessor extends InputProcessor {
     // driving
     /** drives in swerve mode using the left joystick for translation and the right joystick for rotation */
     public void driveSwerve() {
-        // convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
-        // fully right means 1, which is intuitive
+        // calculate controller chassis speeds
+        // - convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
+        // - fully right means 1, which is intuitive
         double xSpeed = driver.getLeftX();
 
-        // fully up means -1, which is unintuitive, so it requires inversion
+        // - fully up means -1, which is unintuitive, so it requires inversion
         double ySpeed = -driver.getLeftY();
 
-        // fully right means 1, which is positive; however, in WPILib, positive rotation means CCW rotation, and moving the joystick right is generally
-        // associated with CW rotation, so it requires inversion
+        // - fully right means 1, which is positive; however, in WPILib, positive rotation means CCW rotation, and moving the joystick right is generally
+        // - associated with CW rotation, so it requires inversion
         double rotSpeed = -driver.getRightX();
 
-        swerve.arcadeDrive(xSpeed, ySpeed, rotSpeed);
+        // calculate actual chassis speeds
+        // - deadband x, y, and rotation speeds to avoid accidental idle drift
+        xSpeed = MathUtil.applyDeadband(xSpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
+        ySpeed = MathUtil.applyDeadband(ySpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
+        rotSpeed = MathUtil.applyDeadband(rotSpeed, SwerveConstants.ROTATIONAL_SPEED_DEADBAND);
+
+        // - convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
+        LinearVelocity xVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
+        LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
+        AngularVelocity angVel = SwerveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
+
+        swerve.drive(xVel, yVel, angVel);
     }
 
     /**
