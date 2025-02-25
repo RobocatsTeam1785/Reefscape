@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -37,6 +38,8 @@ public class CoralArm extends SubsystemBase {
 
     // logging
     protected Voltage sysIdVoltage;
+    @Logged protected double lastVelocityRadiansPerSecond;
+    @Logged protected double lastVoltageVolts;
 
     public CoralArm() {
         initMotor();
@@ -106,6 +109,7 @@ public class CoralArm extends SubsystemBase {
     public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
+        lastVoltageVolts = voltage.in(Volts);
 
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         motor.setVoltage(voltage);
@@ -128,6 +132,11 @@ public class CoralArm extends SubsystemBase {
         final double output = pid.calculate(relativeEncoder.getPosition(), angle.in(Radians));
         final double feed = ff.calculate(angle.in(Radians), pid.getSetpoint().velocity);
 
+        // update logged values
+        lastVelocityRadiansPerSecond = pid.getSetpoint().velocity;
+        lastVoltageVolts = output + feed;
+
+        // set voltage
         motor.setVoltage(output + feed);
     }
 
