@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -36,6 +37,8 @@ public class CoralWheel extends SubsystemBase {
 
     // logging
     protected Voltage sysIdVoltage;
+    @Logged protected double lastVelocityMetersPerSecond;
+    @Logged protected double lastVoltageVolts;
 
     public CoralWheel() {
         initMotor();
@@ -86,6 +89,7 @@ public class CoralWheel extends SubsystemBase {
      public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
+        lastVoltageVolts = voltage.in(Volts);
 
         motor.setVoltage(voltage);
     }
@@ -112,6 +116,11 @@ public class CoralWheel extends SubsystemBase {
         final double output = pid.calculate(encoder.getVelocity(), velocity.in(MetersPerSecond));
         final double feed = ff.calculate(velocity.in(MetersPerSecond));
 
+        // update logged values
+        lastVelocityMetersPerSecond = velocity.in(MetersPerSecond);
+        lastVoltageVolts = output + feed;
+
+        // set voltage
         motor.setVoltage(output + feed);
     }
 
