@@ -110,14 +110,13 @@ public class Swerve extends SubsystemBase {
         return totalErrorRadians < 0.1;
     }
 
-    // TODO fix hacky actual state logging
     @Logged
-    public SwerveModuleState[] getDepictedStates() {
+    public SwerveModuleState[] getStates() {
         return new SwerveModuleState[]{
-            flModule.getDepictedState(),
-            frModule.getDepictedState(),
-            blModule.getDepictedState(),
-            brModule.getDepictedState()
+            flModule.getState(),
+            frModule.getState(),
+            blModule.getState(),
+            brModule.getState()
         };
     }
 

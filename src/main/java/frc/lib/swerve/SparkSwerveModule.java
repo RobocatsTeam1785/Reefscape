@@ -203,7 +203,6 @@ public class SparkSwerveModule {
     }
 
     // logging
-    // TODO fix hacky actual state logging
     public SwerveModuleState getDepictedState() {
         return new SwerveModuleState(driveEncoder.getVelocity(), new Rotation2d(encoderAngle()));
     }

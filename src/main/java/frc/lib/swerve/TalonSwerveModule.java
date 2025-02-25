@@ -170,8 +170,7 @@ public class TalonSwerveModule {
     }
 
     // logging
-    // TODO fix hacky actual state logging
-    public SwerveModuleState getDepictedState() {
+    public SwerveModuleState getState() {
         LinearVelocity driveVelocity = driveVelocity();
         Angle turnPosition = turnPosition();
 
