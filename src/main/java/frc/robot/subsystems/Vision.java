@@ -40,10 +40,6 @@ public class Vision extends SubsystemBase {
     }
 
     // state
-    public boolean hasResults() {
-        return unreadResults.size() > 0;
-    }
-
     /** returns the latest unread pipeline result, or null if unreadResults is empty */
     @Logged
     public PhotonPipelineResult latestResult() {
