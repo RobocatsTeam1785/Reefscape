@@ -1,11 +1,15 @@
 package frc.robot.subsystems;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.VisionConstants;
@@ -50,5 +54,22 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         updateResults();
+
+        if (unreadResults.size() > 0) {
+            PhotonPipelineResult result = latestResult();
+            
+            if (result.hasTargets()) {
+                PhotonTrackedTarget target = result.getBestTarget();
+                Optional<Pose3d> targetPose = VisionConstants.COMPETITION_LAYOUT.getTagPose(target.getFiducialId());
+
+                if (targetPose.isPresent()) {
+                    Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                        target.getBestCameraToTarget(),
+                        targetPose.get(),
+                        VisionConstants.CAMERA_TO_ROBOT
+                    );
+                }
+            }
+        }
     }
 }
