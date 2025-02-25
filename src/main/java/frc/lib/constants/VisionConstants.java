@@ -30,12 +30,14 @@ public class VisionConstants {
     /** the angle of the camera from the ground, where positive means upwards rotation */
     public static final Angle CAMERA_ANGLE = Degrees.of(0.0);
 
-    public static final Transform3d CAMERA_TO_ROBOT = new Transform3d(
-        CAMERA_OFFSET.getMeasureX().unaryMinus(),
-        CAMERA_OFFSET.getMeasureY().unaryMinus(),
-        CAMERA_HEIGHT.unaryMinus(),
-        new Rotation3d(0.0, -CAMERA_ANGLE.in(Radians), 0.0)
+    public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
+        CAMERA_OFFSET.getMeasureX(),
+        CAMERA_OFFSET.getMeasureY(),
+        CAMERA_HEIGHT,
+        new Rotation3d(0.0, CAMERA_ANGLE.in(Radians), 0.0)
     );
+
+    public static final Transform3d CAMERA_TO_ROBOT = ROBOT_TO_CAMERA.inverse();
 
     // field april tag properties
     // TODO write a layout for the home field

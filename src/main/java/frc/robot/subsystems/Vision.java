@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -19,6 +20,9 @@ public class Vision extends SubsystemBase {
     // hardware
     private final PhotonCamera camera;
 
+    // components
+    private final PhotonPoseEstimator estimator;
+
     // state
     private List<PhotonPipelineResult> unreadResults;
 
@@ -26,6 +30,11 @@ public class Vision extends SubsystemBase {
     public Vision() {
         // initialization
         this.camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
+        this.estimator = new PhotonPoseEstimator(
+            VisionConstants.COMPETITION_LAYOUT,
+            PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            VisionConstants.ROBOT_TO_CAMERA
+        );
 
         // configuration
         PhotonCamera.setVersionCheckEnabled(true);
