@@ -19,7 +19,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.SwerveConstants;
-import frc.lib.swerve.SparkSwerveModule;
+import frc.lib.swerve.TalonSwerveModule;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Swerve extends SubsystemBase {
@@ -35,12 +35,12 @@ public class Swerve extends SubsystemBase {
     );
 
     // hardware
-    @Logged protected final SparkSwerveModule flModule = new SparkSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
-    @Logged protected final SparkSwerveModule frModule = new SparkSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
-    @Logged protected final SparkSwerveModule blModule = new SparkSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
-    @Logged protected final SparkSwerveModule brModule = new SparkSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
+    @Logged protected final TalonSwerveModule flModule = new TalonSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
+    @Logged protected final TalonSwerveModule frModule = new TalonSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
+    @Logged protected final TalonSwerveModule blModule = new TalonSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
+    @Logged protected final TalonSwerveModule brModule = new TalonSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
     
-    protected final SparkSwerveModule[] modules = { flModule, frModule, blModule, brModule };
+    protected final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
     // initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
     // (the rectangular port in the center, below the NI or LabView logo)
@@ -70,7 +70,7 @@ public class Swerve extends SubsystemBase {
     public boolean finishedAligning() {
         double totalErrorRadians = 0.0;
 
-        for (SparkSwerveModule module : modules) {
+        for (TalonSwerveModule module : modules) {
             totalErrorRadians += module.turnErrorRadians();
         }
 
@@ -134,8 +134,8 @@ public class Swerve extends SubsystemBase {
         // average drive velocity
         double average = 0.0;
 
-        for (SparkSwerveModule module : modules) {
-            average += module.driveEncoder.getVelocity();
+        for (TalonSwerveModule module : modules) {
+            average += module.driveVelocity().in(MetersPerSecond);
         }
 
         average /= 4.0;
@@ -143,8 +143,8 @@ public class Swerve extends SubsystemBase {
         // total difference from the average drive velocity
         double difference = 0.0;
 
-        for (SparkSwerveModule module : modules) {
-            difference += Math.abs(module.driveEncoder.getVelocity() - average);
+        for (TalonSwerveModule module : modules) {
+            difference += Math.abs(module.driveVelocity().in(MetersPerSecond) - average);
         }
 
         // average difference from the average drive velocity
@@ -230,7 +230,7 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
-        modules[moduleId].zeroRelTurnEncoder();
+        modules[moduleId].zeroTurnPosition();
     }
 
     /** recovers the absolute angle of the specified module */
@@ -240,13 +240,13 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
-        modules[moduleId].recoverAbsAngle();
+        modules[moduleId].recoverCancoderPosition();
     }
 
     /** recovers the absolute angle of every module */
     public void recoverAbsAngles() {
-        for (SparkSwerveModule module : modules) {
-            module.recoverAbsAngle();
+        for (TalonSwerveModule module : modules) {
+            module.recoverCancoderPosition();
         }
     }
 
@@ -256,7 +256,7 @@ public class Swerve extends SubsystemBase {
         // TODO fix hacky logging
         lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
 
-        for (SparkSwerveModule module : modules) {
+        for (TalonSwerveModule module : modules) {
             module.zeroVoltage();
         }
     }
@@ -276,7 +276,7 @@ public class Swerve extends SubsystemBase {
 
     /** zeroes the drive voltage of all modules */
     public void zeroDriveVoltage() {
-        for (SparkSwerveModule module : modules) {
+        for (TalonSwerveModule module : modules) {
             module.zeroDriveVoltage();
         }
 
@@ -300,13 +300,13 @@ public class Swerve extends SubsystemBase {
 
     /** zeroes the turn voltage of all modules */
     public void zeroTurnVoltage() {
-        for (SparkSwerveModule module : modules) {
+        for (TalonSwerveModule module : modules) {
             module.zeroTurnVoltage();
         }
 
         // TODO fix hacky logging
         for (int i = 0; i < 4; i++) {
-            lastStates[i].angle = new Rotation2d(modules[i].encoderAngle());
+            lastStates[i].angle = new Rotation2d(modules[i].turnPosition());
         }
     }
 
@@ -318,7 +318,7 @@ public class Swerve extends SubsystemBase {
         }
 
         // TODO fix hacky logging
-        lastStates[moduleId].angle = new Rotation2d(modules[moduleId].encoderAngle());
+        lastStates[moduleId].angle = new Rotation2d(modules[moduleId].turnPosition());
         modules[moduleId].zeroTurnVoltage();
     }
 }
