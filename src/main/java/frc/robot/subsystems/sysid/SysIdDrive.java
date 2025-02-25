@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +19,7 @@ public class SysIdDrive extends Swerve {
     // initialization
     public SysIdDrive(double period) {
         // pass the period to the Drive constructor for discretizing ChassisSpeeds
-        super(period);
+        super(period, pose -> Optional.empty());
 
         // 1 V/s ramp rate in a quasistatic test, 0V to 7V acceleration in a dynamic test, 10s timeout, and no external recorder
         SysIdRoutine.Config config = new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(10), null);

@@ -14,6 +14,8 @@ import frc.robot.subsystems.Vision;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class RobotContainer {
     // subsystems
+    @Logged private Vision vision;
+
     // @Logged private Swerve swerve;
     // @Logged private Elevator elevator;
 
@@ -22,8 +24,6 @@ public class RobotContainer {
 
     // @Logged private AlgaeArm algaeArm;
     // @Logged private AlgaeWheel algaeWheel;
-
-    @Logged private Vision vision;
 
     // autos
     private Autos autos;
@@ -36,7 +36,9 @@ public class RobotContainer {
 
     public RobotContainer(double period) {
         // subsystems
-        // swerve = new Swerve(period);
+        vision = new Vision();
+
+        // swerve = new Swerve(period, vision::getEstimatedGlobalPose);
         // elevator = new Elevator();
 
         // coralArm = new CoralArm();
@@ -44,8 +46,6 @@ public class RobotContainer {
 
         // algaeArm = new AlgaeArm();
         // algaeWheel = new AlgaeWheel();
-
-        vision = new Vision();
 
         // processors
         // processor = new SubsystemInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver);

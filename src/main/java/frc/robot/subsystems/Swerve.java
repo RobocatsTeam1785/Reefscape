@@ -4,7 +4,11 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -71,6 +75,9 @@ public class Swerve extends SubsystemBase {
     /** time between each call of robotPeriodic() */
     protected final double period;
 
+    /** function that converts the previous estimated pose to an optional estimated global pose using vision input */
+    protected final Function<Pose2d, Optional<EstimatedRobotPose>> getEstimatedGlobalPose;
+
     // - logging
     @Logged private SwerveModuleState[] lastStates;
 
@@ -81,9 +88,10 @@ public class Swerve extends SubsystemBase {
     protected final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
     // initialization
-    public Swerve(double period) {
+    public Swerve(double period, Function<Pose2d, Optional<EstimatedRobotPose>> getEstimatedGlobalPose) {
         // set provided parameters
         this.period = period;
+        this.getEstimatedGlobalPose = getEstimatedGlobalPose;
 
         // invert motors for rotation direction parity
         // TODO fix hacky inversion
@@ -111,7 +119,19 @@ public class Swerve extends SubsystemBase {
     // periodic
     @Override
     public void periodic() {
+        Pose2d previousPose = estimator.getEstimatedPosition();
+        Optional<EstimatedRobotPose> maybeVisionPose = getEstimatedGlobalPose.apply(previousPose);
+
         estimator.update(navX2.getRotation2d(), getPositions());
+
+        if (maybeVisionPose.isPresent()) {
+            EstimatedRobotPose visionPose = maybeVisionPose.get();
+
+            Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
+            double timestampSeconds = visionPose.timestampSeconds;
+
+            estimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+        }
     }
 
     // state
