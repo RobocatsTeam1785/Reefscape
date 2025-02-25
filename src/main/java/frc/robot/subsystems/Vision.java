@@ -50,7 +50,5 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         updateResults();
-
-        System.out.println("number of pipeline results: " + unreadResults.size());
     }
 }
