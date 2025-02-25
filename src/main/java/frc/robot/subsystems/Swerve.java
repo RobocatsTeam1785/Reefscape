@@ -4,8 +4,12 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.epilogue.Logged;
@@ -20,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.swerve.TalonSwerveModule;
@@ -88,6 +93,29 @@ public class Swerve extends SubsystemBase {
         frModule.invertDriveMotor();
         // blModule.invertDriveMotor();
         brModule.invertDriveMotor();
+
+        // configure autos
+        AutoBuilder.configure(
+            estimator::getEstimatedPosition,
+            estimator::resetPose,
+            this::robotRelativeSpeeds,
+            (speeds, feedforwards) -> driveRobotRelative(speeds),
+            new PPHolonomicDriveController(
+                new PIDConstants(SwerveConstants.TRANSLATIONAL_KP, SwerveConstants.TRANSLATIONAL_KI, SwerveConstants.TRANSLATIONAL_KD), 
+                new PIDConstants(SwerveConstants.ROTATIONAL_KP, SwerveConstants.ROTATIONAL_KI, SwerveConstants.ROTATIONAL_KD)
+            ),
+            SwerveConstants.PATHPLANNER_ROBOT_CONFIG,
+            () -> {
+                Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                } else {
+                    return false;
+                }
+            },
+            this
+        );
     }
 
     // periodic
