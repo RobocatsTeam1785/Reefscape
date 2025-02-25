@@ -127,7 +127,7 @@ public class SwerveInputProcessor extends InputProcessor {
         LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
         AngularVelocity angVel = SwerveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
 
-        swerve.drive(xVel, yVel, angVel);
+        swerve.driveRobotRelative(xVel, yVel, angVel);
     }
 
     /**

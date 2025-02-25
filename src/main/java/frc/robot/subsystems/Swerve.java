@@ -136,12 +136,12 @@ public class Swerve extends SubsystemBase {
 
     // drive
     /** drives the robot with the given robot-relative x velocity, y velocity, and angular velocity */
-    public void drive(LinearVelocity xVelocity, LinearVelocity yVelocity, AngularVelocity angularVelocity) {
-        drive(new ChassisSpeeds(xVelocity, yVelocity, angularVelocity));
+    public void driveRobotRelative(LinearVelocity xVelocity, LinearVelocity yVelocity, AngularVelocity angularVelocity) {
+        driveRobotRelative(new ChassisSpeeds(xVelocity, yVelocity, angularVelocity));
     }
 
     /** drives the robot with the given robot-relative ChassisSpeeds */
-    public void drive(ChassisSpeeds speeds) {
+    public void driveRobotRelative(ChassisSpeeds speeds) {
         // limit maximum acceleration (change in speed over time) to avoid damaging the robot
         speeds.vxMetersPerSecond = xSpeedLimiter.calculate(speeds.vxMetersPerSecond);
         speeds.vyMetersPerSecond = ySpeedLimiter.calculate(speeds.vyMetersPerSecond);
