@@ -130,6 +130,11 @@ public class Swerve extends SubsystemBase {
         };
     }
 
+    @Logged
+    public ChassisSpeeds robotRelativeSpeeds() {
+        return kinematics.toChassisSpeeds(getStates());
+    }
+
     // drive
     // TODO migrate this function to SwerveInputProcessor, as it deals with controller values, when this subsystem should only deal with velocities and positions
     /** drives the robot with the given robot-relative x controller speed, y controller speed, and controller rotational velocity */
