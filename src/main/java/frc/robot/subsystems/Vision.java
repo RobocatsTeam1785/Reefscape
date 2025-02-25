@@ -32,6 +32,8 @@ public class Vision extends SubsystemBase {
         this.camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
         this.estimator = new PhotonPoseEstimator(
             VisionConstants.COMPETITION_LAYOUT,
+            // TODO configure AprilTagFieldLayout properly in the PhotonVision UI
+            // TODO using this: https://docs.photonvision.org/en/v2025.2.1-rc2/docs/apriltag-pipelines/multitag.html#multitag-localization
             PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
             VisionConstants.ROBOT_TO_CAMERA
         );
