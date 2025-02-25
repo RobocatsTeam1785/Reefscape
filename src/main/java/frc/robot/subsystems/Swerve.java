@@ -259,6 +259,7 @@ public class Swerve extends SubsystemBase {
         modules[moduleId].updateDriveSetpoint(state);
     }
 
+    // actions
     /** performs the specified action for all swerve modules */
     public void perform(Consumer<TalonSwerveModule> action) {
         for (TalonSwerveModule module : modules) {
@@ -324,6 +325,7 @@ public class Swerve extends SubsystemBase {
         perform(id, TalonSwerveModule::zeroTurnVoltage);
     }
 
+    // classes
     public static enum ModuleId {
         FL(0), FR(1), BL(2), BR(3);
 
