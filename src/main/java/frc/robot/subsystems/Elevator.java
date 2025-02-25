@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -39,6 +40,7 @@ public class Elevator extends SubsystemBase {
 
     // logging
     protected Voltage sysIdVoltage;
+    @Logged protected double lastLeftVoltageVolts, lastRightVoltageVolts;
 
     public Elevator() {
         initMotors();
@@ -100,6 +102,8 @@ public class Elevator extends SubsystemBase {
     public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
+        lastLeftVoltageVolts = voltage.in(Volts);
+        lastRightVoltageVolts = voltage.in(Volts);
 
         // ! applying voltage outside the acceptable range of motion risks damage to the robot
         // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
@@ -137,6 +141,11 @@ public class Elevator extends SubsystemBase {
         // use the provided setpoint
         final double feed = ff.calculate(speed.in(MetersPerSecond));
 
+        // update logged values
+        lastLeftVoltageVolts = feed;
+        lastRightVoltageVolts = feed;
+
+        // set voltage
         leftMotor.setVoltage(feed);
         rightMotor.setVoltage(feed);
     }
@@ -154,6 +163,11 @@ public class Elevator extends SubsystemBase {
         final double leftFeed = ff.calculate(leftPID.getSetpoint().velocity);
         final double rightFeed = ff.calculate(rightPID.getSetpoint().velocity);
 
+        // update logged values
+        lastLeftVoltageVolts = leftOutput + leftFeed;
+        lastRightVoltageVolts = rightOutput + rightFeed;
+
+        // set voltage
         leftMotor.setVoltage(leftOutput + leftFeed);
         rightMotor.setVoltage(rightOutput + rightFeed);
     }
