@@ -261,7 +261,7 @@ public class TalonSwerveModule {
         turnPosition(cancoderAbsolutePosition());
     }
 
-    public void invertMotor(TalonFX controller) {
+    private void invertMotor(TalonFX controller) {
         TalonFXConfiguration config = new TalonFXConfiguration();
         controller.getConfigurator().refresh(config);
 
@@ -272,6 +272,14 @@ public class TalonSwerveModule {
         }
 
         controller.getConfigurator().apply(config);
+    }
+
+    public void invertDriveMotor() {
+        invertMotor(driveMotor);
+    }
+
+    public void invertTurnMotor() {
+        invertMotor(turnMotor);
     }
 
     // system identification
