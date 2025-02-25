@@ -25,6 +25,9 @@ public class RobotContainer {
 
     @Logged private Vision vision;
 
+    // autos
+    private Autos autos;
+
     // controllers use NED CCC (https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html)
     // private final CommandXboxController driver = new CommandXboxController(0);
     
@@ -47,5 +50,8 @@ public class RobotContainer {
         // processors
         // processor = new SubsystemInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver);
         // processor.configure();
+
+        // autos
+        autos = new Autos();
     }
 }
