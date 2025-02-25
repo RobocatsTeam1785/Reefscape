@@ -1,5 +1,7 @@
 package frc.lib.constants;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -7,9 +9,14 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -138,4 +145,35 @@ public class SwerveConstants {
         FR_POS = new Translation2d(ROBOT_APOTHEM, ROBOT_APOTHEM.unaryMinus()),
         BL_POS = new Translation2d(ROBOT_APOTHEM.unaryMinus(), ROBOT_APOTHEM),
         BR_POS = new Translation2d(ROBOT_APOTHEM.unaryMinus(), ROBOT_APOTHEM.unaryMinus());
+    
+    // pathplanner
+    // as per the drivetrain free speed table on https://www.swervedrivespecialties.com/products/mk4i-swerve-module, at Kraken X60, N for FOC, and the L2 ratio
+    public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(15.5);
+
+    // ideally, this value would be actually measured, but we don't have enough space, so we're using 85% of the free speed,
+    // as per the instructions on https://pathplanner.dev/robot-config.html#module-config-options
+    public static final LinearVelocity MAX_DRIVE_VELOCITY = MOTOR_FREE_SPEED.times(0.85);
+
+    // TODO see if we can change this to 70, as that's the default current limit for Kraken X60s
+    public static final Current DRIVE_CURRENT_LIMIT = Amps.of(40.0);
+
+    // I'm unsure how to calculate this, so we're using the placeholder value the documentation recommends
+    public static final double WHEEL_FRICTION_COEFFICIENT = 1.0;
+
+    // config objects
+    public static final ModuleConfig PATHPLANNER_MODULE_CONFIG = new ModuleConfig(
+        WHEEL_RADIUS,
+        MAX_DRIVE_VELOCITY,
+        WHEEL_FRICTION_COEFFICIENT,
+        DCMotor.getKrakenX60(1).withReduction(DRIVE_GEAR_RATIO),
+        DRIVE_CURRENT_LIMIT,
+        1
+    );
+
+    public static final RobotConfig PATHPLANNER_ROBOT_CONFIG = new RobotConfig(
+        RobotConstants.ROBOT_WEIGHT,
+        RobotConstants.ROBOT_MOI,
+        PATHPLANNER_MODULE_CONFIG,
+        FL_POS, FR_POS, BL_POS, BR_POS
+    );
 }

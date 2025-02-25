@@ -1,5 +1,6 @@
 package frc.lib.swerve;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -90,15 +91,13 @@ public class TalonSwerveModule {
             turnMotor.getConfigurator().refresh(turnConfig);
 
             // customize configuration
-            // TODO see if this can be removed, as the default current limit is 70A
-            driveConfig.CurrentLimits.SupplyCurrentLimit = 45.0; // amps
+            driveConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.DRIVE_CURRENT_LIMIT.in(Amps);
             driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
             // TODO see if this needs to be inverted
             driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-            // TODO see if this can be removed, as the default current limit is 70A
-            turnConfig.CurrentLimits.SupplyCurrentLimit = 40.0; // amps
+            turnConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.DRIVE_CURRENT_LIMIT.in(Amps);
             turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
             // TODO see if this needs to be inverted
