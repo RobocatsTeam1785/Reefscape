@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
+import java.util.function.Consumer;
+
 import com.studica.frc.AHRS;
 
 import edu.wpi.first.epilogue.Logged;
@@ -222,32 +224,16 @@ public class Swerve extends SubsystemBase {
         modules[moduleId].updateDriveSetpoint(state);
     }
 
-    // zeroing encoders
-    /** zeroes the relative turn encoder of the specified module */
-    public void zeroRelTurnEncoder(int moduleId) {
-        if (moduleId < 0 || moduleId > 4) {
-            System.out.println("[Drive#zeroRelTurnEncoder] Cannot zero a single module with an id outside [0, 3]!");
-            return;
-        }
-
-        modules[moduleId].zeroTurnPosition();
-    }
-
-    /** recovers the absolute angle of the specified module */
-    public void recoverAbsAngle(int moduleId) {
-        if (moduleId < 0 || moduleId > 4) {
-            System.out.println("[Drive#zeroRelTurnEncoder] Cannot recover the absolute angle of a single module with an id outside [0, 3]!");
-            return;
-        }
-
-        modules[moduleId].recoverCancoderPosition();
-    }
-
-    /** recovers the absolute angle of every module */
-    public void recoverAbsAngles() {
+    /** performs the specified action for all swerve modules */
+    public void perform(Consumer<TalonSwerveModule> action) {
         for (TalonSwerveModule module : modules) {
-            module.recoverCancoderPosition();
+            action.accept(module);
         }
+    }
+
+    /** performs the specified action for the specified swerve module */
+    public void perform(ModuleId id, Consumer<TalonSwerveModule> action) {
+        action.accept(modules[id.index]);
     }
 
     // zeroing voltage
@@ -256,69 +242,61 @@ public class Swerve extends SubsystemBase {
         // TODO fix hacky logging
         lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
 
-        for (TalonSwerveModule module : modules) {
-            module.zeroVoltage();
-        }
+        perform(TalonSwerveModule::zeroVoltage);
     }
 
     /** zeroes the voltage of the specified module */
-    public void zeroVoltage(int moduleId) {
-        if (moduleId < 0 || moduleId > 4) {
-            System.out.println("[Drive#zeroVoltage] Cannot zero the voltage of a single module with an id outside [0, 3]!");
-            return;
-        }
-
+    public void zeroVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[moduleId] = new SwerveModuleState();
+        lastStates[id.index] = new SwerveModuleState();
 
-        modules[moduleId].zeroVoltage();
+        perform(id, TalonSwerveModule::zeroVoltage);
     }
 
     /** zeroes the drive voltage of all modules */
     public void zeroDriveVoltage() {
-        for (TalonSwerveModule module : modules) {
-            module.zeroDriveVoltage();
-        }
-
         // TODO fix hacky logging
         for (SwerveModuleState state : lastStates) {
             state.speedMetersPerSecond = 0.0;
         }
+
+        perform(TalonSwerveModule::zeroDriveVoltage);
     }
 
     /** zeroes the drive voltage of the specified module */
-    public void zeroDriveVoltage(int moduleId) {
-        if (moduleId < 0 || moduleId > 4) {
-            System.out.println("[Drive#zeroDriveVoltage] Cannot zero the voltage of a single module with an id outside [0, 3]!");
-            return;
-        }
-
+    public void zeroDriveVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[moduleId].speedMetersPerSecond = 0.0;
-        modules[moduleId].zeroDriveVoltage();
+        lastStates[id.index].speedMetersPerSecond = 0.0;
+
+        perform(TalonSwerveModule::zeroDriveVoltage);
     }
 
     /** zeroes the turn voltage of all modules */
     public void zeroTurnVoltage() {
-        for (TalonSwerveModule module : modules) {
-            module.zeroTurnVoltage();
-        }
-
         // TODO fix hacky logging
         for (int i = 0; i < 4; i++) {
             lastStates[i].angle = new Rotation2d(modules[i].turnPosition());
         }
+
+        perform(TalonSwerveModule::zeroTurnVoltage);
     }
 
     /** zeroes the turn voltage of the specified module */
-    public void zeroTurnVoltage(int moduleId) {
-        if (moduleId < 0 || moduleId > 4) {
-            System.out.println("[Drive#zeroTurnVoltage] Cannot zero the voltage of a single module with an id outside [0, 3]!");
-            return;
-        }
-
+    public void zeroTurnVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[moduleId].angle = new Rotation2d(modules[moduleId].turnPosition());
-        modules[moduleId].zeroTurnVoltage();
+        lastStates[id.index].angle = new Rotation2d(modules[id.index].turnPosition());
+        
+        perform(id, TalonSwerveModule::zeroTurnVoltage);
+    }
+
+    public static enum ModuleId {
+        FL(0), FR(1), BL(2), BR(3);
+
+        /** the module's index in the <code>Swerve.modules</code> array */
+        public final int index;
+
+        private ModuleId(int index) {
+            this.index = index;
+        }
     }
 }

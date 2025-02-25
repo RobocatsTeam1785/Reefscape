@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.input.InputProcessor;
 import frc.lib.mode.ModeState;
+import frc.lib.swerve.TalonSwerveModule;
 import frc.robot.modes.DriveMode;
 import frc.robot.subsystems.Swerve;
 
@@ -48,11 +49,9 @@ public class SwerveInputProcessor extends InputProcessor {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
-                swerve.zeroRelTurnEncoder(mode.id);
+                swerve.perform(mode.id.get(), TalonSwerveModule::zeroTurnPosition);
             } else {
-                for (int i = 0; i < 4; i++) {
-                    swerve.zeroRelTurnEncoder(i);
-                }
+                swerve.perform(TalonSwerveModule::zeroTurnPosition);
             }
         }, swerve));
 
@@ -65,9 +64,9 @@ public class SwerveInputProcessor extends InputProcessor {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
-                swerve.recoverAbsAngle(mode.id);
+                swerve.perform(mode.id.get(), TalonSwerveModule::recoverCancoderPosition);
             } else {
-                swerve.recoverAbsAngles();
+                swerve.perform(TalonSwerveModule::recoverCancoderPosition);
             }
         }, swerve));
 
@@ -77,7 +76,7 @@ public class SwerveInputProcessor extends InputProcessor {
             DriveMode mode = state.mode();
 
             if (mode.oneModuleOnly()) {
-                swerve.zeroTurnVoltage(mode.id);
+                swerve.zeroTurnVoltage(mode.id.get());
             } else if (mode == DriveMode.ALIGN) {
                 swerve.zeroTurnVoltage();
             }

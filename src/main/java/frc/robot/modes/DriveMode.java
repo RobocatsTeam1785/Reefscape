@@ -1,28 +1,35 @@
 package frc.robot.modes;
 
+import java.util.Optional;
+
 import edu.wpi.first.epilogue.Logged;
 import frc.lib.mode.Mode;
+import frc.robot.subsystems.Swerve;
 
 @Logged
 public enum DriveMode implements Mode {
     /** normal swerve driving with simultaneous translation and rotation */
-    SWERVE(-1),
+    SWERVE,
     
     /** turn-only driving that aligns to a specific angle */
-    ALIGN(-1),
+    ALIGN,
 
     // module-only control
-    FL_ONLY(0), FR_ONLY(1), BL_ONLY(2), BR_ONLY(3);
+    FL_ONLY(Swerve.ModuleId.FL), FR_ONLY(Swerve.ModuleId.FR), BL_ONLY(Swerve.ModuleId.BL), BR_ONLY(Swerve.ModuleId.BR);
 
     /** the swerve module this mode refers to, if this is a single-module-only mode, and -1 if not */
-    public final int id;
+    public final Optional<Swerve.ModuleId> id;
 
-    private DriveMode(int id) {
-        this.id = id;
+    private DriveMode(Swerve.ModuleId id) {
+        this.id = Optional.of(id);
+    }
+
+    private DriveMode() {
+        this.id = Optional.empty();
     }
 
     /** whether this drive mode controls only a single module */
     public boolean oneModuleOnly() {
-        return id >= 0;
+        return id.isPresent();
     }
 }
