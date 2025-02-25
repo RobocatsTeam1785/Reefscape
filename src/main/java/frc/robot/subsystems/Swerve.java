@@ -153,35 +153,12 @@ public class Swerve extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         
         // update swerve module setpoints
-        // TODO fix hacky logging
-        lastStates = states;
-
         for (int i = 0; i < 4; i++) {
             modules[i].updateSetpoint(states[i]);
         }
 
-        // print range of speeds
-        // average drive velocity
-        double average = 0.0;
-
-        for (TalonSwerveModule module : modules) {
-            average += module.driveVelocity().in(MetersPerSecond);
-        }
-
-        average /= 4.0;
-
-        // total difference from the average drive velocity
-        double difference = 0.0;
-
-        for (TalonSwerveModule module : modules) {
-            difference += Math.abs(module.driveVelocity().in(MetersPerSecond) - average);
-        }
-
-        // average difference from the average drive velocity
-        double averageDifference = difference / 4.0;
-
-        lastDifference = difference;
-        lastAverageDifference = averageDifference;
+        // update logging
+        updateLogging(states);
     }
 
     /** aligns the wheels to face a single direction, where zero is defined as the yaw the robot had when the navX was last zeroed */
@@ -316,6 +293,35 @@ public class Swerve extends SubsystemBase {
         lastStates[id.index].angle = new Rotation2d(modules[id.index].turnPosition());
         
         perform(id, TalonSwerveModule::zeroTurnVoltage);
+    }
+
+    // logging
+    // TODO fix hacky logging
+    public void updateLogging(SwerveModuleState[] states) {
+        // calculate average drive velocity
+        double average = 0.0;
+
+        for (TalonSwerveModule module : modules) {
+            average += module.driveVelocity().in(MetersPerSecond);
+        }
+
+        average /= 4.0;
+
+        // calculate total difference from the average drive velocity
+        double difference = 0.0;
+
+        for (TalonSwerveModule module : modules) {
+            difference += Math.abs(module.driveVelocity().in(MetersPerSecond) - average);
+        }
+
+        // calculate average difference from the average drive velocity
+        double averageDifference = difference / 4.0;
+
+        // record new values
+        lastStates = states;
+
+        lastDifference = difference;
+        lastAverageDifference = averageDifference;
     }
 
     // classes
