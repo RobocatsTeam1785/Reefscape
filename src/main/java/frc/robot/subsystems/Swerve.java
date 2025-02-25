@@ -92,6 +92,12 @@ public class Swerve extends SubsystemBase {
         brModule.invertDriveMotor();
     }
 
+    // periodic
+    @Override
+    public void periodic() {
+        estimator.update(navX2.getRotation2d(), getPositions());
+    }
+
     // state
     /** whether the sum of the error from each modules' turn PID controller is less than 0.1, i.e., whether the turn setpoint has been essentially reached by all modules */
     public boolean finishedAligning() {
