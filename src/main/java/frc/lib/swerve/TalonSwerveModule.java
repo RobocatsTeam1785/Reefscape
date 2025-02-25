@@ -23,6 +23,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
@@ -178,6 +179,16 @@ public class TalonSwerveModule {
         Rotation2d rotation = new Rotation2d(turnPosition);
 
         return new SwerveModuleState(speedMetersPerSecond, rotation);
+    }
+
+    public SwerveModulePosition getPosition() {
+        Distance drivePosition = drivePosition();
+        Angle turnPosition = turnPosition();
+
+        double distanceMeters = drivePosition.in(Meters);
+        Rotation2d rotation = new Rotation2d(turnPosition);
+
+        return new SwerveModulePosition(distanceMeters, rotation);
     }
 
     // state
