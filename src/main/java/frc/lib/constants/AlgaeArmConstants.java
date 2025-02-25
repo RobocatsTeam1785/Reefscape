@@ -12,7 +12,7 @@ public class AlgaeArmConstants {
     // CAN ids via Rev Hardware Client
     // TODO decide on this
     public static final int
-        MOTOR_ID = 0;
+        MOTOR_ID = 17;
 
     // digital port, as physically configured in the RoboRIO DIO ports
     // TODO determine which one this is

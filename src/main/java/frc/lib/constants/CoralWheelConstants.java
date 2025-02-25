@@ -12,7 +12,7 @@ public class CoralWheelConstants {
     // CAN ids via Rev Hardware Client
     // TODO decide on this
     public static final int
-        MOTOR_ID = 0;
+        MOTOR_ID = 16;
 
     // TODO tune these
     // PID and FF constants

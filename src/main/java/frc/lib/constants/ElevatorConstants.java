@@ -13,8 +13,8 @@ public class ElevatorConstants {
     // CAN ids via Rev Hardware Client
     // TODO decide on these
     public static final int
-        LEFT_MOTOR_ID = 0,
-        RIGHT_MOTOR_ID = 0;
+        LEFT_MOTOR_ID = 13,
+        RIGHT_MOTOR_ID = 14;
     
     // TODO tune these
     // PID and FF constants

@@ -12,8 +12,8 @@ public class AlgaeWheelConstants {
     // CAN ids via Rev Hardware Client
     // TODO decide on this
     public static final int
-        LEFT_MOTOR_ID = 0,
-        RIGHT_MOTOR_ID = 0;
+        LEFT_MOTOR_ID = 18,
+        RIGHT_MOTOR_ID = 19;
 
     // TODO tune these
     // PID and FF constants
