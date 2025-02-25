@@ -3,6 +3,7 @@ package frc.robot.modes;
 import java.util.Optional;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import frc.lib.mode.Mode;
 import frc.robot.subsystems.Swerve;
 
@@ -18,7 +19,7 @@ public enum DriveMode implements Mode {
     FL_ONLY(Swerve.ModuleId.FL), FR_ONLY(Swerve.ModuleId.FR), BL_ONLY(Swerve.ModuleId.BL), BR_ONLY(Swerve.ModuleId.BR);
 
     /** the swerve module this mode refers to, if this is a single-module-only mode, and -1 if not */
-    public final Optional<Swerve.ModuleId> id;
+    @NotLogged public final Optional<Swerve.ModuleId> id;
 
     private DriveMode(Swerve.ModuleId id) {
         this.id = Optional.of(id);
