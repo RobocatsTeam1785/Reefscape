@@ -137,13 +137,15 @@ public class Swerve extends SubsystemBase {
     // drive
     /** drives the robot with the given robot-relative x velocity, y velocity, and angular velocity */
     public void drive(LinearVelocity xVelocity, LinearVelocity yVelocity, AngularVelocity angularVelocity) {
-        // limit maximum acceleration (change in speed over time) to avoid damaging the robot
-        xVelocity = MetersPerSecond.of(xSpeedLimiter.calculate(xVelocity.in(MetersPerSecond)));
-        yVelocity = MetersPerSecond.of(ySpeedLimiter.calculate(yVelocity.in(MetersPerSecond)));
-        angularVelocity = RadiansPerSecond.of(rotSpeedLimiter.calculate(angularVelocity.in(RadiansPerSecond)));
+        drive(new ChassisSpeeds(xVelocity, yVelocity, angularVelocity));
+    }
 
-        // create the chassis speeds class from our values (essentially just a struct containing them)
-        ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, angularVelocity);
+    /** drives the robot with the given robot-relative ChassisSpeeds */
+    public void drive(ChassisSpeeds speeds) {
+        // limit maximum acceleration (change in speed over time) to avoid damaging the robot
+        speeds.vxMetersPerSecond = xSpeedLimiter.calculate(speeds.vxMetersPerSecond);
+        speeds.vyMetersPerSecond = ySpeedLimiter.calculate(speeds.vyMetersPerSecond);
+        speeds.omegaRadiansPerSecond = rotSpeedLimiter.calculate(speeds.omegaRadiansPerSecond);
 
         // discretize the speeds to compensate for the error caused by a lack of continuous velocity modification
         // https://www.chiefdelphi.com/t/looking-for-an-explanation-of-chassisspeeds-discretize/462069/2
