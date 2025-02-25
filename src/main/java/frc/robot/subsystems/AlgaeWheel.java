@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -38,6 +39,8 @@ public class AlgaeWheel extends SubsystemBase {
 
     // logging
     protected Voltage sysIdVoltage;
+    @Logged protected double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
+    @Logged protected double lastLeftVoltageVolts, lastRightVoltageVolts;
 
     public AlgaeWheel() {
         initMotors();
@@ -106,6 +109,8 @@ public class AlgaeWheel extends SubsystemBase {
      public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
+        lastLeftVoltageVolts = voltage.in(Volts);
+        lastRightVoltageVolts = voltage.in(Volts);
 
         leftMotor.setVoltage(voltage);
         rightMotor.setVoltage(voltage);
@@ -142,6 +147,14 @@ public class AlgaeWheel extends SubsystemBase {
         final double leftFeed = ff.calculate(leftVelocity.in(MetersPerSecond));
         final double rightFeed = ff.calculate(righVelocity.in(MetersPerSecond));
 
+        // update logged values
+        lastLeftVelocityMetersPerSecond = leftVelocity.in(MetersPerSecond);
+        lastRightVelocityMetersPerSecond = righVelocity.in(MetersPerSecond);
+
+        lastLeftVoltageVolts = leftOutput + leftFeed;
+        lastRightVoltageVolts = rightOutput + rightFeed;
+
+        // set voltage
         leftMotor.setVoltage(leftOutput + leftFeed);
         rightMotor.setVoltage(rightOutput + rightFeed);
     }
@@ -159,6 +172,11 @@ public class AlgaeWheel extends SubsystemBase {
         final double output = leftPID.calculate(leftEncoder.getVelocity(), velocity.in(MetersPerSecond));
         final double feed = ff.calculate(velocity.in(MetersPerSecond));
 
+        // update logged values
+        lastLeftVelocityMetersPerSecond = velocity.in(MetersPerSecond);
+        lastLeftVoltageVolts = output + feed;
+
+        // set voltage
         leftMotor.setVoltage(output + feed);
     }
 
@@ -175,6 +193,11 @@ public class AlgaeWheel extends SubsystemBase {
         final double output = rightPID.calculate(rightEncoder.getVelocity(), velocity.in(MetersPerSecond));
         final double feed = ff.calculate(velocity.in(MetersPerSecond));
 
+        // update logged values
+        lastRightVelocityMetersPerSecond = velocity.in(MetersPerSecond);
+        lastRightVoltageVolts = output + feed;
+
+        // set voltage
         rightMotor.setVoltage(output + feed);
     }
 
