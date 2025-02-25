@@ -58,8 +58,7 @@ public class Swerve extends SubsystemBase {
         // the kinematics, so the estimator can calculate the swerve module states over time to better estimate the current position
         kinematics, 
         // the current gyro angle, so the estimator can use this value as an offset to convert from provided gyro angles to pose rotations
-        // TODO ensure navX2.getAngle() increases when rotating left from initially facing the opponent's alliance station
-        Rotation2d.fromDegrees(navX2.getAngle()), 
+        navX2.getRotation2d(),
         // the current swerve module positions, so the estimator knows the initial state
         getPositions(),
         // the current pose, so the estimator knows where the robot is and what direction it's facing
