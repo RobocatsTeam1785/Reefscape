@@ -48,8 +48,4 @@ public class RobotContainer {
         // processor = new SubsystemInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver);
         // processor.configure();
     }
-
-    public void periodic() {
-        vision.periodic();
-    }
 }
