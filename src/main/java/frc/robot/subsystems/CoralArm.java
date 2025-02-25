@@ -108,6 +108,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     // periodic
+    @Override
     public void periodic() {
         // check for and record rollovers
         hexEncoder.update();

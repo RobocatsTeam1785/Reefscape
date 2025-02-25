@@ -51,6 +51,7 @@ public class Vision extends SubsystemBase {
         return index >= 0 ? unreadResults.get(index) : null;
     }
 
+    @Override
     public void periodic() {
         updateResults();
 
