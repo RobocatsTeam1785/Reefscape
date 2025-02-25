@@ -11,10 +11,13 @@ import com.studica.frc.AHRS;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -25,41 +28,63 @@ import frc.lib.swerve.TalonSwerveModule;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Swerve extends SubsystemBase {
-    // filters and kinematics
-    protected final SlewRateLimiter
-        xSpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        ySpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        rotSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
-    
-    protected final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        SwerveConstants.FL_POS, SwerveConstants.FR_POS,
-        SwerveConstants.BL_POS, SwerveConstants.BR_POS
-    );
-
-    // hardware
+    // components
+    // - abstracted
     @Logged protected final TalonSwerveModule flModule = new TalonSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
     @Logged protected final TalonSwerveModule frModule = new TalonSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
     @Logged protected final TalonSwerveModule blModule = new TalonSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
     @Logged protected final TalonSwerveModule brModule = new TalonSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
     
-    protected final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
-
-    // initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
-    // (the rectangular port in the center, below the NI or LabView logo)
+    // - hardware
+    // -- initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
+    // -- (the rectangular port in the center, below the NI or LabView logo)
     @Logged protected final AHRS navX2 = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
+    // motion manipulation
+    // - filters
+    protected final SlewRateLimiter
+        xSpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        ySpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        rotSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
+    
+    // - setpoint generation
+    protected final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+        SwerveConstants.FL_POS, SwerveConstants.FR_POS,
+        SwerveConstants.BL_POS, SwerveConstants.BR_POS
+    );
+
+    // - odometry
+    protected final SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
+        // the kinematics, so the estimator can calculate the swerve module states over time to better estimate the current position
+        kinematics, 
+        // the current gyro angle, so the estimator can use this value as an offset to convert from provided gyro angles to pose rotations
+        Rotation2d.fromDegrees(navX2.getAngle()), 
+        // the current swerve module positions, so the estimator knows the initial state
+        getPositions(),
+        // the current pose, so the estimator knows where the robot is and what direction it's facing
+        new Pose2d()
+    );
+
+    // data
+    // - instance properties
     /** time between each call of robotPeriodic() */
     protected final double period;
 
-    // logging
+    // - logging
     @Logged private SwerveModuleState[] lastStates;
 
     @Logged private double lastDifference;
     @Logged private double lastAverageDifference;
 
+    // organization
+    protected final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
+
+    // initialization
     public Swerve(double period) {
+        // set provided parameters
         this.period = period;
 
+        // invert motors for rotation direction parity
         // TODO fix hacky inversion
         // flModule.invertDriveMotor();
         frModule.invertDriveMotor();
@@ -87,6 +112,16 @@ public class Swerve extends SubsystemBase {
             frModule.getDepictedState(),
             blModule.getDepictedState(),
             brModule.getDepictedState()
+        };
+    }
+
+    @Logged
+    public SwerveModulePosition[] getPositions() {
+        return new SwerveModulePosition[]{
+            flModule.getPosition(),
+            frModule.getPosition(),
+            blModule.getPosition(),
+            brModule.getPosition()
         };
     }
 
