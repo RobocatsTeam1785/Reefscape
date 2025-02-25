@@ -1,6 +1,7 @@
 package frc.lib.constants;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -112,6 +113,13 @@ public class SwerveConstants {
 
     public static final Distance WHEEL_RADIUS = Inches.of(2);
     public static final Distance WHEEL_CIRCUMFERENCE = WHEEL_RADIUS.times(2.0 * Math.PI);
+
+    // TODO add explanatory comments for these like in other Constants files
+    // TLDR: multiply by reciprocal of gear ratio because that's the mechanism over motor rotation ratio, and:
+    // - multiply by circumference to get distance in meters, for the drive motors
+    // - multiply by 2pi to get mechanism rotation in radians, for the turn motors
+    public static final double DRIVE_CF = 1 / SwerveConstants.DRIVE_GEAR_RATIO * SwerveConstants.WHEEL_CIRCUMFERENCE.in(Meters);
+    public static final double TURN_CF = 1 / SwerveConstants.TURN_GEAR_RATIO * (2 * Math.PI);
     
     /* explanation of the WPILib coordinate system:
     *
