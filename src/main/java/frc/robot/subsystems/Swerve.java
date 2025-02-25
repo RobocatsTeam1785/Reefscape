@@ -19,7 +19,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.SwerveConstants;
-import frc.lib.swerve.SwerveModule;
+import frc.lib.swerve.SparkSwerveModule;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Swerve extends SubsystemBase {
@@ -35,12 +35,12 @@ public class Swerve extends SubsystemBase {
     );
 
     // hardware
-    @Logged protected final SwerveModule flModule = new SwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
-    @Logged protected final SwerveModule frModule = new SwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
-    @Logged protected final SwerveModule blModule = new SwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
-    @Logged protected final SwerveModule brModule = new SwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
+    @Logged protected final SparkSwerveModule flModule = new SparkSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
+    @Logged protected final SparkSwerveModule frModule = new SparkSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
+    @Logged protected final SparkSwerveModule blModule = new SparkSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
+    @Logged protected final SparkSwerveModule brModule = new SparkSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
     
-    protected final SwerveModule[] modules = { flModule, frModule, blModule, brModule };
+    protected final SparkSwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
     // initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
     // (the rectangular port in the center, below the NI or LabView logo)
@@ -70,7 +70,7 @@ public class Swerve extends SubsystemBase {
     public boolean finishedAligning() {
         double totalErrorRadians = 0.0;
 
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             totalErrorRadians += module.turnErrorRadians();
         }
 
@@ -134,7 +134,7 @@ public class Swerve extends SubsystemBase {
         // average drive velocity
         double average = 0.0;
 
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             average += module.driveEncoder.getVelocity();
         }
 
@@ -143,7 +143,7 @@ public class Swerve extends SubsystemBase {
         // total difference from the average drive velocity
         double difference = 0.0;
 
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             difference += Math.abs(module.driveEncoder.getVelocity() - average);
         }
 
@@ -245,7 +245,7 @@ public class Swerve extends SubsystemBase {
 
     /** recovers the absolute angle of every module */
     public void recoverAbsAngles() {
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             module.recoverAbsAngle();
         }
     }
@@ -256,7 +256,7 @@ public class Swerve extends SubsystemBase {
         // TODO fix hacky logging
         lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
 
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             module.zeroVoltage();
         }
     }
@@ -276,7 +276,7 @@ public class Swerve extends SubsystemBase {
 
     /** zeroes the drive voltage of all modules */
     public void zeroDriveVoltage() {
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             module.zeroDriveVoltage();
         }
 
@@ -300,7 +300,7 @@ public class Swerve extends SubsystemBase {
 
     /** zeroes the turn voltage of all modules */
     public void zeroTurnVoltage() {
-        for (SwerveModule module : modules) {
+        for (SparkSwerveModule module : modules) {
             module.zeroTurnVoltage();
         }
 
