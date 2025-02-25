@@ -9,6 +9,9 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 
@@ -20,6 +23,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class SwerveConstants {
     /** whether to optimize swerve module states, e.g., reversing the motor speed instead of rotating 180 degrees and applying normal speed - used for testing when having the same sign is desirable */
@@ -147,6 +151,16 @@ public class SwerveConstants {
         BR_POS = new Translation2d(ROBOT_APOTHEM.unaryMinus(), ROBOT_APOTHEM.unaryMinus());
     
     // pathplanner
+    public static final BooleanSupplier SHOULD_FLIP_PATH = () -> {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        } else {
+            return false;
+        }
+    };
+
     // as per the drivetrain free speed table on https://www.swervedrivespecialties.com/products/mk4i-swerve-module, at Kraken X60, N for FOC, and the L2 ratio
     public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(15.5);
 
