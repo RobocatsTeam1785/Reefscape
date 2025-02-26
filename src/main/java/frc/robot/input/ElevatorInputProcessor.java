@@ -41,7 +41,9 @@ public class ElevatorInputProcessor extends InputProcessor {
 
     @Override
     public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {
-        Map<ModeState<?>, Command> commands = defaults.putIfAbsent(elevator, new HashMap<>());
+        if (!defaults.containsKey(elevator)) defaults.put(elevator, new HashMap<>());
+
+        Map<ModeState<?>, Command> commands = defaults.get(elevator);
 
         commands.put(state, state.selectRunnable(Map.of(
             ElevatorMode.MANUAL, this::driveManual

@@ -89,7 +89,9 @@ public class SwerveInputProcessor extends InputProcessor {
 
     @Override
     public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {
-        Map<ModeState<?>, Command> commands = defaults.putIfAbsent(swerve, new HashMap<>());
+        if (!defaults.containsKey(swerve)) defaults.put(swerve, new HashMap<>());
+
+        Map<ModeState<?>, Command> commands = defaults.get(swerve);
 
         commands.put(state, state.selectRunnable(Map.of(
             DriveMode.SWERVE,  this::driveSwerve,
