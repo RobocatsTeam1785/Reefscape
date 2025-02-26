@@ -8,6 +8,7 @@ import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Led;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -19,6 +20,7 @@ public class Robot extends TimedRobot {
   @SuppressWarnings("unused")
   // pass the period so the drive subsystem can discretize the chassis speeds with it
   private RobotContainer container;
+  private Led ledSubsystem;
   // private SysIdBot bot;
 
   /**
@@ -27,6 +29,7 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     container = new RobotContainer(getPeriod());
+    ledSubsystem = new Led();
     // bot = new SysIdBot(getPeriod());
 
     Epilogue.bind(this);
@@ -38,7 +41,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    ledSubsystem.initialization();
+  }
 
   @Override
   public void autonomousPeriodic() {}
