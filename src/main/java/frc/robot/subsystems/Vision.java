@@ -45,6 +45,8 @@ public class Vision extends SubsystemBase {
 
     // state
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d previousEstimatedRobotPose) {
+        if (latestResult == null) return Optional.empty();
+
         estimator.setReferencePose(previousEstimatedRobotPose);
         return estimator.update(latestResult);
     }
