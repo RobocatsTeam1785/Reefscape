@@ -6,9 +6,9 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.command.DefaultableSelectCommand;
 import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeArmMode;
 import frc.robot.modes.AlgaeWheelMode;
@@ -167,7 +167,7 @@ public class DebugInputProcessor {
             Subsystem subsystem = entry.getKey();
             Map<ModeState<?>, Command> commands = entry.getValue();
 
-            subsystem.setDefaultCommand(new SelectCommand<>(commands, this::getActiveState));
+            subsystem.setDefaultCommand(new DefaultableSelectCommand<>(commands, this::getActiveState));
         }
     }
 
