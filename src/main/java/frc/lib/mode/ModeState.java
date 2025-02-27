@@ -47,6 +47,11 @@ public class ModeState<M extends Mode> {
         return currentMode.name();
     }
 
+    @Logged
+    public String modeClass() {
+        return currentMode.getClass().getName();
+    }
+
     // switching
     /** registers a mode switch that sets the current mode to the specified mode when the trigger becomes true */
     public void registerSwitch(M mode, Trigger trigger) {
@@ -61,11 +66,14 @@ public class ModeState<M extends Mode> {
 
     /** registers a mode switch that sets the provided active state to this and the current mode to the specified mode when the trigger becomes true */
     public void registerSwitch(Consumer<ModeState<?>> setActiveState, M mode, Trigger trigger) {
-        // set active state
-        setActiveState.accept(this);
+        // record the switch
+        switches.add(trigger);
 
-        // register switch
-        registerSwitch(mode, trigger);
+        // change the mode and active state when the trigger becomes true
+        trigger.onTrue(new InstantCommand(() -> {
+            setActiveState.accept(this);
+            currentMode = mode;
+        }));
     }
 
     // triggers
