@@ -79,7 +79,8 @@ public class ModeState<M extends Mode> {
     // triggers
     /** returns a trigger describing whether the current mode equals the specified mode */
     public Trigger is(M mode) {
-        return isCache.putIfAbsent(mode, new Trigger(() -> mode == mode()));
+        isCache.putIfAbsent(mode, new Trigger(() -> mode == mode()));
+        return isCache.get(mode);
     }
 
     /** whether all mode switch triggers are inactive */
