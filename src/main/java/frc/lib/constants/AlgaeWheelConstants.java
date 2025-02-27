@@ -18,12 +18,12 @@ public class AlgaeWheelConstants {
     // TODO tune these
     // PID and FF constants
     public static final double
-        KP = 0.0,
+        KP = 0.1,
         KI = 0.0,
         KD = 0.0,
 
         KS = 0.0,
-        KV = 0.0,
+        KV = 1.0,
         KA = 0.0;
 
     // 1:1 gear ratio
