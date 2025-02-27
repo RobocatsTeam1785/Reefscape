@@ -809,13 +809,6 @@
       }
     },
     {
-      "name": "Autonomous",
-      "grid_layout": {
-        "layouts": [],
-        "containers": []
-      }
-    },
-    {
       "name": "Algae",
       "grid_layout": {
         "layouts": [
@@ -890,7 +883,7 @@
           },
           {
             "title": "Left Motor Encoder",
-            "x": 720.0,
+            "x": 480.0,
             "y": 10.0,
             "width": 270.0,
             "height": 300.0,
@@ -958,14 +951,162 @@
             ]
           },
           {
-            "title": "Control",
-            "x": 10.0,
+            "title": "Arm Motor Encoder",
+            "x": 0.0,
             "y": 10.0,
-            "width": 390.0,
-            "height": 530.0,
+            "width": 260.0,
+            "height": 300.0,
             "type": "List Layout",
             "properties": {
-              "label_position": "LEFT"
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Left Control",
+            "x": 400.0,
+            "y": 310.0,
+            "width": 450.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Right Control",
+            "x": 860.0,
+            "y": 310.0,
+            "width": 400.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Arm Control",
+            "x": 0.0,
+            "y": 310.0,
+            "width": 390.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Coral",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Arm Motor Encoder",
+            "x": 0.0,
+            "y": 10.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Wheel Motor Encoder",
+            "x": 960.0,
+            "y": 0.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Arm Control",
+            "x": 20.0,
+            "y": 330.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
+            },
+            "children": []
+          },
+          {
+            "title": "Wheel Control",
+            "x": 960.0,
+            "y": 320.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
+            },
+            "children": []
+          }
+        ],
+        "containers": []
+      }
+    },
+    {
+      "name": "Elevator",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Left Motor Encoder",
+            "x": 20.0,
+            "y": 30.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Right Motor Encoder",
+            "x": 960.0,
+            "y": 20.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": []
+          },
+          {
+            "title": "Left Control",
+            "x": 20.0,
+            "y": 310.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
+            },
+            "children": []
+          },
+          {
+            "title": "Right Control",
+            "x": 960.0,
+            "y": 290.0,
+            "width": 260.0,
+            "height": 260.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "RIGHT"
             },
             "children": []
           }
