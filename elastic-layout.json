@@ -814,9 +814,9 @@
         "layouts": [
           {
             "title": "Right Motor Encoder",
-            "x": 990.0,
+            "x": 980.0,
             "y": 10.0,
-            "width": 270.0,
+            "width": 280.0,
             "height": 300.0,
             "type": "List Layout",
             "properties": {
@@ -883,7 +883,7 @@
           },
           {
             "title": "Left Motor Encoder",
-            "x": 480.0,
+            "x": 390.0,
             "y": 10.0,
             "width": 270.0,
             "height": 300.0,
@@ -954,25 +954,139 @@
             "title": "Arm Motor Encoder",
             "x": 0.0,
             "y": 10.0,
-            "width": 260.0,
+            "width": 300.0,
             "height": 300.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/relativeEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/relativeEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/relativeEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/relativeEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Left Control",
             "x": 400.0,
             "y": 310.0,
             "width": 450.0,
-            "height": 260.0,
+            "height": 290.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastLeftVelocityMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/lastLeftVelocityMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastLeftVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/lastLeftVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "leftManualSpeedMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/algaeWheelProcessor/leftManualSpeedMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "manualSpeedMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/algaeWheelProcessor/manualSpeedMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Right Control",
@@ -984,7 +1098,50 @@
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastRightVelocityMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/lastRightVelocityMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastRightVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/lastRightVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "rightManualSpeedMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/algaeWheelProcessor/rightManualSpeedMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Arm Control",
@@ -996,10 +1153,82 @@
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastVelocityRadiansPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/lastVelocityRadiansPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeArm/lastVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "manualAngle",
+                "x": 90.0,
+                "y": 490.0,
+                "width": 100.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/algaeArmProcessor/manualAngle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
-        "containers": []
+        "containers": [
+          {
+            "title": "modeName",
+            "x": 810.0,
+            "y": 20.0,
+            "width": 130.0,
+            "height": 130.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Robot/container/processor/activeState/modeName",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "modeClass",
+            "x": 680.0,
+            "y": 160.0,
+            "width": 290.0,
+            "height": 130.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Robot/container/processor/activeState/modeClass",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          }
+        ]
       }
     },
     {
@@ -1011,48 +1240,248 @@
             "x": 0.0,
             "y": 10.0,
             "width": 260.0,
-            "height": 260.0,
+            "height": 300.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/relativeEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/relativeEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/relativeEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/relativeEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Wheel Motor Encoder",
             "x": 960.0,
             "y": 0.0,
             "width": 260.0,
-            "height": 260.0,
+            "height": 300.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/encoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/encoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/encoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/encoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Arm Control",
             "x": 20.0,
-            "y": 330.0,
-            "width": 260.0,
+            "y": 340.0,
+            "width": 420.0,
             "height": 260.0,
             "type": "List Layout",
             "properties": {
               "label_position": "RIGHT"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastVelocityRadiansPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/lastVelocityRadiansPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralArm/lastVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "manualAngle",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/coralArmProcessor/manualAngle",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Wheel Control",
-            "x": 960.0,
-            "y": 320.0,
-            "width": 260.0,
+            "x": 860.0,
+            "y": 340.0,
+            "width": 360.0,
             "height": 260.0,
             "type": "List Layout",
             "properties": {
               "label_position": "RIGHT"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastVelocityMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/lastVelocityMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/coralWheel/lastVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "manualSpeedMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/processor/coralWheelProcessor/manualSpeedMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
         "containers": []
@@ -1065,50 +1494,222 @@
           {
             "title": "Left Motor Encoder",
             "x": 20.0,
-            "y": 30.0,
+            "y": 10.0,
             "width": 260.0,
-            "height": 260.0,
+            "height": 300.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/leftEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/leftEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/leftEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/leftEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Right Motor Encoder",
             "x": 960.0,
             "y": 20.0,
             "width": 260.0,
-            "height": 260.0,
+            "height": 300.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
             },
-            "children": []
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/rightEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/rightEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/rightEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/rightEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Left Control",
             "x": 20.0,
             "y": 310.0,
-            "width": 260.0,
+            "width": 420.0,
             "height": 260.0,
             "type": "List Layout",
             "properties": {
               "label_position": "RIGHT"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastLeftVelocityMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/lastLeftVelocityMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastLeftVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/lastLeftVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           },
           {
             "title": "Right Control",
-            "x": 960.0,
-            "y": 290.0,
-            "width": 260.0,
+            "x": 780.0,
+            "y": 320.0,
+            "width": 440.0,
             "height": 260.0,
             "type": "List Layout",
             "properties": {
               "label_position": "RIGHT"
             },
-            "children": []
+            "children": [
+              {
+                "title": "lastRightVelocityMetersPerSecond",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/lastRightVelocityMetersPerSecond",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "lastRightVoltageVolts",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/elevator/lastRightVoltageVolts",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
           }
         ],
         "containers": []
