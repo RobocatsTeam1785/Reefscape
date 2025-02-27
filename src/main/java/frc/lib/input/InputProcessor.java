@@ -14,6 +14,9 @@ import frc.lib.mode.ModeState;
 
 /** an object that transforms controller inputs into subsystem setpoints */
 public abstract class InputProcessor {
+    /** code that executes every time the main robot loop executes */
+    public abstract void periodic();
+
     /** configure trigger-based commands with a function that returns a boolean supplier returning whether the passed mode state is active */
     public abstract void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive);
 

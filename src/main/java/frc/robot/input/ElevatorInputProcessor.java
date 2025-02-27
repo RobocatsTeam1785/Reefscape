@@ -66,4 +66,9 @@ public class ElevatorInputProcessor extends InputProcessor {
         // drive
         elevator.updateSetpoint(verticalSpeed);
     }
+
+    
+    // periodic
+    @Override
+    public void periodic() {}
 }

@@ -72,4 +72,8 @@ public class CoralArmInputProcessor extends InputProcessor {
 
     @Override
     public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {}
+    
+    // periodic
+    @Override
+    public void periodic() {}
 }

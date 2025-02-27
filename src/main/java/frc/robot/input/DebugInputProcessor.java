@@ -184,4 +184,16 @@ public class DebugInputProcessor {
     public BooleanSupplier isModeActive(ModeState<?> state) {
         return () -> (state == getActiveState());
     }
+
+    // periodic
+    public void periodic() {
+        swerveProcessor.periodic();
+        elevatorProcessor.periodic();
+
+        coralArmProcessor.periodic();
+        coralWheelProcessor.periodic();
+
+        algaeArmProcessor.periodic();
+        algaeWheelProcessor.periodic();
+    }
 }

@@ -71,4 +71,8 @@ public class CoralWheelInputProcessor extends InputProcessor {
 
     @Override
     public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {}
+    
+    // periodic
+    @Override
+    public void periodic() {}
 }

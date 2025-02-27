@@ -54,4 +54,9 @@ public class RobotContainer {
         // autos
         autos = new Autos();
     }
+
+    // periodic
+    public void periodic() {
+        processor.periodic();
+    }
 }

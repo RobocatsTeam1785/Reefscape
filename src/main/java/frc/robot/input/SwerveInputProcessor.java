@@ -163,4 +163,8 @@ public class SwerveInputProcessor extends InputProcessor {
             swerve.only(moduleId, speed);
         }
     }
+    
+    // periodic
+    @Override
+    public void periodic() {}
 }
