@@ -3,7 +3,7 @@
   "grid_size": 10,
   "tabs": [
     {
-      "name": "Teleoperated",
+      "name": "Swerve",
       "grid_layout": {
         "layouts": [],
         "containers": [
@@ -812,6 +812,164 @@
       "name": "Autonomous",
       "grid_layout": {
         "layouts": [],
+        "containers": []
+      }
+    },
+    {
+      "name": "Algae",
+      "grid_layout": {
+        "layouts": [
+          {
+            "title": "Right Motor Encoder",
+            "x": 990.0,
+            "y": 10.0,
+            "width": 270.0,
+            "height": 300.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/rightEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/rightEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/rightEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/rightEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Left Motor Encoder",
+            "x": 720.0,
+            "y": 10.0,
+            "width": 270.0,
+            "height": 300.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Absolute position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/leftEncoder/Absolute position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Absolute velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/leftEncoder/Absolute velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Position (units)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/leftEncoder/Position (units)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Velocity (units per second)",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 130.0,
+                "height": 130.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "Robot/container/algaeWheel/leftEncoder/Velocity (units per second)",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Control",
+            "x": 10.0,
+            "y": 10.0,
+            "width": 390.0,
+            "height": 530.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "LEFT"
+            },
+            "children": []
+          }
+        ],
         "containers": []
       }
     }
