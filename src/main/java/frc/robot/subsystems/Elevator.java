@@ -52,19 +52,29 @@ public class Elevator extends SubsystemBase {
     protected void initMotors() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
-        SparkMaxConfig config = new SparkMaxConfig();
+        SparkMaxConfig leftConfig = new SparkMaxConfig();
+        SparkMaxConfig rightConfig = new SparkMaxConfig();
 
         double rotationsToMeters = ElevatorConstants.ELEVATOR_CF;
         double rpmToMetersPerSecond = rotationsToMeters / 60.0;
 
         // TODO evaluate whether these current limit and idle mode parameters are actually suitable
         // set motor parameters
-        config
+        leftConfig
+            .smartCurrentLimit(40)
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
+
+        rightConfig
             .smartCurrentLimit(40)
             .idleMode(IdleMode.kBrake);
         
         // set encoder parameters
-        config.encoder
+        leftConfig.encoder
+            .positionConversionFactor(rotationsToMeters)
+            .velocityConversionFactor(rpmToMetersPerSecond);
+
+        rightConfig.encoder
             .positionConversionFactor(rotationsToMeters)
             .velocityConversionFactor(rpmToMetersPerSecond);
         
@@ -72,8 +82,8 @@ public class Elevator extends SubsystemBase {
         leftMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
         rightMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 
-        leftMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // initialize encoders
         leftEncoder = leftMotor.getEncoder();
