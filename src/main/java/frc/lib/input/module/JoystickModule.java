@@ -34,6 +34,10 @@ public class JoystickModule {
         this.deadband = params.defaultDeadband;
     }
 
+    public JoystickModule(ControlModule module, JoystickModuleParams params) {
+        this(params, module);
+    }
+
     // triggers
     public void configureSetValueButton(Trigger button) {
         module.configureSetValueButton(button.and(isActive).and(noSwitchesActive).and(isRelevantMode), subsystem);
