@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -28,7 +27,7 @@ public class SwerveInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<DriveMode> state;
+    private final ModeState<DriveMode> state;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {

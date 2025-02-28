@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +22,6 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeArmMode;
 import frc.robot.subsystems.AlgaeArm;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
 public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final AlgaeArm arm;
@@ -32,14 +30,14 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<AlgaeArmMode> state;
+    private final ModeState<AlgaeArmMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    @Logged private final JoystickModule positionModule;
-    @Logged private final JoystickModule velocityModule;
-    @Logged private final JoystickModule voltageModule;
+    private final JoystickModule positionModule;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;

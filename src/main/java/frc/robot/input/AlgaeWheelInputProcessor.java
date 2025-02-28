@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -20,8 +21,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeWheelMode;
 import frc.robot.subsystems.AlgaeWheel;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
-public class AlgaeWheelInputProcessor extends InputProcessor {
+public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final AlgaeWheel wheel;
 
@@ -29,13 +29,13 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<AlgaeWheelMode> state;
+    private final ModeState<AlgaeWheelMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    @Logged private final JoystickModule velocityModule, leftVelocityModule, rightVelocityModule;
-    @Logged private final JoystickModule voltageModule, leftVoltageModule, rightVoltageModule;
+    private final JoystickModule velocityModule, leftVelocityModule, rightVelocityModule;
+    private final JoystickModule voltageModule, leftVoltageModule, rightVoltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
@@ -134,6 +134,19 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
             // value is interpreted as volts, after range shifting
             providedVoltageModule.driveJoystick(value);
         }
+    }
+
+    // network tables
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        velocityModule.configureSendable(builder, "Velocity ");
+        voltageModule.configureSendable(builder, "Voltage ");
+
+        leftVelocityModule.configureSendable(builder, "Left Velocity ");
+        leftVoltageModule.configureSendable(builder, "Left Voltage ");
+
+        rightVelocityModule.configureSendable(builder, "Right Velocity ");
+        rightVoltageModule.configureSendable(builder, "Right Voltage ");
     }
 
     // periodic

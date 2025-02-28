@@ -2,15 +2,12 @@ package frc.lib.input.module;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
 public class JoystickModule {
-    @Logged
     private final ControlModule module;
 
     private final Subsystem subsystem;
@@ -20,7 +17,7 @@ public class JoystickModule {
     private final Trigger isRelevantMode;
 
     /** if deadband is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    @Logged private double deadband;
+    private double deadband;
 
     // initialization
     public JoystickModule(

@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,7 +25,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.ElevatorMode;
 import frc.robot.subsystems.Elevator;
 
-public class ElevatorInputProcessor extends InputProcessor {
+public class ElevatorInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final Elevator elevator;
 
@@ -32,14 +33,14 @@ public class ElevatorInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<ElevatorMode> state;
+    private final ModeState<ElevatorMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    @Logged private final JoystickModule positionModule;
-    @Logged private final JoystickModule velocityModule;
-    @Logged private final JoystickModule voltageModule;
+    private final JoystickModule positionModule;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
@@ -129,6 +130,13 @@ public class ElevatorInputProcessor extends InputProcessor {
         }
     }
 
+    // network tables
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        positionModule.configureSendable(builder, "Position ");
+        velocityModule.configureSendable(builder, "Velocity ");
+        voltageModule.configureSendable(builder, "Voltage ");
+    }
     
     // periodic
     @Override

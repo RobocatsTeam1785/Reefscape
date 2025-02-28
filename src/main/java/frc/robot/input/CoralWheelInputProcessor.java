@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
-import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -20,8 +21,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.CoralWheelMode;
 import frc.robot.subsystems.CoralWheel;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
-public class CoralWheelInputProcessor extends InputProcessor {
+public class CoralWheelInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final CoralWheel wheel;
 
@@ -29,13 +29,13 @@ public class CoralWheelInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<CoralWheelMode> state;
+    private final ModeState<CoralWheelMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    @Logged private final JoystickModule velocityModule;
-    @Logged private final JoystickModule voltageModule;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
@@ -94,6 +94,13 @@ public class CoralWheelInputProcessor extends InputProcessor {
             // value is interpreted as volts, after range shifting
             voltageModule.driveJoystick(value);
         }
+    }
+
+    // network tables
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        velocityModule.configureSendable(builder, "Velocity ");
+        voltageModule.configureSendable(builder, "Voltage ");
     }
     
     // periodic

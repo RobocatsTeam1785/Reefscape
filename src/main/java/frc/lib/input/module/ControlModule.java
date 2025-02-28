@@ -2,13 +2,11 @@ package frc.lib.input.module;
 
 import java.util.function.DoubleConsumer;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-@Logged(strategy = Logged.Strategy.OPT_IN)
 public class ControlModule {
     /** the consumer that uses the double control value to set mechanism voltage */
     private final DoubleConsumer controlConsumer;
@@ -17,13 +15,13 @@ public class ControlModule {
     private final double resetValue;
 
     /** the user-controlled arbitrary control value */
-    @Logged private double value;
+    private double value;
 
     /** the zero point for ranged control */
-    @Logged private double base;
+    private double base;
     
     /** the distance from the zero point for ranged control */
-    @Logged private double magnitude;
+    private double magnitude;
 
     // initialization
     public ControlModule(
