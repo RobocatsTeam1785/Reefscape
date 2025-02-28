@@ -1,17 +1,21 @@
 package frc.robot.input;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.input.InputProcessor;
+import frc.lib.input.module.ControlModule;
+import frc.lib.input.module.JoystickModule;
+import frc.lib.input.module.JoystickModuleParams;
 import frc.lib.mode.ModeState;
 import frc.robot.modes.CoralWheelMode;
 import frc.robot.subsystems.CoralWheel;
@@ -27,12 +31,17 @@ public class CoralWheelInputProcessor extends InputProcessor {
     // modes
     private final ModeState<CoralWheelMode> state;
 
-    // debug values
-    // TODO implement a less hacky method of testing speeds
-    private static final double DEBUG_SPEED_METERS_PER_SECOND = 0.0;
+    // control
+    private final JoystickModuleParams defaultParams;
 
-    private static final double SPEED_INCREMENT_METERS_PER_SECOND = 0.1;
-    @Logged private double manualSpeedMetersPerSecond = 0.0;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
+
+    /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
+    private static final double JOYSTICK_DEADBAND = 0.15;
+
+    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    private static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public CoralWheelInputProcessor(final CoralWheel wheel, final CommandXboxController driver, final ModeState<CoralWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
@@ -41,38 +50,51 @@ public class CoralWheelInputProcessor extends InputProcessor {
         this.wheel = wheel;
         this.driver = driver;
         this.state = state;
+
+        // modules
+        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralWheelMode.MANUAL), JOYSTICK_DEADBAND);
+
+        // - both
+        this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
+        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
     }
 
     @Override
     public void configureTriggers() {
-        // defined suppliers
-        BooleanSupplier isActive = isModeActive.apply(state);
+        velocityModule.configureSetValueButton(driver.y());
+        voltageModule.configureSetValueButton(driver.a());
 
-        // ! all triggers must be logically ANDed with state.noSwitchesActive() and isActive in order to ensure that they
-        // ! do not conflict with mode-switching triggers and only run when the current mode state is active
-
-        // buttons
-        driver.b().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralWheelMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            wheel.updateSetpoint(MetersPerSecond.of(DEBUG_SPEED_METERS_PER_SECOND));
-        }, wheel));
-
-        driver.y().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralWheelMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            manualSpeedMetersPerSecond += SPEED_INCREMENT_METERS_PER_SECOND;
-        }));
-
-        driver.a().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralWheelMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            manualSpeedMetersPerSecond -= SPEED_INCREMENT_METERS_PER_SECOND;
-        }));
-
-        driver.x().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralWheelMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            wheel.updateSetpoint(MetersPerSecond.of(manualSpeedMetersPerSecond));
-        }, wheel));
-
-        // state-based
+        // resetting voltage to zero functions as a reset for both modules
+        voltageModule.configureResetButton(driver.b());
     }
 
     @Override
-    public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {}
+    public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {
+        if (!defaults.containsKey(wheel)) defaults.put(wheel, new HashMap<>());
+
+        Map<ModeState<?>, Command> commands = defaults.get(wheel);
+
+        commands.put(state, state.selectRunnable(Map.of(
+            CoralWheelMode.MANUAL, this::driveViaModules
+        ), wheel));
+    }
+
+    // driving
+    public void driveViaModules() {
+        boolean leftBumperDown = driver.leftBumper().getAsBoolean();
+        boolean rightBumperDown = driver.rightBumper().getAsBoolean();
+
+        // positive, by default, means downwards, so we're inverting it to make upwards positive
+        double value = -driver.getRightY();
+
+        if (leftBumperDown && !rightBumperDown) {
+            // value is interpreted as radians/s, after range shifting
+            velocityModule.driveJoystick(value);
+        } else if (!leftBumperDown && rightBumperDown) {
+            // value is interpreted as volts, after range shifting
+            voltageModule.driveJoystick(value);
+        }
+    }
     
     // periodic
     @Override
