@@ -29,13 +29,13 @@ public class CoralWheelInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    private final ModeState<CoralWheelMode> state;
+    @Logged private final ModeState<CoralWheelMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    @Logged private final JoystickModule velocityModule;
+    @Logged private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;

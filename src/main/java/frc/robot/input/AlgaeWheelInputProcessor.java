@@ -29,13 +29,13 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    private final ModeState<AlgaeWheelMode> state;
+    @Logged private final ModeState<AlgaeWheelMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    private final JoystickModule velocityModule, leftVelocityModule, rightVelocityModule;
-    private final JoystickModule voltageModule, leftVoltageModule, rightVoltageModule;
+    @Logged private final JoystickModule velocityModule, leftVelocityModule, rightVelocityModule;
+    @Logged private final JoystickModule voltageModule, leftVoltageModule, rightVoltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;

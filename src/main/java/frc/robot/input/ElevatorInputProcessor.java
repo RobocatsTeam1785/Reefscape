@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,14 +32,14 @@ public class ElevatorInputProcessor extends InputProcessor {
     private final CommandXboxController driver;
 
     // modes
-    private final ModeState<ElevatorMode> state;
+    @Logged private final ModeState<ElevatorMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    private final JoystickModule positionModule;
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    @Logged private final JoystickModule positionModule;
+    @Logged private final JoystickModule velocityModule;
+    @Logged private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;

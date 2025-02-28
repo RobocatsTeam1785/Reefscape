@@ -32,14 +32,14 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private final CommandXboxController driver;
 
     // modes
-    private final ModeState<AlgaeArmMode> state;
+    @Logged private final ModeState<AlgaeArmMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    private final JoystickModule positionModule;
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    @Logged private final JoystickModule positionModule;
+    @Logged private final JoystickModule velocityModule;
+    @Logged private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
