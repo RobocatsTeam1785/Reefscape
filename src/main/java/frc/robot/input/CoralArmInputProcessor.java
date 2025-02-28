@@ -30,7 +30,7 @@ public class CoralArmInputProcessor extends InputProcessor {
     // modes
     private final ModeState<CoralArmMode> state;
 
-    // debug values
+    // control
     private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
