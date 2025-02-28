@@ -124,6 +124,11 @@ public class CoralWheel extends SubsystemBase {
         motor.setVoltage(output + feed);
     }
 
+    /** directly applies the specified voltage to the motor */
+    public void updateVoltage(Voltage voltage) {
+        motor.setVoltage(voltage);
+    }
+
     // tuning
     /** update constants; intended for use when hand-tuning constants using a debugger and hot code replace */
     public void tune() {

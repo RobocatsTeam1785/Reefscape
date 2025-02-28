@@ -201,6 +201,22 @@ public class AlgaeWheel extends SubsystemBase {
         rightMotor.setVoltage(output + feed);
     }
 
+    /** directly applies the specified voltage to the motors */
+    public void updateVoltage(Voltage voltage) {
+        leftMotor.setVoltage(voltage);
+        rightMotor.setVoltage(voltage);
+    }
+
+    /** directly applies the specified voltage to the left motor */
+    public void updateLeftVoltage(Voltage voltage) {
+        leftMotor.setVoltage(voltage);
+    }
+
+    /** directly applies the specified voltage to the right motor */
+    public void updateRightVoltage(Voltage voltage) {
+        rightMotor.setVoltage(voltage);
+    }
+
     // tuning
     /** update constants; intended for use when hand-tuning constants using a debugger and hot code replace */
     public void tune() {
