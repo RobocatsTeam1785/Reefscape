@@ -10,14 +10,15 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.input.InputProcessor;
+import frc.lib.input.module.ControlModule;
+import frc.lib.input.module.JoystickModule;
+import frc.lib.input.module.JoystickModuleParams;
 import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeArmMode;
 import frc.robot.subsystems.AlgaeArm;
@@ -34,25 +35,18 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private final ModeState<AlgaeArmMode> state;
 
     // control
+    private final JoystickModuleParams defaultParams;
+
+    private final JoystickModule positionModule;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
+
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
 
     private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
-
-    /** whether to directly control voltage using the velocity value and range, if true, or control the velocity setpoint in radians per second, if false */
-    private static boolean directlyControlVoltage = false;
-
-    private static double buttonPositionRadians = 0.0;
-
-    private static double joystickPositionMinimumRadians = 0.0;
-    private static double joystickPositionMaximumRadians = 0.0;
-
-    private static double buttonVelocity = 0.0;
-
-    private static double joystickVelocityMinimum = 0.0;
-    private static double joystickVelocityMaximum = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public AlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
@@ -61,42 +55,22 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         this.arm = arm;
         this.driver = driver;
         this.state = state;
+
+        this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeArmMode.MANUAL), JOYSTICK_DEADBAND);
+
+        this.positionModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(Radians.of(value)), BUTTON_POSITION_RESET_RADIANS));
+        this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(RadiansPerSecond.of(value)), BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
+        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
     }
 
     @Override
     public void configureTriggers() {
-        // defined suppliers
-        BooleanSupplier isActive = isModeActive.apply(state);
+        positionModule.configureSetValueButton(driver.x());
+        velocityModule.configureSetValueButton(driver.y());
+        voltageModule.configureSetValueButton(driver.a());
 
-        // ! all triggers must be logically ANDed with state.noSwitchesActive() and isActive in order to ensure that they
-        // ! do not conflict with mode-switching triggers and only run when the current mode state is active
-
-        // buttons
-        driver.x().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(Radians.of(buttonPositionRadians));
-        }, arm));
-
-        driver.y().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            if (directlyControlVoltage) {
-                arm.updateVoltage(Volts.of(buttonVelocity));
-            } else {
-                arm.updateSetpoint(RadiansPerSecond.of(buttonVelocity));
-            }
-        }, arm));
-
-        driver.a().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(Radians.of(BUTTON_POSITION_RESET_RADIANS));
-        }, arm));
-
-        driver.b().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            if (directlyControlVoltage) {
-                arm.updateVoltage(Volts.of(BUTTON_VELOCITY_RESET_VOLTS));
-            } else {
-                arm.updateSetpoint(RadiansPerSecond.of(BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
-            }
-        }, arm));
-
-        // state-based
+        // resetting voltage to zero functions as a reset for all three modules
+        voltageModule.configureResetButton(driver.b());
     }
 
     @Override
@@ -106,51 +80,36 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         Map<ModeState<?>, Command> commands = defaults.get(arm);
 
         commands.put(state, state.selectRunnable(Map.of(
-            AlgaeArmMode.MANUAL, this::driveWithinJoystickRange
+            AlgaeArmMode.MANUAL, this::driveViaModules
         ), arm));
     }
 
     // driving
-    public void driveWithinJoystickRange() {
-        // - fully up means -1, which is unintuitive, so it requires inversion
-        double positionRadians = -driver.getLeftY();
-        double velocity = -driver.getRightY();
+    public void driveViaModules() {
+        boolean leftBumperDown = driver.leftBumper().getAsBoolean();
+        boolean rightBumperDown = driver.rightBumper().getAsBoolean();
 
-        // avoid sending very small voltages that cause accidental drift
-        positionRadians = MathUtil.applyDeadband(positionRadians, JOYSTICK_DEADBAND);
-        velocity = MathUtil.applyDeadband(velocity, JOYSTICK_DEADBAND);
+        // positive, by default, means downwards, so we're inverting it to make upwards positive
+        double value = -driver.getRightY();
 
-        positionRadians = joystickPositionMinimumRadians + positionRadians * (joystickPositionMaximumRadians - joystickPositionMinimumRadians);
-        velocity = joystickVelocityMinimum + velocity * (joystickVelocityMaximum - joystickVelocityMinimum);
-
-        // only apply in-range position setpoints when the left bumper is down
-        if (driver.leftBumper().getAsBoolean()) {
-            arm.updateSetpoint(Radians.of(positionRadians));
-        }
-
-        // only apply in-range velocity setpoints when the right bumper is down
-        if (driver.rightBumper().getAsBoolean()) {
-            if (directlyControlVoltage) {
-                arm.updateVoltage(Volts.of(velocity));
-            } else {
-                arm.updateSetpoint(RadiansPerSecond.of(velocity));
-            }
+        if (leftBumperDown && rightBumperDown) {
+            // value is interpreted as radians, after range shifting
+            positionModule.driveJoystick(value);
+        } else if (leftBumperDown && !rightBumperDown) {
+            // value is interpreted as radians/s, after range shifting
+            velocityModule.driveJoystick(value);
+        } else if (!leftBumperDown && rightBumperDown) {
+            // value is interpreted as volts, after range shifting
+            voltageModule.driveJoystick(value);
         }
     }
 
     // network tables
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.addBooleanProperty("directlyControlVoltage", () -> directlyControlVoltage, value -> directlyControlVoltage = value);
-
-        builder.addDoubleProperty("buttonPositionRadians", () -> buttonPositionRadians, value -> buttonPositionRadians = value);
-        builder.addDoubleProperty("buttonVelocity", () -> buttonVelocity, value -> buttonVelocity = value);
-
-        builder.addDoubleProperty("joystickPositionMinimumRadians", () -> joystickPositionMinimumRadians, value -> joystickPositionMinimumRadians = value);
-        builder.addDoubleProperty("joystickPositionMaximumRadians", () -> joystickPositionMaximumRadians, value -> joystickPositionMaximumRadians = value);
-
-        builder.addDoubleProperty("joystickVelocityMinimum", () -> joystickVelocityMinimum, value -> joystickVelocityMinimum = value);
-        builder.addDoubleProperty("joystickVelocityMaximum", () -> joystickVelocityMaximum, value -> joystickVelocityMaximum = value);
+        positionModule.configureSendable(builder, "Position ");
+        velocityModule.configureSendable(builder, "Velocity ");
+        voltageModule.configureSendable(builder, "Voltage ");
     }
 
     // periodic
