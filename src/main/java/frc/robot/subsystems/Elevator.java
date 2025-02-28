@@ -194,6 +194,9 @@ public class Elevator extends SubsystemBase {
      * directly applies the specified voltage to the motor */
     public void updateVoltage(Voltage voltage) {
         // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
+        lastLeftVoltageVolts = voltage.in(Volts);
+        lastRightVoltageVolts = voltage.in(Volts);
+
         leftMotor.setVoltage(voltage);
         rightMotor.setVoltage(voltage);
     }

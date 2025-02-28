@@ -126,6 +126,8 @@ public class CoralWheel extends SubsystemBase {
 
     /** directly applies the specified voltage to the motor */
     public void updateVoltage(Voltage voltage) {
+        lastVoltageVolts = voltage.in(Volts);
+
         motor.setVoltage(voltage);
     }
 

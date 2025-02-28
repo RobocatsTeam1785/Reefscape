@@ -160,6 +160,8 @@ public class AlgaeArm extends SubsystemBase {
      * directly applies the specified voltage to the motor */
     public void updateVoltage(Voltage voltage) {
         // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
+        lastVoltageVolts = voltage.in(Volts);
+
         motor.setVoltage(voltage);
     }
 
