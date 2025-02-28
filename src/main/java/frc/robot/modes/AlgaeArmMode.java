@@ -5,6 +5,7 @@ import frc.lib.mode.Mode;
 
 @Logged
 public enum AlgaeArmMode implements Mode {
+    // TODO update this to the actual configuration in AlgaeArmInputProcessor
     /**
      * pressing the b button sets the angle to a constant value that can be hot-reloaded for tuning
      * <p>

@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -138,6 +139,28 @@ public class AlgaeArm extends SubsystemBase {
 
         // set voltage
         motor.setVoltage(output + feed);
+    }
+
+    /** updates the arm motor velocity setpoint to the provided angular velocity, where positive rotational velocity is upwards rotation */
+    public void updateSetpoint(AngularVelocity velocity) {
+        // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
+        // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
+        final double feed = ff.calculate(relativeEncoder.getPosition(), velocity.in(RadiansPerSecond));
+
+        // update logged values
+        lastVelocityRadiansPerSecond = velocity.in(RadiansPerSecond);
+        lastVoltageVolts = feed;
+
+        // set voltage
+        motor.setVoltage(feed);
+    }
+
+    /** <b>BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS</b>
+     * <p>
+     * directly applies the specified voltage to the motor */
+    public void updateVoltage(Voltage voltage) {
+        // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
+        motor.setVoltage(voltage);
     }
 
     // tuning
