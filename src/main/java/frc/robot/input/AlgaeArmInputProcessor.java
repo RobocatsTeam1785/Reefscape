@@ -55,14 +55,16 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private static double joystickVelocityMaximum = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public AlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state) {
+    public AlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.arm = arm;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // defined suppliers
         BooleanSupplier isActive = isModeActive.apply(state);
 

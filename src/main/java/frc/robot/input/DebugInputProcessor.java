@@ -81,14 +81,14 @@ public class DebugInputProcessor {
         this.activeState = swerveState;
 
         // - processors
-        this.swerveProcessor = new SwerveInputProcessor(swerve, driver, swerveState);
-        this.elevatorProcessor = new ElevatorInputProcessor(elevator, driver, elevatorState);
+        this.swerveProcessor = new SwerveInputProcessor(swerve, driver, swerveState, this::isModeActive);
+        this.elevatorProcessor = new ElevatorInputProcessor(elevator, driver, elevatorState, this::isModeActive);
 
-        this.coralArmProcessor = new CoralArmInputProcessor(coralArm, driver, coralArmState);
-        this.coralWheelProcessor = new CoralWheelInputProcessor(coralWheel, driver, coralWheelState);
+        this.coralArmProcessor = new CoralArmInputProcessor(coralArm, driver, coralArmState, this::isModeActive);
+        this.coralWheelProcessor = new CoralWheelInputProcessor(coralWheel, driver, coralWheelState, this::isModeActive);
 
-        this.algaeArmProcessor = new AlgaeArmInputProcessor(algaeArm, driver, algaeArmState);
-        this.algaeWheelProcessor = new AlgaeWheelInputProcessor(algaeWheel, driver, algaeWheelState);
+        this.algaeArmProcessor = new AlgaeArmInputProcessor(algaeArm, driver, algaeArmState, this::isModeActive);
+        this.algaeWheelProcessor = new AlgaeWheelInputProcessor(algaeWheel, driver, algaeWheelState, this::isModeActive);
     }
 
     // configuration
@@ -137,14 +137,14 @@ public class DebugInputProcessor {
 
     /** configure trigger-based commands */
     public void configureTriggers() {
-        swerveProcessor.configureTriggers(this::isModeActive);
-        elevatorProcessor.configureTriggers(this::isModeActive);
+        swerveProcessor.configureTriggers();
+        elevatorProcessor.configureTriggers();
 
-        coralArmProcessor.configureTriggers(this::isModeActive);
-        coralWheelProcessor.configureTriggers(this::isModeActive);
+        coralArmProcessor.configureTriggers();
+        coralWheelProcessor.configureTriggers();
 
-        algaeArmProcessor.configureTriggers(this::isModeActive);
-        algaeWheelProcessor.configureTriggers(this::isModeActive);
+        algaeArmProcessor.configureTriggers();
+        algaeWheelProcessor.configureTriggers();
     }
 
     /** configure default commands */

@@ -53,14 +53,16 @@ public class CoralArmInputProcessor extends InputProcessor {
     private static double joystickVelocityMaximum = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public CoralArmInputProcessor(final CoralArm arm, final CommandXboxController driver, final ModeState<CoralArmMode> state) {
+    public CoralArmInputProcessor(final CoralArm arm, final CommandXboxController driver, final ModeState<CoralArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.arm = arm;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // defined suppliers
         BooleanSupplier isActive = isModeActive.apply(state);
 

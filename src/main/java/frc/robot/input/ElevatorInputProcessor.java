@@ -27,14 +27,16 @@ public class ElevatorInputProcessor extends InputProcessor {
     private final ModeState<ElevatorMode> state;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public ElevatorInputProcessor(final Elevator elevator, final CommandXboxController driver, final ModeState<ElevatorMode> state) {
+    public ElevatorInputProcessor(final Elevator elevator, final CommandXboxController driver, final ModeState<ElevatorMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.elevator = elevator;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // buttons
         // state-based
     }

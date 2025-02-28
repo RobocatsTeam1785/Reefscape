@@ -35,14 +35,16 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
     @Logged private double manualSpeedMetersPerSecond = 0.0, leftManualSpeedMetersPerSecond = 0.0, rightManualSpeedMetersPerSecond = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public AlgaeWheelInputProcessor(final AlgaeWheel wheel, final CommandXboxController driver, final ModeState<AlgaeWheelMode> state) {
+    public AlgaeWheelInputProcessor(final AlgaeWheel wheel, final CommandXboxController driver, final ModeState<AlgaeWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.wheel = wheel;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // defined suppliers
         BooleanSupplier isActive = isModeActive.apply(state);
 

@@ -30,14 +30,16 @@ public class SwerveInputProcessor extends InputProcessor {
     private final ModeState<DriveMode> state;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state) {
+    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.swerve = swerve;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // defined suppliers
         BooleanSupplier isActive = isModeActive.apply(state);
 

@@ -35,14 +35,16 @@ public class CoralWheelInputProcessor extends InputProcessor {
     @Logged private double manualSpeedMetersPerSecond = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public CoralWheelInputProcessor(final CoralWheel wheel, final CommandXboxController driver, final ModeState<CoralWheelMode> state) {
+    public CoralWheelInputProcessor(final CoralWheel wheel, final CommandXboxController driver, final ModeState<CoralWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+        super(isModeActive);
+
         this.wheel = wheel;
         this.driver = driver;
         this.state = state;
     }
 
     @Override
-    public void configureTriggers(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public void configureTriggers() {
         // defined suppliers
         BooleanSupplier isActive = isModeActive.apply(state);
 
