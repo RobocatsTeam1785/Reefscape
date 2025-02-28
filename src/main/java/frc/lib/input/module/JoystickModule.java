@@ -20,8 +20,8 @@ public class JoystickModule {
 
     // initialization
     public JoystickModule(
-        ControlModule module,
-        JoystickModuleParams params
+        JoystickModuleParams params,
+        ControlModule module
     ) {
         this.module = module;
 
