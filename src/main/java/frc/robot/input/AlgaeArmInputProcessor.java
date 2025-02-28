@@ -70,7 +70,11 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         }, arm));
 
         driver.y().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(RadiansPerSecond.of(buttonVelocity));
+            if (directlyControlVoltage) {
+                arm.updateVoltage(Volts.of(buttonVelocity));
+            } else {
+                arm.updateSetpoint(RadiansPerSecond.of(buttonVelocity));
+            }
         }, arm));
 
         driver.a().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
