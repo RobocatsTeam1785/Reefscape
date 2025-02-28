@@ -33,8 +33,9 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private final ModeState<AlgaeArmMode> state;
 
     // debug values
-    private static final double BUTTON_POSITION_RESET = 0.0;
-    private static final double BUTTON_VELOCITY_RESET = 0.0;
+    private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
+    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
 
     /** whether to directly control voltage using the velocity value and range, if true, or control the velocity setpoint in radians per second, if false */
     private static boolean directlyControlVoltage = false;
@@ -78,11 +79,15 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         }, arm));
 
         driver.a().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(Radians.of(BUTTON_POSITION_RESET));
+            arm.updateSetpoint(Radians.of(BUTTON_POSITION_RESET_RADIANS));
         }, arm));
 
         driver.b().and(state.noSwitchesActive()).and(isActive).and(state.is(AlgaeArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(RadiansPerSecond.of(BUTTON_VELOCITY_RESET));
+            if (directlyControlVoltage) {
+                arm.updateVoltage(Volts.of(BUTTON_VELOCITY_RESET_VOLTS));
+            } else {
+                arm.updateSetpoint(RadiansPerSecond.of(BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
+            }
         }, arm));
 
         // state-based
