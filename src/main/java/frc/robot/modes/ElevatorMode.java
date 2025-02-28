@@ -6,5 +6,8 @@ import frc.lib.mode.Mode;
 @Logged
 public enum ElevatorMode implements Mode {
     /** default left joystick controlled up and down movement */
-    MANUAL;
+    MANUAL,
+
+    // TODO add description based on input processor
+    DEBUG;
 }

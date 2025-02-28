@@ -5,6 +5,7 @@ import frc.lib.mode.Mode;
 
 @Logged
 public enum CoralWheelMode implements Mode {
+    // TODO add description based on input processor
     /**
      * pressing the b button sets the velocity to a constant value that can be hot-reloaded for tuning
      * <p>

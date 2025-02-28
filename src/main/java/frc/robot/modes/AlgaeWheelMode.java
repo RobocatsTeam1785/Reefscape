@@ -5,6 +5,7 @@ import frc.lib.mode.Mode;
 
 @Logged
 public enum AlgaeWheelMode implements Mode {
+    // TODO add description based on input processor
     /**
      * pressing the b button sets the velocity of both wheels to a constant value that can be hot-reloaded for tuning
      * <p>
