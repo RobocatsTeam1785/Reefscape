@@ -115,6 +115,7 @@ public class DebugInputProcessor {
         // elevator state
         // d-pad left: a is manual
         elevatorState.registerSwitch(this::setActiveState, ElevatorMode.MANUAL, driver.povLeft().and(driver.a()));
+        elevatorState.registerSwitch(this::setActiveState, ElevatorMode.DEBUG, driver.povLeft().and(driver.b()));
 
         // coral and algae arm and wheel
         // d-pad down: a is manual coral arm, b is manual coral wheel, x is manual algae arm, y is manual algae wheel,
