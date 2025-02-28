@@ -1,7 +1,10 @@
 package frc.robot.input;
 
-import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -28,11 +31,22 @@ public class CoralArmInputProcessor extends InputProcessor {
     private final ModeState<CoralArmMode> state;
 
     // debug values
-    // TODO implement a less hacky method of testing angles
-    private static final double DEBUG_ANGLE_DEGREES = -90.0;
+    private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
+    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
 
-    private static final double ANGLE_INCREMENT_DEGREES = 10.0;
-    @Logged private double manualAngle = DEBUG_ANGLE_DEGREES;
+    /** whether to directly control voltage using the velocity value and range, if true, or control the velocity setpoint in radians per second, if false */
+    private static boolean directlyControlVoltage = false;
+
+    private static double buttonPositionRadians = 0.0;
+
+    private static double joystickPositionMinimumRadians = 0.0;
+    private static double joystickPositionMaximumRadians = 0.0;
+
+    private static double buttonVelocity = 0.0;
+
+    private static double joystickVelocityMinimum = 0.0;
+    private static double joystickVelocityMaximum = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public CoralArmInputProcessor(final CoralArm arm, final CommandXboxController driver, final ModeState<CoralArmMode> state) {
@@ -50,29 +64,69 @@ public class CoralArmInputProcessor extends InputProcessor {
         // ! do not conflict with mode-switching triggers and only run when the current mode state is active
 
         // buttons
-        driver.b().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(Degrees.of(DEBUG_ANGLE_DEGREES));
+        // ! be very careful that specified angles do not exceed the operating range, as exceeding it risks damaging the robot
+        driver.x().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
+            arm.updateSetpoint(Radians.of(buttonPositionRadians));
         }, arm));
 
-        // ! be very careful that specified angles do not exceed the operating range, as exceeding it risks damaging the robot
         driver.y().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            manualAngle += ANGLE_INCREMENT_DEGREES;
-        }));
+            if (directlyControlVoltage) {
+                arm.updateVoltage(Volts.of(buttonVelocity));
+            } else {
+                arm.updateSetpoint(RadiansPerSecond.of(buttonVelocity));
+            }
+        }, arm));
 
         driver.a().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            manualAngle -= ANGLE_INCREMENT_DEGREES;
-        }));
+            arm.updateSetpoint(Radians.of(BUTTON_POSITION_RESET_RADIANS));
+        }, arm));
 
-        driver.x().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
-            arm.updateSetpoint(Degrees.of(manualAngle));
+        driver.b().and(state.noSwitchesActive()).and(isActive).and(state.is(CoralArmMode.MANUAL)).onTrue(new InstantCommand(() -> {
+            if (directlyControlVoltage) {
+                arm.updateVoltage(Volts.of(BUTTON_VELOCITY_RESET_VOLTS));
+            } else {
+                arm.updateSetpoint(RadiansPerSecond.of(BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
+            }
         }, arm));
 
         // state-based
     }
 
     @Override
-    public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {}
-    
+    public void configureDefaults(Map<Subsystem, Map<ModeState<?>, Command>> defaults) {
+        if (!defaults.containsKey(arm)) defaults.put(arm, new HashMap<>());
+
+        Map<ModeState<?>, Command> commands = defaults.get(arm);
+
+        commands.put(state, state.selectRunnable(Map.of(
+            CoralArmMode.MANUAL, this::driveWithinJoystickRange
+        ), arm));
+    }
+
+    // driving
+    public void driveWithinJoystickRange() {
+        // - fully up means -1, which is unintuitive, so it requires inversion
+        double positionRadians = -driver.getLeftY();
+        double velocity = -driver.getRightY();
+
+        positionRadians = joystickPositionMinimumRadians + positionRadians * (joystickPositionMaximumRadians - joystickPositionMinimumRadians);
+        velocity = joystickVelocityMinimum + velocity * (joystickVelocityMaximum - joystickVelocityMinimum);
+
+        // only apply in-range position setpoints when the left bumper is down
+        if (driver.leftBumper().getAsBoolean()) {
+            arm.updateSetpoint(Radians.of(positionRadians));
+        }
+
+        // only apply in-range velocity setpoints when the right bumper is down
+        if (driver.rightBumper().getAsBoolean()) {
+            if (directlyControlVoltage) {
+                arm.updateVoltage(Volts.of(velocity));
+            } else {
+                arm.updateSetpoint(RadiansPerSecond.of(velocity));
+            }
+        }
+    }
+
     // periodic
     @Override
     public void periodic() {}
