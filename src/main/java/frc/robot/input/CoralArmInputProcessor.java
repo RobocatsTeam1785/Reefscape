@@ -54,7 +54,7 @@ public class CoralArmInputProcessor extends InputProcessor {
         this.driver = driver;
         this.state = state;
 
-        this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralArmMode.MANUAL), JOYSTICK_DEADBAND);
+        this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralArmMode.DEBUG), JOYSTICK_DEADBAND);
 
         this.positionModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(Radians.of(value)), BUTTON_POSITION_RESET_RADIANS));
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(RadiansPerSecond.of(value)), BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
@@ -78,7 +78,7 @@ public class CoralArmInputProcessor extends InputProcessor {
         Map<ModeState<?>, Command> commands = defaults.get(arm);
 
         commands.put(state, state.selectRunnable(Map.of(
-            CoralArmMode.MANUAL, this::driveViaModules
+            CoralArmMode.DEBUG, this::driveViaModules
         ), arm));
     }
 

@@ -72,11 +72,11 @@ public class DebugInputProcessor {
         this.swerveState = new ModeState<>(DriveMode.ALIGN);
         this.elevatorState = new ModeState<>(ElevatorMode.MANUAL);
 
-        this.coralArmState = new ModeState<>(CoralArmMode.MANUAL);
-        this.coralWheelState = new ModeState<>(CoralWheelMode.MANUAL);
+        this.coralArmState = new ModeState<>(CoralArmMode.DEBUG);
+        this.coralWheelState = new ModeState<>(CoralWheelMode.DEBUG);
         
-        this.algaeArmState = new ModeState<>(AlgaeArmMode.MANUAL);
-        this.algaeWheelState = new ModeState<>(AlgaeWheelMode.MANUAL);
+        this.algaeArmState = new ModeState<>(AlgaeArmMode.DEBUG);
+        this.algaeWheelState = new ModeState<>(AlgaeWheelMode.DEBUG);
 
         this.activeState = swerveState;
 
@@ -121,18 +121,18 @@ public class DebugInputProcessor {
         //             left bumper is manual algae left wheel, right bumper is manual algae right wheel
 
         // coral arm state
-        coralArmState.registerSwitch(this::setActiveState, CoralArmMode.MANUAL, driver.povDown().and(driver.a()));
+        coralArmState.registerSwitch(this::setActiveState, CoralArmMode.DEBUG, driver.povDown().and(driver.a()));
 
         // coral wheel state
-        coralWheelState.registerSwitch(this::setActiveState, CoralWheelMode.MANUAL, driver.povDown().and(driver.b()));
+        coralWheelState.registerSwitch(this::setActiveState, CoralWheelMode.DEBUG, driver.povDown().and(driver.b()));
 
         // algae arm state
-        algaeArmState.registerSwitch(this::setActiveState, AlgaeArmMode.MANUAL, driver.povDown().and(driver.x()));
+        algaeArmState.registerSwitch(this::setActiveState, AlgaeArmMode.DEBUG, driver.povDown().and(driver.x()));
 
         // algae wheel state
-        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.MANUAL, driver.povDown().and(driver.y()));
-        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.MANUAL_LEFT_ONLY, driver.povDown().and(driver.leftBumper()));
-        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.MANUAL_RIGHT_ONLY, driver.povDown().and(driver.rightBumper()));
+        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.DEBUG, driver.povDown().and(driver.y()));
+        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.DEBUG_LEFT_ONLY, driver.povDown().and(driver.leftBumper()));
+        algaeWheelState.registerSwitch(this::setActiveState, AlgaeWheelMode.DEBUG_RIGHT_ONLY, driver.povDown().and(driver.rightBumper()));
     }
 
     /** configure trigger-based commands */

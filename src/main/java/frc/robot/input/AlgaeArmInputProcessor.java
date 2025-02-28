@@ -56,7 +56,7 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         this.driver = driver;
         this.state = state;
 
-        this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeArmMode.MANUAL), JOYSTICK_DEADBAND);
+        this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeArmMode.DEBUG), JOYSTICK_DEADBAND);
 
         this.positionModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(Radians.of(value)), BUTTON_POSITION_RESET_RADIANS));
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(RadiansPerSecond.of(value)), BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
@@ -80,7 +80,7 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         Map<ModeState<?>, Command> commands = defaults.get(arm);
 
         commands.put(state, state.selectRunnable(Map.of(
-            AlgaeArmMode.MANUAL, this::driveViaModules
+            AlgaeArmMode.DEBUG, this::driveViaModules
         ), arm));
     }
 

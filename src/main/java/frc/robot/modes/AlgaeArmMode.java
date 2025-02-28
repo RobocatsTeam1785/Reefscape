@@ -11,5 +11,5 @@ public enum AlgaeArmMode implements Mode {
      * <p>
      * pressing the y button increments the angle by 10°, pressing the a button decrements it by 10°, and pressing x applies the change
      */
-    MANUAL;
+    DEBUG;
 }

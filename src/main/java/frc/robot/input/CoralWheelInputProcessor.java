@@ -52,7 +52,7 @@ public class CoralWheelInputProcessor extends InputProcessor {
         this.state = state;
 
         // modules
-        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralWheelMode.MANUAL), JOYSTICK_DEADBAND);
+        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralWheelMode.DEBUG), JOYSTICK_DEADBAND);
 
         // - both
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
@@ -75,7 +75,7 @@ public class CoralWheelInputProcessor extends InputProcessor {
         Map<ModeState<?>, Command> commands = defaults.get(wheel);
 
         commands.put(state, state.selectRunnable(Map.of(
-            CoralWheelMode.MANUAL, this::driveViaModules
+            CoralWheelMode.DEBUG, this::driveViaModules
         ), wheel));
     }
 

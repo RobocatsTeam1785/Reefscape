@@ -52,7 +52,7 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
         this.state = state;
 
         // modules
-        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeWheelMode.MANUAL), JOYSTICK_DEADBAND);
+        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeWheelMode.DEBUG), JOYSTICK_DEADBAND);
 
         // - both
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
@@ -62,14 +62,14 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
         this.leftVelocityModule = new JoystickModule(
             new ControlModule(value -> wheel.updateLeftSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND),
             defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.MANUAL_LEFT_ONLY);
+                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_LEFT_ONLY);
             })
         );
 
         this.leftVoltageModule = new JoystickModule(
             new ControlModule(value -> wheel.updateLeftVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS),
             defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.MANUAL_LEFT_ONLY);
+                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_LEFT_ONLY);
             })
         );
 
@@ -77,14 +77,14 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
         this.rightVelocityModule = new JoystickModule(
             new ControlModule(value -> wheel.updateRightSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND),
             defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.MANUAL_RIGHT_ONLY);
+                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_RIGHT_ONLY);
             })
         );
 
         this.rightVoltageModule = new JoystickModule(
             new ControlModule(value -> wheel.updateRightVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS),
             defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.MANUAL_RIGHT_ONLY);
+                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_RIGHT_ONLY);
             })
         );
     }
@@ -113,9 +113,9 @@ public class AlgaeWheelInputProcessor extends InputProcessor {
         Map<ModeState<?>, Command> commands = defaults.get(wheel);
 
         commands.put(state, state.selectRunnable(Map.of(
-            AlgaeWheelMode.MANUAL, () -> driveViaModules(velocityModule, voltageModule),
-            AlgaeWheelMode.MANUAL_LEFT_ONLY, () -> driveViaModules(leftVelocityModule, leftVoltageModule),
-            AlgaeWheelMode.MANUAL_RIGHT_ONLY, () -> driveViaModules(rightVelocityModule, rightVoltageModule)
+            AlgaeWheelMode.DEBUG, () -> driveViaModules(velocityModule, voltageModule),
+            AlgaeWheelMode.DEBUG_LEFT_ONLY, () -> driveViaModules(leftVelocityModule, leftVoltageModule),
+            AlgaeWheelMode.DEBUG_RIGHT_ONLY, () -> driveViaModules(rightVelocityModule, rightVoltageModule)
         ), wheel));
     }
 
