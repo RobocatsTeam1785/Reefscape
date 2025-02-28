@@ -179,6 +179,15 @@ public class Elevator extends SubsystemBase {
         rightMotor.setVoltage(rightOutput + rightFeed);
     }
 
+    /** <b>BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS</b>
+     * <p>
+     * directly applies the specified voltage to the motor */
+    public void updateVoltage(Voltage voltage) {
+        // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
+        leftMotor.setVoltage(voltage);
+        rightMotor.setVoltage(voltage);
+    }
+
     // tuning
     /** update constants; intended for use when hand-tuning constants using a debugger and hot code replace */
     public void tune() {
