@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -31,6 +32,9 @@ public class CoralArmInputProcessor extends InputProcessor {
     private final ModeState<CoralArmMode> state;
 
     // control
+    /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
+    private static final double JOYSTICK_DEADBAND = 0.15;
+
     private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
     private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
@@ -108,6 +112,10 @@ public class CoralArmInputProcessor extends InputProcessor {
         // - fully up means -1, which is unintuitive, so it requires inversion
         double positionRadians = -driver.getLeftY();
         double velocity = -driver.getRightY();
+
+        // avoid sending very small voltages that cause accidental drift
+        positionRadians = MathUtil.applyDeadband(positionRadians, JOYSTICK_DEADBAND);
+        velocity = MathUtil.applyDeadband(velocity, JOYSTICK_DEADBAND);
 
         positionRadians = joystickPositionMinimumRadians + positionRadians * (joystickPositionMaximumRadians - joystickPositionMinimumRadians);
         velocity = joystickVelocityMinimum + velocity * (joystickVelocityMaximum - joystickVelocityMinimum);
