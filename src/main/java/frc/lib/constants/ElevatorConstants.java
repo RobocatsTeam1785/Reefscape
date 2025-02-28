@@ -62,8 +62,8 @@ public class ElevatorConstants {
     // TODO measure and determine these
     // TODO decide whether zero height will be defined as the floor or the lowest height the elevator can reach
     public static final Distance MAX_HEIGHT = Meters.of(0.0);
-    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(0.2);
-    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(0.1);
+    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1000.0);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(1000.0);
 
     // scoring/intake-relevant heights
     // TODO measure these
