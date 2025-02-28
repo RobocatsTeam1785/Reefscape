@@ -64,7 +64,15 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
         );
 
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(RadiansPerSecond.of(value)), BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
-        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
+        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(
+            value -> arm.updateVoltage(Volts.of(value)),
+            BUTTON_VELOCITY_RESET_VOLTS,
+
+            0.0,
+
+            0.0,
+            5.0
+        ));
     }
 
     @Override

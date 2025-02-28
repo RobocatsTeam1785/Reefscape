@@ -69,7 +69,15 @@ public class ElevatorInputProcessor extends InputProcessor implements Sendable {
         );
 
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> elevator.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
-        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> elevator.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
+        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(
+            value -> elevator.updateVoltage(Volts.of(value)),
+            BUTTON_VELOCITY_RESET_VOLTS,
+
+            0.0,
+
+            0.0,
+            5.0
+        ));
     }
 
     @Override

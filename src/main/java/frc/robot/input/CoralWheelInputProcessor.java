@@ -56,7 +56,15 @@ public class CoralWheelInputProcessor extends InputProcessor implements Sendable
 
         // - both
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
-        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
+        this.voltageModule = new JoystickModule(defaultParams, new ControlModule(
+            value -> wheel.updateVoltage(Volts.of(value)),
+            BUTTON_VELOCITY_RESET_VOLTS,
+
+            0.0,
+
+            0.0,
+            5.0
+        ));
     }
 
     @Override
