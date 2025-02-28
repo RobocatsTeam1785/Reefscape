@@ -56,7 +56,13 @@ public class CoralArmInputProcessor extends InputProcessor {
 
         this.defaultParams = new JoystickModuleParams(arm, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralArmMode.DEBUG), JOYSTICK_DEADBAND);
 
-        this.positionModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(Radians.of(value)), BUTTON_POSITION_RESET_RADIANS));
+        this.positionModule = new JoystickModule(
+            new ControlModule(value -> arm.updateSetpoint(Radians.of(value)), BUTTON_POSITION_RESET_RADIANS),
+            defaultParams.let(params -> {
+                params.defaultDeadband = 0.0;
+            })
+        );
+        
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateSetpoint(RadiansPerSecond.of(value)), BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND));
         this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> arm.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
     }

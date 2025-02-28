@@ -59,7 +59,13 @@ public class ElevatorInputProcessor extends InputProcessor {
         this.defaultParams = new JoystickModuleParams(elevator, isModeActive.apply(state), state.noSwitchesActive(), state.is(ElevatorMode.DEBUG), JOYSTICK_DEADBAND);
 
         // - both
-        this.positionModule = new JoystickModule(defaultParams, new ControlModule(value -> elevator.updateSetpoint(Meters.of(value)), BUTTON_POSITION_RESET_METERS));
+        this.positionModule = new JoystickModule(
+            new ControlModule(value -> elevator.updateSetpoint(Meters.of(value)), BUTTON_POSITION_RESET_METERS),
+            defaultParams.let(params -> {
+                params.defaultDeadband = 0.0;
+            })
+        );
+
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> elevator.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
         this.voltageModule = new JoystickModule(defaultParams, new ControlModule(value -> elevator.updateVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS));
     }
