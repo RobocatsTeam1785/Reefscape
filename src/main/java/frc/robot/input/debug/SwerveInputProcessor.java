@@ -1,4 +1,4 @@
-package frc.robot.input;
+package frc.robot.input.debug;
 
 import java.util.HashMap;
 import java.util.Map;

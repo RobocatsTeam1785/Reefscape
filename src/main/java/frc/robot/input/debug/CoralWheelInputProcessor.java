@@ -1,4 +1,4 @@
-package frc.robot.input;
+package frc.robot.input.debug;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -18,24 +18,24 @@ import frc.lib.input.module.ControlModule;
 import frc.lib.input.module.JoystickModule;
 import frc.lib.input.module.JoystickModuleParams;
 import frc.lib.mode.ModeState;
-import frc.robot.modes.AlgaeWheelMode;
-import frc.robot.subsystems.AlgaeWheel;
+import frc.robot.modes.CoralWheelMode;
+import frc.robot.subsystems.CoralWheel;
 
-public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable {
+public class CoralWheelInputProcessor extends InputProcessor implements Sendable {
     // subsystems
-    private final AlgaeWheel wheel;
+    private final CoralWheel wheel;
 
     // controllers
     private final CommandXboxController driver;
 
     // modes
-    private final ModeState<AlgaeWheelMode> state;
+    private final ModeState<CoralWheelMode> state;
 
     // control
     private final JoystickModuleParams defaultParams;
 
-    private final JoystickModule velocityModule, leftVelocityModule, rightVelocityModule;
-    private final JoystickModule voltageModule, leftVoltageModule, rightVoltageModule;
+    private final JoystickModule velocityModule;
+    private final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
     private static final double JOYSTICK_DEADBAND = 0.15;
@@ -44,7 +44,7 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
     private static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public AlgaeWheelInputProcessor(final AlgaeWheel wheel, final CommandXboxController driver, final ModeState<AlgaeWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public CoralWheelInputProcessor(final CoralWheel wheel, final CommandXboxController driver, final ModeState<CoralWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
         super(isModeActive);
 
         this.wheel = wheel;
@@ -52,7 +52,7 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
         this.state = state;
 
         // modules
-        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(AlgaeWheelMode.DEBUG), JOYSTICK_DEADBAND);
+        this.defaultParams = new JoystickModuleParams(wheel, isModeActive.apply(state), state.noSwitchesActive(), state.is(CoralWheelMode.DEBUG), JOYSTICK_DEADBAND);
 
         // - both
         this.velocityModule = new JoystickModule(defaultParams, new ControlModule(value -> wheel.updateSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND));
@@ -65,36 +65,6 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
             0.0,
             5.0
         ));
-
-        // - left wheel
-        this.leftVelocityModule = new JoystickModule(
-            new ControlModule(value -> wheel.updateLeftSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND),
-            defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_LEFT_ONLY);
-            })
-        );
-
-        this.leftVoltageModule = new JoystickModule(
-            new ControlModule(value -> wheel.updateLeftVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS),
-            defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_LEFT_ONLY);
-            })
-        );
-
-        // - right wheel
-        this.rightVelocityModule = new JoystickModule(
-            new ControlModule(value -> wheel.updateRightSetpoint(MetersPerSecond.of(value)), BUTTON_VELOCITY_RESET_METERS_PER_SECOND),
-            defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_RIGHT_ONLY);
-            })
-        );
-
-        this.rightVoltageModule = new JoystickModule(
-            new ControlModule(value -> wheel.updateRightVoltage(Volts.of(value)), BUTTON_VELOCITY_RESET_VOLTS),
-            defaultParams.let(params -> {
-                params.isRelevantMode = state.is(AlgaeWheelMode.DEBUG_RIGHT_ONLY);
-            })
-        );
     }
 
     @Override
@@ -102,16 +72,8 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
         velocityModule.configureSetValueButton(driver.y());
         voltageModule.configureSetValueButton(driver.a());
 
-        leftVelocityModule.configureSetValueButton(driver.y());
-        leftVoltageModule.configureSetValueButton(driver.a());
-
-        rightVelocityModule.configureSetValueButton(driver.y());
-        rightVoltageModule.configureSetValueButton(driver.a());
-
         // resetting voltage to zero functions as a reset for both modules
         voltageModule.configureResetButton(driver.b());
-        leftVoltageModule.configureResetButton(driver.b());
-        rightVoltageModule.configureResetButton(driver.b());
     }
 
     @Override
@@ -121,14 +83,12 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
         Map<ModeState<?>, Command> commands = defaults.get(wheel);
 
         commands.put(state, state.selectRunnable(Map.of(
-            AlgaeWheelMode.DEBUG, () -> driveViaModules(velocityModule, voltageModule),
-            AlgaeWheelMode.DEBUG_LEFT_ONLY, () -> driveViaModules(leftVelocityModule, leftVoltageModule),
-            AlgaeWheelMode.DEBUG_RIGHT_ONLY, () -> driveViaModules(rightVelocityModule, rightVoltageModule)
+            CoralWheelMode.DEBUG, this::driveViaModules
         ), wheel));
     }
 
     // driving
-    public void driveViaModules(JoystickModule providedVelocityModule, JoystickModule providedVoltageModule) {
+    public void driveViaModules() {
         boolean leftBumperDown = driver.leftBumper().getAsBoolean();
         boolean rightBumperDown = driver.rightBumper().getAsBoolean();
 
@@ -137,10 +97,10 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
 
         if (leftBumperDown && !rightBumperDown) {
             // value is interpreted as radians/s, after range shifting
-            providedVelocityModule.driveJoystick(value);
+            velocityModule.driveJoystick(value);
         } else if (!leftBumperDown && rightBumperDown) {
             // value is interpreted as volts, after range shifting
-            providedVoltageModule.driveJoystick(value);
+            voltageModule.driveJoystick(value);
         }
     }
 
@@ -149,14 +109,8 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
     public void initSendable(SendableBuilder builder) {
         velocityModule.configureSendable(builder, "Velocity ");
         voltageModule.configureSendable(builder, "Voltage ");
-
-        leftVelocityModule.configureSendable(builder, "Left Velocity ");
-        leftVoltageModule.configureSendable(builder, "Left Voltage ");
-
-        rightVelocityModule.configureSendable(builder, "Right Velocity ");
-        rightVoltageModule.configureSendable(builder, "Right Voltage ");
     }
-
+    
     // periodic
     @Override
     public void periodic() {}

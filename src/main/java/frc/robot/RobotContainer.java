@@ -2,7 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.input.DebugInputProcessor;
+import frc.robot.input.debug.DebugInputProcessor;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeWheel;
 import frc.robot.subsystems.CoralArm;
