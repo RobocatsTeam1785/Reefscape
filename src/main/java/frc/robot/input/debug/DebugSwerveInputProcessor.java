@@ -19,7 +19,7 @@ import frc.lib.swerve.TalonSwerveModule;
 import frc.robot.modes.DriveMode;
 import frc.robot.subsystems.Swerve;
 
-public class SwerveInputProcessor extends InputProcessor {
+public class DebugSwerveInputProcessor extends InputProcessor {
     // subsystems
     private final Swerve swerve;
 
@@ -30,7 +30,7 @@ public class SwerveInputProcessor extends InputProcessor {
     private final ModeState<DriveMode> state;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public SwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public DebugSwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
         super(isModeActive);
 
         this.swerve = swerve;

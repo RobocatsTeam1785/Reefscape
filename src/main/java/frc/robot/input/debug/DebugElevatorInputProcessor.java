@@ -25,7 +25,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.ElevatorMode;
 import frc.robot.subsystems.Elevator;
 
-public class ElevatorInputProcessor extends InputProcessor implements Sendable {
+public class DebugElevatorInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final Elevator elevator;
 
@@ -50,7 +50,7 @@ public class ElevatorInputProcessor extends InputProcessor implements Sendable {
     private static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public ElevatorInputProcessor(final Elevator elevator, final CommandXboxController driver, final ModeState<ElevatorMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public DebugElevatorInputProcessor(final Elevator elevator, final CommandXboxController driver, final ModeState<ElevatorMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
         super(isModeActive);
 
         this.elevator = elevator;

@@ -22,7 +22,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeArmMode;
 import frc.robot.subsystems.AlgaeArm;
 
-public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
+public class DebugAlgaeArmInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final AlgaeArm arm;
 
@@ -47,7 +47,7 @@ public class AlgaeArmInputProcessor extends InputProcessor implements Sendable {
     private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public AlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public DebugAlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
         super(isModeActive);
 
         this.arm = arm;

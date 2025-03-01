@@ -43,14 +43,14 @@ public class DebugInputProcessor {
     @Logged private ModeState<?> activeState;
     
     // processors
-    private final SwerveInputProcessor swerveProcessor;
-    private final ElevatorInputProcessor elevatorProcessor;
+    private final DebugSwerveInputProcessor swerveProcessor;
+    private final DebugElevatorInputProcessor elevatorProcessor;
 
-    @Logged private final CoralArmInputProcessor coralArmProcessor;
-    @Logged private final CoralWheelInputProcessor coralWheelProcessor;
+    @Logged private final DebugCoralArmInputProcessor coralArmProcessor;
+    @Logged private final DebugCoralWheelInputProcessor coralWheelProcessor;
 
-    @Logged private final AlgaeArmInputProcessor algaeArmProcessor;
-    @Logged private final AlgaeWheelInputProcessor algaeWheelProcessor;
+    @Logged private final DebugAlgaeArmInputProcessor algaeArmProcessor;
+    @Logged private final DebugAlgaeWheelInputProcessor algaeWheelProcessor;
 
     public DebugInputProcessor(
         final Swerve swerve,
@@ -81,14 +81,14 @@ public class DebugInputProcessor {
         this.activeState = swerveState;
 
         // - processors
-        this.swerveProcessor = new SwerveInputProcessor(swerve, driver, swerveState, this::isModeActive);
-        this.elevatorProcessor = new ElevatorInputProcessor(elevator, driver, elevatorState, this::isModeActive);
+        this.swerveProcessor = new DebugSwerveInputProcessor(swerve, driver, swerveState, this::isModeActive);
+        this.elevatorProcessor = new DebugElevatorInputProcessor(elevator, driver, elevatorState, this::isModeActive);
 
-        this.coralArmProcessor = new CoralArmInputProcessor(coralArm, driver, coralArmState, this::isModeActive);
-        this.coralWheelProcessor = new CoralWheelInputProcessor(coralWheel, driver, coralWheelState, this::isModeActive);
+        this.coralArmProcessor = new DebugCoralArmInputProcessor(coralArm, driver, coralArmState, this::isModeActive);
+        this.coralWheelProcessor = new DebugCoralWheelInputProcessor(coralWheel, driver, coralWheelState, this::isModeActive);
 
-        this.algaeArmProcessor = new AlgaeArmInputProcessor(algaeArm, driver, algaeArmState, this::isModeActive);
-        this.algaeWheelProcessor = new AlgaeWheelInputProcessor(algaeWheel, driver, algaeWheelState, this::isModeActive);
+        this.algaeArmProcessor = new DebugAlgaeArmInputProcessor(algaeArm, driver, algaeArmState, this::isModeActive);
+        this.algaeWheelProcessor = new DebugAlgaeWheelInputProcessor(algaeWheel, driver, algaeWheelState, this::isModeActive);
     }
 
     // configuration

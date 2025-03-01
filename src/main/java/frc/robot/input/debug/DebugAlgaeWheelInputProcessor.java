@@ -21,7 +21,7 @@ import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeWheelMode;
 import frc.robot.subsystems.AlgaeWheel;
 
-public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable {
+public class DebugAlgaeWheelInputProcessor extends InputProcessor implements Sendable {
     // subsystems
     private final AlgaeWheel wheel;
 
@@ -44,7 +44,7 @@ public class AlgaeWheelInputProcessor extends InputProcessor implements Sendable
     private static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
-    public AlgaeWheelInputProcessor(final AlgaeWheel wheel, final CommandXboxController driver, final ModeState<AlgaeWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public DebugAlgaeWheelInputProcessor(final AlgaeWheel wheel, final CommandXboxController driver, final ModeState<AlgaeWheelMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
         super(isModeActive);
 
         this.wheel = wheel;
