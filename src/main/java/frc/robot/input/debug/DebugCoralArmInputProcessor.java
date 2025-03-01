@@ -24,27 +24,27 @@ import frc.robot.subsystems.CoralArm;
 
 public class DebugCoralArmInputProcessor extends InputProcessor implements Sendable {
     // subsystems
-    private final CoralArm arm;
+    public final CoralArm arm;
 
     // controllers
-    private final CommandXboxController driver;
+    public final CommandXboxController driver;
 
     // modes
-    private final ModeState<CoralArmMode> state;
+    public final ModeState<CoralArmMode> state;
 
     // control
-    private final JoystickModuleParams defaultParams;
+    public final JoystickModuleParams defaultParams;
 
-    private final JoystickModule positionModule;
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    public final JoystickModule positionModule;
+    public final JoystickModule velocityModule;
+    public final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    private static final double JOYSTICK_DEADBAND = 0.15;
+    public static final double JOYSTICK_DEADBAND = 0.15;
 
-    private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
+    public static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public DebugCoralArmInputProcessor(final CoralArm arm, final CommandXboxController driver, final ModeState<CoralArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
@@ -109,7 +109,7 @@ public class DebugCoralArmInputProcessor extends InputProcessor implements Senda
             // value is interpreted as radians, after range shifting
             positionModule.driveJoystick(value);
         } else if (leftBumperDown && !rightBumperDown) {
-            // value is interpreted as radians/s, after range shifting
+            // value is interpreted as radians/s, after range shiftinga
             velocityModule.driveJoystick(value);
         } else if (!leftBumperDown && rightBumperDown) {
             // value is interpreted as volts, after range shifting

@@ -14,25 +14,25 @@ import frc.robot.subsystems.Vision;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class RobotContainer {
     // subsystems
-    @Logged private Vision vision;
+    @Logged public Vision vision;
 
-    @Logged private Swerve swerve;
-    @Logged private Elevator elevator;
+    @Logged public Swerve swerve;
+    @Logged public Elevator elevator;
 
-    @Logged private CoralArm coralArm;
-    @Logged private CoralWheel coralWheel;
+    @Logged public CoralArm coralArm;
+    @Logged public CoralWheel coralWheel;
 
-    @Logged private AlgaeArm algaeArm;
-    @Logged private AlgaeWheel algaeWheel;
+    @Logged public AlgaeArm algaeArm;
+    @Logged public AlgaeWheel algaeWheel;
 
     // autos
-    private Autos autos;
+    public Autos autos;
 
     // controllers use NED CCC (https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html)
-    private final CommandXboxController driver = new CommandXboxController(0);
+    public final CommandXboxController driver = new CommandXboxController(0);
     
     // input processors
-    @Logged private DebugInputProcessor processor;
+    @Logged public DebugInputProcessor processor;
 
     public RobotContainer(double period) {
         // subsystems

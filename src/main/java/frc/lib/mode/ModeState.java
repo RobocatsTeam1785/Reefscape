@@ -16,19 +16,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class ModeState<M extends Mode> {
     /** cache to store triggers comparing current and possible modes, to avoid creating an arbitrary number of redundant Triggers */
-    private final HashMap<M, Trigger> isCache = new HashMap<>();
+    public final HashMap<M, Trigger> isCache = new HashMap<>();
 
     /** list of mode switch triggers */
-    private final ArrayList<Trigger> switches = new ArrayList<>();
+    public final ArrayList<Trigger> switches = new ArrayList<>();
 
     /** whether all mode switch triggers are inactive */
-    private final Trigger noSwitchesActive = new Trigger(() -> switches.stream().allMatch(t -> !t.getAsBoolean()));
+    public final Trigger noSwitchesActive = new Trigger(() -> switches.stream().allMatch(t -> !t.getAsBoolean()));
 
     /** the mode the controller uses at startup */
     public final M defaultMode;
 
     /** the current mode the controller is using */
-    private M currentMode;
+    public M currentMode;
 
     public ModeState(M defaultMode) {
         this.defaultMode = defaultMode;

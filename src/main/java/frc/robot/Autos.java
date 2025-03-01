@@ -14,8 +14,8 @@ import frc.lib.constants.AutoConstants;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Autos {
-    private final Map<String, PathPlannerAuto> autos = new HashMap<>();
-    private final SendableChooser<Command> chooser;
+    public final Map<String, PathPlannerAuto> autos = new HashMap<>();
+    public final SendableChooser<Command> chooser;
 
     public Autos() {
         // initialize autos on startup to avoid problematic delays mid-game from lazy loading

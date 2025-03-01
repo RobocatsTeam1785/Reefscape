@@ -11,16 +11,16 @@ import frc.lib.coordinates.Orientation;
 public class Rotation3<U extends Unit> {
     // properties
     // TODO convey how handedness is encoded in the coordinate system somehow
-    protected final CoordinateSystem system;
-    protected final Orientation orientation;
+    public final CoordinateSystem system;
+    public final Orientation orientation;
 
-    protected final U unit;
+    public final U unit;
 
     // TODO switch to quaternions
-    protected final Rotation3d rotation;
+    public final Rotation3d rotation;
 
     // initialization
-    protected Rotation3(CoordinateSystem system, Orientation orientation, U unit, Rotation3d rotation) {
+    public Rotation3(CoordinateSystem system, Orientation orientation, U unit, Rotation3d rotation) {
         this.system = system;
         this.orientation = orientation;
 

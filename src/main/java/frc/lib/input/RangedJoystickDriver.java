@@ -12,33 +12,33 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RangedJoystickDriver {
     /** if joystickDeadband is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    private final double joystickDeadband;
+    public final double joystickDeadband;
 
-    private final double buttonPositionReset;
-    private final double buttonVelocityReset;
-    private final double buttonVelocityResetVolts;
+    public final double buttonPositionReset;
+    public final double buttonVelocityReset;
+    public final double buttonVelocityResetVolts;
 
     /** the consumer that sets the mechanism's position setpoint to the specified value. units are provided by the user of this class. */
-    private final DoubleConsumer positionConsumer;
+    public final DoubleConsumer positionConsumer;
 
     /** the consumer that sets the mechanism's velocity setpoint to the specified value. units are provided by the user of this class. */
-    private final DoubleConsumer velocityConsumer;
+    public final DoubleConsumer velocityConsumer;
 
     /** the consumer that directly sets the mechanism's voltage, in volts */
-    private final DoubleConsumer voltageConsumer;
+    public final DoubleConsumer voltageConsumer;
 
     /** whether to directly control voltage using the velocity value and range, if true, or control the velocity setpoint in radians per second, if false */
-    private boolean directlyControlVoltage;
+    public boolean directlyControlVoltage;
 
-    private double buttonPosition;
+    public double buttonPosition;
 
-    private double joystickPositionMinimum;
-    private double joystickPositionMaximum;
+    public double joystickPositionMinimum;
+    public double joystickPositionMaximum;
 
-    private double buttonVelocity;
+    public double buttonVelocity;
 
-    private double joystickVelocityMinimum;
-    private double joystickVelocityMaximum;
+    public double joystickVelocityMinimum;
+    public double joystickVelocityMaximum;
 
     public RangedJoystickDriver(
         final double joystickDeadband, 

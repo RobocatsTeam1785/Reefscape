@@ -24,27 +24,27 @@ import frc.robot.subsystems.AlgaeArm;
 
 public class DebugAlgaeArmInputProcessor extends InputProcessor implements Sendable {
     // subsystems
-    private final AlgaeArm arm;
+    public final AlgaeArm arm;
 
     // controllers
-    private final CommandXboxController driver;
+    public final CommandXboxController driver;
 
     // modes
-    private final ModeState<AlgaeArmMode> state;
+    public final ModeState<AlgaeArmMode> state;
 
     // control
-    private final JoystickModuleParams defaultParams;
+    public final JoystickModuleParams defaultParams;
 
-    private final JoystickModule positionModule;
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    public final JoystickModule positionModule;
+    public final JoystickModule velocityModule;
+    public final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    private static final double JOYSTICK_DEADBAND = 0.15;
+    public static final double JOYSTICK_DEADBAND = 0.15;
 
-    private static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
+    public static final double BUTTON_POSITION_RESET_RADIANS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_RADIANS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public DebugAlgaeArmInputProcessor(final AlgaeArm arm, final CommandXboxController driver, final ModeState<AlgaeArmMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {

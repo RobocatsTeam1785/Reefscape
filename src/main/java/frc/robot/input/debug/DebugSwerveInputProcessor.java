@@ -21,13 +21,13 @@ import frc.robot.subsystems.Swerve;
 
 public class DebugSwerveInputProcessor extends InputProcessor {
     // subsystems
-    private final Swerve swerve;
+    public final Swerve swerve;
 
     // controllers
-    private final CommandXboxController driver;
+    public final CommandXboxController driver;
 
     // modes
-    private final ModeState<DriveMode> state;
+    public final ModeState<DriveMode> state;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public DebugSwerveInputProcessor(final Swerve swerve, final CommandXboxController driver, final ModeState<DriveMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {

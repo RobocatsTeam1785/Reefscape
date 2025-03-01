@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 @Logged
 public class Robot extends TimedRobot {
   // pass the period so the drive subsystem can discretize the chassis speeds with it
-  private RobotContainer container;
-  // private SysIdBot bot;
+  public RobotContainer container;
+  // public SysIdBot bot;
 
   /**
    * This function is run when the robot is first started up and should be used for any

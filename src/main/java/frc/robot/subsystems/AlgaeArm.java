@@ -29,18 +29,18 @@ import frc.lib.constants.AlgaeArmConstants;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class AlgaeArm extends SubsystemBase {
     // hardware
-    protected SparkMax motor;
-    @Logged protected RelativeEncoder relativeEncoder;
-    @Logged protected DutyCycleEncoder hexEncoder;
+    public SparkMax motor;
+    @Logged public RelativeEncoder relativeEncoder;
+    @Logged public DutyCycleEncoder hexEncoder;
 
     // loop control
-    @Logged protected ProfiledPIDController pid;
-    protected ArmFeedforward ff;
+    @Logged public ProfiledPIDController pid;
+    public ArmFeedforward ff;
 
     // logging
-    protected Voltage sysIdVoltage;
-    @Logged protected double lastVelocityRadiansPerSecond;
-    @Logged protected double lastVoltageVolts;
+    public Voltage sysIdVoltage;
+    @Logged public double lastVelocityRadiansPerSecond;
+    @Logged public double lastVoltageVolts;
 
     public AlgaeArm() {
         initMotor();
@@ -49,7 +49,7 @@ public class AlgaeArm extends SubsystemBase {
     }
 
     // initialization
-    protected void initMotor() {
+    public void initMotor() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
@@ -81,12 +81,12 @@ public class AlgaeArm extends SubsystemBase {
         relativeEncoder.setPosition(AlgaeArmConstants.MIN_ANGLE.in(Radians));
     }
 
-    protected void initHexEncoder() {
+    public void initHexEncoder() {
         // TODO adjust expected zero if necessary
         hexEncoder = new DutyCycleEncoder(AlgaeArmConstants.HEX_ENCODER_CHANNEL, 1.0, 0.0);
     }
 
-    protected void initControl() {
+    public void initControl() {
         // set the maximum speed and acceleration of the generated setpoints to the constant values
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
             AlgaeArmConstants.MAX_SPEED.in(RadiansPerSecond),

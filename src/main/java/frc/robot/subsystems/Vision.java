@@ -16,13 +16,13 @@ import frc.lib.constants.VisionConstants;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Vision extends SubsystemBase {
     // hardware
-    private final PhotonCamera camera;
+    public final PhotonCamera camera;
 
     // components
-    private final PhotonPoseEstimator estimator;
+    public final PhotonPoseEstimator estimator;
 
     // state
-    private PhotonPipelineResult latestResult;
+    public PhotonPipelineResult latestResult;
 
     // initialization
     public Vision() {

@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.sysid.SysIdTurn;
 
 public class SysIdBot {
-    private final SysIdTurn drive;
-    private final CommandXboxController driver = new CommandXboxController(0);
+    public final SysIdTurn drive;
+    public final CommandXboxController driver = new CommandXboxController(0);
 
     public SysIdBot(double period) {
         drive = new SysIdTurn(period);
@@ -14,7 +14,7 @@ public class SysIdBot {
         configureCommands();
     }
 
-    private void configureCommands() {
+    public void configureCommands() {
         // button + left bumper triggers the forward test, and button + right bumper triggers the reverse test
         // while held, a triggers dynamic tests, and b triggers quasistatic tests
         driver.a().and(driver.leftBumper()).whileTrue(drive.dynamic(Direction.kForward));

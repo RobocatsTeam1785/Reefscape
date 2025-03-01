@@ -12,7 +12,7 @@ import frc.robot.subsystems.Swerve;
 
 /** drive subsystem to perform system identification for the turn feedforward and PID controller */
 public class SysIdTurn extends Swerve {
-    private final SysIdRoutine routine;
+    public final SysIdRoutine routine;
 
     // initialization
     public SysIdTurn(double period) {

@@ -15,8 +15,8 @@ public abstract class Orientation {
     // TODO possibly implement rotation transformation
 
     // conversions
-    protected abstract Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2);
-    protected abstract Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2);
+    public abstract Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2);
+    public abstract Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2);
 
     // implementations
     /**
@@ -28,11 +28,11 @@ public abstract class Orientation {
      * </ul>
      */
     public static final Orientation ROBOT_RELATIVE = new Orientation() {
-        protected Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2) {
+        public Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2) {
             return position;
         }
 
-        protected Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2) {
+        public Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2) {
             return base;
         }
     };
@@ -46,7 +46,7 @@ public abstract class Orientation {
      * </ul>
      */
     public static final Orientation FIELD_RELATIVE = new Orientation() {
-        protected Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2) {
+        public Translation3d toBase(Translation3d position, CoordinateSystem system, AHRS navX2) {
             // calculate quaternion
             double w = navX2.getQuaternionW();
             double x = navX2.getQuaternionX();
@@ -65,7 +65,7 @@ public abstract class Orientation {
             return inOriginalSystem;
         }
 
-        protected Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2) {
+        public Translation3d fromBase(Translation3d base, CoordinateSystem system, AHRS navX2) {
             // calculate quaternion
             double w = navX2.getQuaternionW();
             double x = navX2.getQuaternionX();

@@ -27,27 +27,27 @@ import frc.robot.subsystems.Elevator;
 
 public class DebugElevatorInputProcessor extends InputProcessor implements Sendable {
     // subsystems
-    private final Elevator elevator;
+    public final Elevator elevator;
 
     // controllers
-    private final CommandXboxController driver;
+    public final CommandXboxController driver;
 
     // modes
-    private final ModeState<ElevatorMode> state;
+    public final ModeState<ElevatorMode> state;
 
     // control
-    private final JoystickModuleParams defaultParams;
+    public final JoystickModuleParams defaultParams;
 
-    private final JoystickModule positionModule;
-    private final JoystickModule velocityModule;
-    private final JoystickModule voltageModule;
+    public final JoystickModule positionModule;
+    public final JoystickModule velocityModule;
+    public final JoystickModule voltageModule;
 
     /** if JOYSTICK_DEADBAND is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    private static final double JOYSTICK_DEADBAND = 0.15;
+    public static final double JOYSTICK_DEADBAND = 0.15;
 
-    private static final double BUTTON_POSITION_RESET_METERS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
-    private static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
+    public static final double BUTTON_POSITION_RESET_METERS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_VOLTS = 0.0;
+    public static final double BUTTON_VELOCITY_RESET_METERS_PER_SECOND = 0.0;
 
     // TODO make a read-only version of ModeState to disallow registering mode switches in an InputProcessor, outside of SubsystemInputProcessor
     public DebugElevatorInputProcessor(final Elevator elevator, final CommandXboxController driver, final ModeState<ElevatorMode> state, Function<ModeState<?>, BooleanSupplier> isModeActive) {
@@ -116,7 +116,8 @@ public class DebugElevatorInputProcessor extends InputProcessor implements Senda
         LinearVelocity verticalSpeed = ElevatorConstants.MAX_SPEED.times(controllerVerticalSpeed);
 
         // drive
-        elevator.updateSetpoint(verticalSpeed);
+        // ! max speed is 1000 m/s so that's dangerous
+        // elevator.updateSetpoint(verticalSpeed);
     }
 
     public void driveViaModules() {

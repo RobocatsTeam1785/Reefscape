@@ -17,11 +17,11 @@ import frc.lib.utility.Translation3dUtils;
  */
 public final class Velocity3 extends Translation3<LinearVelocityUnit> {
     // initialization
-    protected Velocity3(CoordinateSystem system, Orientation orientation, LinearVelocityUnit unit, Translation3d position) {
+    public Velocity3(CoordinateSystem system, Orientation orientation, LinearVelocityUnit unit, Translation3d position) {
         super(system, orientation, unit, position);
     }
 
-    protected Velocity3(Velocity3 trans) {
+    public Velocity3(Velocity3 trans) {
         super(trans);
     }
 

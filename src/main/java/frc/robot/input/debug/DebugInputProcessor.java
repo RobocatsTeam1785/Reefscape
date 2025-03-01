@@ -26,31 +26,31 @@ import frc.robot.subsystems.Swerve;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class DebugInputProcessor {
     // controllers
-    private final CommandXboxController driver;
+    public final CommandXboxController driver;
 
     // modes
-    @Logged private final ModeState<DriveMode> swerveState;
-    @Logged private final ModeState<ElevatorMode> elevatorState;
+    @Logged public final ModeState<DriveMode> swerveState;
+    @Logged public final ModeState<ElevatorMode> elevatorState;
 
-    @Logged private final ModeState<CoralArmMode> coralArmState;
-    @Logged private final ModeState<CoralWheelMode> coralWheelState;
+    @Logged public final ModeState<CoralArmMode> coralArmState;
+    @Logged public final ModeState<CoralWheelMode> coralWheelState;
 
-    @Logged private final ModeState<AlgaeArmMode> algaeArmState;
-    @Logged private final ModeState<AlgaeWheelMode> algaeWheelState;
+    @Logged public final ModeState<AlgaeArmMode> algaeArmState;
+    @Logged public final ModeState<AlgaeWheelMode> algaeWheelState;
 
     // TODO implement a more elegant solution that avoids the possibility of overlapping mode switches, as that's currently undefined behavior
     /** the state that was most recently switched to, e.g., the state that controls how default commands behave */
-    @Logged private ModeState<?> activeState;
+    @Logged public ModeState<?> activeState;
     
     // processors
-    private final DebugSwerveInputProcessor swerveProcessor;
-    private final DebugElevatorInputProcessor elevatorProcessor;
+    public final DebugSwerveInputProcessor swerveProcessor;
+    public final DebugElevatorInputProcessor elevatorProcessor;
 
-    @Logged private final DebugCoralArmInputProcessor coralArmProcessor;
-    @Logged private final DebugCoralWheelInputProcessor coralWheelProcessor;
+    @Logged public final DebugCoralArmInputProcessor coralArmProcessor;
+    @Logged public final DebugCoralWheelInputProcessor coralWheelProcessor;
 
-    @Logged private final DebugAlgaeArmInputProcessor algaeArmProcessor;
-    @Logged private final DebugAlgaeWheelInputProcessor algaeWheelProcessor;
+    @Logged public final DebugAlgaeArmInputProcessor algaeArmProcessor;
+    @Logged public final DebugAlgaeWheelInputProcessor algaeWheelProcessor;
 
     public DebugInputProcessor(
         final Swerve swerve,
@@ -177,7 +177,7 @@ public class DebugInputProcessor {
         return this.activeState;
     }
 
-    private void setActiveState(ModeState<?> state) {
+    public void setActiveState(ModeState<?> state) {
         this.activeState = state;
     }
 

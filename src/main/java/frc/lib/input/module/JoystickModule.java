@@ -8,16 +8,16 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class JoystickModule {
-    private final ControlModule module;
+    public final ControlModule module;
 
-    private final Subsystem subsystem;
+    public final Subsystem subsystem;
 
-    private final BooleanSupplier isActive;
-    private final Trigger noSwitchesActive;
-    private final Trigger isRelevantMode;
+    public final BooleanSupplier isActive;
+    public final Trigger noSwitchesActive;
+    public final Trigger isRelevantMode;
 
     /** if deadband is x, then controller joystick values in the range [-x, x] get reduced to zero */
-    private double deadband;
+    public double deadband;
 
     // initialization
     public JoystickModule(

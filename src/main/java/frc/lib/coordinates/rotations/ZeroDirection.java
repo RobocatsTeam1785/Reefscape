@@ -13,7 +13,7 @@ public class ZeroDirection {
     // properties
     /** the amount of CW-positive (when looking in the same direction as any positive axis) angular offset
      * required to make the rotation about the axis in this system equal to zero in the base system */
-    private final Angle offset;
+    public final Angle offset;
 
     // initialization
     public ZeroDirection(Angle offset) {

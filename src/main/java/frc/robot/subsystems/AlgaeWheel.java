@@ -26,21 +26,21 @@ import frc.lib.constants.AlgaeWheelConstants;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class AlgaeWheel extends SubsystemBase {
     // hardware
-    protected SparkMax leftMotor, rightMotor;
-    @Logged protected RelativeEncoder leftEncoder, rightEncoder;
+    public SparkMax leftMotor, rightMotor;
+    @Logged public RelativeEncoder leftEncoder, rightEncoder;
 
     // control/filtering
-    @Logged protected PIDController leftPID, rightPID;
+    @Logged public PIDController leftPID, rightPID;
 
     // only one feedforward instance is necessary as feedforward is state-independent
-    protected SimpleMotorFeedforward ff;
+    public SimpleMotorFeedforward ff;
 
-    protected SlewRateLimiter leftRateLimiter, rightRateLimiter;
+    public SlewRateLimiter leftRateLimiter, rightRateLimiter;
 
     // logging
-    protected Voltage sysIdVoltage;
-    @Logged protected double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
-    @Logged protected double lastLeftVoltageVolts, lastRightVoltageVolts;
+    public Voltage sysIdVoltage;
+    @Logged public double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
+    @Logged public double lastLeftVoltageVolts, lastRightVoltageVolts;
 
     public AlgaeWheel() {
         initMotors();
@@ -48,7 +48,7 @@ public class AlgaeWheel extends SubsystemBase {
     }
 
     // initialization
-    protected void initMotors() {
+    public void initMotors() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -92,7 +92,7 @@ public class AlgaeWheel extends SubsystemBase {
         rightEncoder = rightMotor.getEncoder();
     }
 
-    protected void initControl() {
+    public void initControl() {
         // configure PID and FF using constants
         leftPID = new PIDController(AlgaeWheelConstants.KP, AlgaeWheelConstants.KI, AlgaeWheelConstants.KD);
         rightPID = new PIDController(AlgaeWheelConstants.KP, AlgaeWheelConstants.KI, AlgaeWheelConstants.KD);

@@ -14,9 +14,9 @@ import frc.lib.mode.ModeState;
 
 /** an object that transforms controller inputs into subsystem setpoints */
 public abstract class InputProcessor {
-    protected final Function<ModeState<?>, BooleanSupplier> isModeActive;
+    public final Function<ModeState<?>, BooleanSupplier> isModeActive;
 
-    protected InputProcessor(Function<ModeState<?>, BooleanSupplier> isModeActive) {
+    public InputProcessor(Function<ModeState<?>, BooleanSupplier> isModeActive) {
         this.isModeActive = isModeActive;
     }
 

@@ -26,19 +26,19 @@ import frc.lib.constants.CoralWheelConstants;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CoralWheel extends SubsystemBase {
     // hardware
-    protected SparkMax motor;
-    @Logged protected RelativeEncoder encoder;
+    public SparkMax motor;
+    @Logged public RelativeEncoder encoder;
 
     // control/filtering
-    @Logged protected PIDController pid;
-    protected SimpleMotorFeedforward ff;
+    @Logged public PIDController pid;
+    public SimpleMotorFeedforward ff;
 
-    protected SlewRateLimiter rateLimiter;
+    public SlewRateLimiter rateLimiter;
 
     // logging
-    protected Voltage sysIdVoltage;
-    @Logged protected double lastVelocityMetersPerSecond;
-    @Logged protected double lastVoltageVolts;
+    public Voltage sysIdVoltage;
+    @Logged public double lastVelocityMetersPerSecond;
+    @Logged public double lastVoltageVolts;
 
     public CoralWheel() {
         initMotor();
@@ -46,7 +46,7 @@ public class CoralWheel extends SubsystemBase {
     }
 
     // initialization
-    protected void initMotor() {
+    public void initMotor() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig config = new SparkMaxConfig();
@@ -75,7 +75,7 @@ public class CoralWheel extends SubsystemBase {
         encoder = motor.getEncoder();
     }
 
-    protected void initControl() {
+    public void initControl() {
         // configure PID and FF using constants
         pid = new PIDController(CoralWheelConstants.KP, CoralWheelConstants.KI, CoralWheelConstants.KD);
         ff = new SimpleMotorFeedforward(CoralWheelConstants.KS, CoralWheelConstants.KV, CoralWheelConstants.KA);

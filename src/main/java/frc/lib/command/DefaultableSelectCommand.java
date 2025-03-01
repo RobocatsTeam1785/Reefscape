@@ -27,13 +27,13 @@ import java.util.function.Supplier;
  * @param <K> The type of key used to select the command
  */
 public class DefaultableSelectCommand<K> extends Command {
-  private final Map<K, Command> m_commands;
-  private final Supplier<? extends K> m_selector;
-  private Command m_selectedCommand;
-  private boolean m_runsWhenDisabled = true;
-  private InterruptionBehavior m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
+  public final Map<K, Command> m_commands;
+  public final Supplier<? extends K> m_selector;
+  public Command m_selectedCommand;
+  public boolean m_runsWhenDisabled = true;
+  public InterruptionBehavior m_interruptBehavior = InterruptionBehavior.kCancelIncoming;
 
-  private final Command m_defaultCommand;
+  public final Command m_defaultCommand;
 
   /**
    * Creates a new SelectCommand.

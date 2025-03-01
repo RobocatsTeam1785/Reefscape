@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class ControlModule {
     /** the consumer that uses the double control value to set mechanism voltage */
-    private final DoubleConsumer controlConsumer;
+    public final DoubleConsumer controlConsumer;
 
     /** the value to reset control to */
-    private final double resetValue;
+    public final double resetValue;
 
     /** the user-controlled arbitrary control value */
-    private double value;
+    public double value;
 
     /** the zero point for ranged control */
-    private double base;
+    public double base;
     
     /** the distance from the zero point for ranged control */
-    private double magnitude;
+    public double magnitude;
 
     // initialization
     public ControlModule(

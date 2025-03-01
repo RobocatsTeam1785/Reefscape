@@ -35,31 +35,31 @@ import frc.lib.swerve.TalonSwerveModule;
 public class Swerve extends SubsystemBase {
     // components
     // - abstracted
-    @Logged protected final TalonSwerveModule flModule = new TalonSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
-    @Logged protected final TalonSwerveModule frModule = new TalonSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
-    @Logged protected final TalonSwerveModule blModule = new TalonSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
-    @Logged protected final TalonSwerveModule brModule = new TalonSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
+    @Logged public final TalonSwerveModule flModule = new TalonSwerveModule("FL", SwerveConstants.FL_DRIVE_ID, SwerveConstants.FL_TURN_ID, SwerveConstants.FL_ENCODER_ID);
+    @Logged public final TalonSwerveModule frModule = new TalonSwerveModule("FR", SwerveConstants.FR_DRIVE_ID, SwerveConstants.FR_TURN_ID, SwerveConstants.FR_ENCODER_ID);
+    @Logged public final TalonSwerveModule blModule = new TalonSwerveModule("BL", SwerveConstants.BL_DRIVE_ID, SwerveConstants.BL_TURN_ID, SwerveConstants.BL_ENCODER_ID);
+    @Logged public final TalonSwerveModule brModule = new TalonSwerveModule("BR", SwerveConstants.BR_DRIVE_ID, SwerveConstants.BR_TURN_ID, SwerveConstants.BR_ENCODER_ID);
     
     // - hardware
     // -- initializes the navX2 interface using the SPI channels of the MXP (myRIO Expansion Port) on the roboRIO
     // -- (the rectangular port in the center, below the NI or LabView logo)
-    @Logged protected final AHRS navX2 = new AHRS(AHRS.NavXComType.kMXP_SPI);
+    @Logged public final AHRS navX2 = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
     // motion manipulation
     // - filters
-    protected final SlewRateLimiter
+    public final SlewRateLimiter
         xSpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
         ySpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
         rotSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
     
     // - setpoint generation
-    protected final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
         SwerveConstants.FL_POS, SwerveConstants.FR_POS,
         SwerveConstants.BL_POS, SwerveConstants.BR_POS
     );
 
     // - odometry
-    protected final SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
+    public final SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(
         // the kinematics, so the estimator can calculate the swerve module states over time to better estimate the current position
         kinematics, 
         // the current gyro angle, so the estimator can use this value as an offset to convert from provided gyro angles to pose rotations
@@ -73,19 +73,19 @@ public class Swerve extends SubsystemBase {
     // data
     // - instance properties
     /** time between each call of robotPeriodic() */
-    protected final double period;
+    public final double period;
 
     /** function that converts the previous estimated pose to an optional estimated global pose using vision input */
-    protected final Function<Pose2d, Optional<EstimatedRobotPose>> getEstimatedGlobalPose;
+    public final Function<Pose2d, Optional<EstimatedRobotPose>> getEstimatedGlobalPose;
 
     // - logging
-    @Logged private SwerveModuleState[] lastStates;
+    @Logged public SwerveModuleState[] lastStates;
 
-    @Logged private double lastDifference;
-    @Logged private double lastAverageDifference;
+    @Logged public double lastDifference;
+    @Logged public double lastAverageDifference;
 
     // organization
-    protected final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
+    public final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
     // initialization
     public Swerve(double period, Function<Pose2d, Optional<EstimatedRobotPose>> getEstimatedGlobalPose) {

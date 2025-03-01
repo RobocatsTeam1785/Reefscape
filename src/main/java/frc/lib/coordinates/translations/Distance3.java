@@ -17,7 +17,7 @@ import frc.lib.utility.Translation3dUtils;
  */
 public final class Distance3<Z extends ZeroPosition> extends Translation3<DistanceUnit> {
     // initialization
-    protected Distance3(CoordinateSystem system, Orientation orientation, DistanceUnit unit, Translation3d position) {
+    public Distance3(CoordinateSystem system, Orientation orientation, DistanceUnit unit, Translation3d position) {
         super(system, orientation, unit, position);
     }
 

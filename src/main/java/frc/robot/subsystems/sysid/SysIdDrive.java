@@ -14,7 +14,7 @@ import frc.robot.subsystems.Swerve;
 
 /** drive subsystem to perform system identification for the drive feedforward and PID controller */
 public class SysIdDrive extends Swerve {
-    private final SysIdRoutine routine;
+    public final SysIdRoutine routine;
 
     // initialization
     public SysIdDrive(double period) {
@@ -37,7 +37,7 @@ public class SysIdDrive extends Swerve {
     }
 
     // setup commands
-    private Command alignModules(double yawRadians) {
+    public Command alignModules(double yawRadians) {
         return run(() -> {
             // set the setpoint's angle to be the same as the robot's direction, so all motors move forward
             SwerveModuleState state = new SwerveModuleState(0.0, new Rotation2d(yawRadians));

@@ -28,20 +28,20 @@ import frc.lib.constants.ElevatorConstants;
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class Elevator extends SubsystemBase {
     // hardware
-    protected SparkMax leftMotor, rightMotor;
-    @Logged protected RelativeEncoder leftEncoder, rightEncoder;
+    public SparkMax leftMotor, rightMotor;
+    @Logged public RelativeEncoder leftEncoder, rightEncoder;
 
     // control/filtering
-    @Logged protected ProfiledPIDController leftPID, rightPID;
+    @Logged public ProfiledPIDController leftPID, rightPID;
 
-    protected ElevatorFeedforward ff;
+    public ElevatorFeedforward ff;
 
-    protected SlewRateLimiter rateLimiter;
+    public SlewRateLimiter rateLimiter;
 
     // logging
-    protected Voltage sysIdVoltage;
-    @Logged protected double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
-    @Logged protected double lastLeftVoltageVolts, lastRightVoltageVolts;
+    public Voltage sysIdVoltage;
+    @Logged public double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
+    @Logged public double lastLeftVoltageVolts, lastRightVoltageVolts;
 
     public Elevator() {
         initMotors();
@@ -49,7 +49,7 @@ public class Elevator extends SubsystemBase {
     }
 
     // initialization
-    protected void initMotors() {
+    public void initMotors() {
         // motor config
         // ! this resets the spark max configuration every time the robot code runs, so be careful
         SparkMaxConfig leftConfig = new SparkMaxConfig();
@@ -90,7 +90,7 @@ public class Elevator extends SubsystemBase {
         rightEncoder = rightMotor.getEncoder();
     }
 
-    protected void initControl() {
+    public void initControl() {
         // loop control
         // set the maximum speed and acceleration of the generated setpoints to the constant values
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(

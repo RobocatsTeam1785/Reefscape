@@ -18,11 +18,11 @@ import frc.lib.utility.Translation3dUtils;
  */
 public final class PureTranslation3 extends Translation3<DimensionlessUnit> {
     // initialization
-    protected PureTranslation3(CoordinateSystem system, Orientation orientation, DimensionlessUnit unit, Translation3d position) {
+    public PureTranslation3(CoordinateSystem system, Orientation orientation, DimensionlessUnit unit, Translation3d position) {
         super(system, orientation, unit, position);
     }
 
-    protected PureTranslation3(PureTranslation3 trans) {
+    public PureTranslation3(PureTranslation3 trans) {
         super(trans);
     }
 

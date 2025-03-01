@@ -35,33 +35,33 @@ import frc.lib.constants.RobotConstants;
 @Logged
 public class SparkSwerveModule {
     // hardware
-    @NotLogged private SparkMax driveMotor, turnMotor;
+    @NotLogged public SparkMax driveMotor, turnMotor;
 
     // TODO fix hacky drive velocity access
     public RelativeEncoder driveEncoder, turnEncoder;
 
     // we use an additional encoder so that rotational information persists between reboots
-    @NotLogged private CANcoder absEncoder;
+    @NotLogged public CANcoder absEncoder;
 
     // loop control
-    private PIDController drivePID;
-    private ProfiledPIDController turnPID;
+    public PIDController drivePID;
+    public ProfiledPIDController turnPID;
 
-    @NotLogged private SimpleMotorFeedforward driveFF, turnFF;
+    @NotLogged public SimpleMotorFeedforward driveFF, turnFF;
 
     // logging
-    @NotLogged private Voltage sysIdDriveVoltage = Volts.of(0.0),
+    @NotLogged public Voltage sysIdDriveVoltage = Volts.of(0.0),
                                sysIdTurnVoltage = Volts.of(0.0);
     
     // used for logging via epilogue, so being unused is irrelevant
     @SuppressWarnings("unused")
-    private double lastDriveOutput, lastDriveFeed, lastDriveVoltage, lastTurnOutput, lastTurnFeed, lastTurnVoltage;
+    public double lastDriveOutput, lastDriveFeed, lastDriveVoltage, lastTurnOutput, lastTurnFeed, lastTurnVoltage;
 
     @SuppressWarnings("unused")
-    private SwerveModuleState lastDriveState, lastTurnState, lastState;
+    public SwerveModuleState lastDriveState, lastTurnState, lastState;
 
     @SuppressWarnings("unused")
-    private double lastDriveSetpointVelocity, lastAbsDriveSetpointVelocity;
+    public double lastDriveSetpointVelocity, lastAbsDriveSetpointVelocity;
 
     // properties
     /** name of this swerve module - used for labelling during system identification */

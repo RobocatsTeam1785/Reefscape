@@ -7,24 +7,24 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 public class CumulativeDutyCycleEncoder {
     // hardware
     /** the encoder to wrap around */
-    private final DutyCycleEncoder encoder;
+    public final DutyCycleEncoder encoder;
 
     // calculation
     /** the maximum encoder value */
-    private final double range;
+    public final double range;
 
     /** the value-change threshold, above which a rollover is detected and recorded */
-    private final double rollOverThreshold;
+    public final double rollOverThreshold;
 
     /** the conversion factor that the returned accumulated position is multiplied by */
-    private double positionConversionFactor = 1.0;
+    public double positionConversionFactor = 1.0;
 
     // state
     /** the value recorded the last time .update() or the constructor was called */
-    private double lastValue;
+    public double lastValue;
 
     /** the number of revolutions that have accumulated */
-    private int revolutions;
+    public int revolutions;
 
     // initialization
     /**
