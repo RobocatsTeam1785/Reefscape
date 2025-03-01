@@ -1,0 +1,126 @@
+{
+  "hubs": [
+    {
+      "x": -8,
+      "y": -8,
+      "width": 1552,
+      "height": 840,
+      "state": {
+        "sidebar": {
+          "width": 324,
+          "expanded": [
+            "/Shuffleboard/.recording",
+            "/Shuffleboard/.metadata",
+            "/LiveWindow/.status",
+            "/SmartDashboard",
+            "/Robot/container",
+            "/Robot/container/swerve/frModule/driveEncoder",
+            "/Robot/container/swerve/frModule/turnEncoder",
+            "/Robot/container/swerve/blModule/turnEncoder",
+            "/Robot/container/swerve/brModule/turnEncoder",
+            "/Robot/container/swerve/flModule/lastState",
+            "/Robot/container/swerve/frModule/lastState",
+            "/Robot/container/swerve/blModule/lastState",
+            "/Robot/container/swerve/brModule/lastState",
+            "/Robot/container/swerve/frModule/encoderAngle",
+            "/Robot/container/swerve/blModule/encoderAngle",
+            "/SmartDashboard/difference",
+            "/SmartDashboard/average difference",
+            "/Robot",
+            "/Robot/container/swerve/flModule/turnEncoder",
+            "/Robot/container/swerve/flModule/encoderAngle",
+            "/Robot/container/swerve/frModule/absoluteAngle",
+            "/Robot/container/swerve/flModule/absoluteAngle",
+            "/Robot/container/swerve/flModule/driveEncoder",
+            "/Robot/container/swerve/brModule/driveEncoder",
+            "/Robot/container/swerve/blModule/driveEncoder",
+            "/Robot/container/swerve/flModule/turnPosition",
+            "/Robot/container/swerve/frModule/turnPosition",
+            "/Robot/container/swerve/blModule/turnPosition",
+            "/Robot/container/swerve/brModule/turnPosition",
+            "/Robot/container/swerve/flModule/cancoderAbsolutePosition",
+            "/Robot/container/swerve/frModule/cancoderAbsolutePosition",
+            "/Robot/container/swerve/blModule/cancoderAbsolutePosition",
+            "/Robot/container/swerve/brModule",
+            "/Robot/container/swerve/brModule/cancoderAbsolutePosition",
+            "/Robot/container/processor/elevatorProcessor",
+            "/Robot/container/elevator",
+            "/Robot/container/elevator/leftEncoder",
+            "/Robot/container/elevator/rightEncoder"
+          ]
+        },
+        "tabs": {
+          "selected": 1,
+          "tabs": [
+            {
+              "type": 0,
+              "title": "",
+              "controller": null,
+              "controllerUUID": "7obnjivd4jmepkof90k1e385ccu8lpmd",
+              "renderer": "#/",
+              "controlsHeight": 0
+            },
+            {
+              "type": 1,
+              "title": "Line Graph",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/processor/elevatorProcessor/currentHeight",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/elevator/leftEncoder/Absolute position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:Robot/container/elevator/rightEncoder/Absolute position (units)",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "rightUnitConversion": {
+                  "type": null,
+                  "factor": 1
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "7dkmqki13a4yi23v6vihhwm02qauaecm",
+              "renderer": null,
+              "controlsHeight": 200
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": [],
+  "version": "4.1.1"
+}

@@ -23,10 +23,10 @@ public class ElevatorConstants {
         KI = 0.0,
         KD = 0.0,
 
-        KG = 0.0,
+        KG = 1.0,
         KS = 0.0,
-        KV = 1.0,
-        KA = 0.0;
+        KV = 7.0,
+        KA = 3.0;
     
     // conversion factor
     // 20:1 gear ratio

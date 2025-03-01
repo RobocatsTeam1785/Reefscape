@@ -1,11 +1,14 @@
 package frc.robot.input.debug;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -143,7 +146,18 @@ public class DebugSwerveInputProcessor extends InputProcessor {
     public void driveAlign() {
         if (driver.getRightTriggerAxis() <= 0.5) return;
 
-        swerve.align(leftAlignAngle(driver));
+        Angle leftJoystickAngle = leftAlignAngle(driver);
+
+        // 0 is, by default, interpreted as directly to the right, meaning that moving the joystick directly to the right is interpreted as an angle of zero
+
+        // however, the modules are zeroed to have forward mean zero, meaning that the definition of "front," as defined by moving the joystick upwards, is
+        // rotated 90 degrees counterclockwise (the swerve modules are set to interpret clockwise as positive, but the motors are upside down, making counterclockwise
+        // effectively positive, meaning the shift is counterclockwise, not clockwise)
+
+        // as a result, we need to counteract that with a shift 90 degrees clockwise (or -90 degrees counterclockwise), to properly interpret "front" as moving the joystick upwards
+        Angle moduleAngle = leftJoystickAngle.minus(Degrees.of(90));
+
+        swerve.align(moduleAngle);
     }
 
     /**

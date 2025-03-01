@@ -44,7 +44,7 @@ public class DebugInputProcessor {
     
     // processors
     public final DebugSwerveInputProcessor swerveProcessor;
-    public final DebugElevatorInputProcessor elevatorProcessor;
+    @Logged public final DebugElevatorInputProcessor elevatorProcessor;
 
     @Logged public final DebugCoralArmInputProcessor coralArmProcessor;
     @Logged public final DebugCoralWheelInputProcessor coralWheelProcessor;
@@ -116,6 +116,7 @@ public class DebugInputProcessor {
         // d-pad left: a is manual
         elevatorState.registerSwitch(this::setActiveState, ElevatorMode.MANUAL, driver.povLeft().and(driver.a()));
         elevatorState.registerSwitch(this::setActiveState, ElevatorMode.DEBUG, driver.povLeft().and(driver.b()));
+        elevatorState.registerSwitch(this::setActiveState, ElevatorMode.VARIABLE_HEIGHT, driver.povLeft().and(driver.x()));
 
         // coral and algae arm and wheel
         // d-pad down: a is manual coral arm, b is manual coral wheel, x is manual algae arm, y is manual algae wheel,

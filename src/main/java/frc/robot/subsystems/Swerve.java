@@ -96,9 +96,9 @@ public class Swerve extends SubsystemBase {
         // invert motors for rotation direction parity
         // TODO fix hacky inversion
         // flModule.invertDriveMotor();
-        frModule.invertDriveMotor();
+        // frModule.invertDriveMotor();
         // blModule.invertDriveMotor();
-        brModule.invertDriveMotor();
+        // brModule.invertDriveMotor();
 
         // configure autos
         AutoBuilder.configure(
@@ -258,7 +258,7 @@ public class Swerve extends SubsystemBase {
         LinearVelocity vel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(speed);
 
         // compose speed into a swerve module state
-        SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), null);
+        SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), new Rotation2d(modules[moduleId].turnPosition()));
 
         // update the setpoint
         // TODO fix hacky logging

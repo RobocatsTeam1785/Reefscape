@@ -18,6 +18,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -62,7 +63,8 @@ public class AlgaeArm extends SubsystemBase {
         // set motor parameters
         config
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
 
         // set encoder parameters
         config.encoder
@@ -100,9 +102,34 @@ public class AlgaeArm extends SubsystemBase {
 
     // state
     public Angle hexPosition() {
+        // by default, 0.805 rotations at horizontal
+        double rotations = hexEncoder.get();
+
+        // the physical mechanism range is about 0.75 to 1.1, but 1.1 is reset to 0.1 because the value is constrained between 0 and 1
+        // so, we just change the area below 0.25, which it can essentially not reach, to be above 1, so we see continuous input
+        // if (rotations < 0.25) rotations += 1.0;
+
+        // at rest, the detected rotation after the previous step is about 273 degrees, but the actual mechanism rotation is -16 degrees (AlgaeArmConstants.MIN_ANGLE),
+        // so we adjust it to match that
+        // rotations -= Units.degreesToRotations(273);
+        // rotations += Units.degreesToRotations(-16);
+
+        // 0.753
+        // 0.765
+        // 0.767
+        // 0.761
+
+        // 0.753
+        // 0.765
+
+        // 0.766
+
         // the hex encoder is positioned after the gearbox, so 1 hex encoder rotation = 1 mechanism rotation
-        return Rotations.of(hexEncoder.get());
+        return Rotations.of(rotations);
     }
+
+    @Logged public double hexPositionRadians() { return hexPosition().in(Radians); }
+    @Logged public double hexPositionRotations() { return hexPosition().in(Rotations); }
 
     // system identification
     /** sets arm motor voltage for system identification; because applying voltage outside the acceptable range of motion risks damage to the robot,
@@ -121,7 +148,7 @@ public class AlgaeArm extends SubsystemBase {
         log.motor("algae_arm")
             .voltage(sysIdVoltage)
             // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
-            .angularPosition(Radians.of(relativeEncoder.getPosition()))
+            .angularPosition(hexPosition())
             .angularVelocity(RadiansPerSecond.of(relativeEncoder.getVelocity()));
     }
 
@@ -130,7 +157,7 @@ public class AlgaeArm extends SubsystemBase {
     public void updateSetpoint(Angle angle) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
-        final double output = pid.calculate(relativeEncoder.getPosition(), angle.in(Radians));
+        final double output = pid.calculate(hexPositionRadians(), angle.in(Radians));
         final double feed = ff.calculate(angle.in(Radians), pid.getSetpoint().velocity);
 
         // update logged values
@@ -145,7 +172,7 @@ public class AlgaeArm extends SubsystemBase {
     public void updateSetpoint(AngularVelocity velocity) {
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
-        final double feed = ff.calculate(relativeEncoder.getPosition(), velocity.in(RadiansPerSecond));
+        final double feed = ff.calculate(hexPositionRadians(), velocity.in(RadiansPerSecond));
 
         // update logged values
         lastVelocityRadiansPerSecond = velocity.in(RadiansPerSecond);

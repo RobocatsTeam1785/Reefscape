@@ -95,13 +95,13 @@ public class TalonSwerveModule {
             driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
             // TODO see if this needs to be inverted
-            driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+            driveConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
             turnConfig.CurrentLimits.SupplyCurrentLimit = SwerveConstants.CURRENT_LIMIT.in(Amps);
             turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
             // TODO see if this needs to be inverted
-            driveConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+            turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
             // apply the configuration
             driveMotor.getConfigurator().apply(driveConfig);

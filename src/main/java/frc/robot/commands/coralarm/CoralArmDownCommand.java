@@ -48,6 +48,6 @@ public class CoralArmDownCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(arm.relativeEncoder.getPosition() - CoralArmConstants.MIN_ANGLE.in(Radians)) < 0.2;
+        return arm.relativeEncoder.getPosition() <= CoralArmConstants.MIN_ANGLE.in(Radians);
     }
 }

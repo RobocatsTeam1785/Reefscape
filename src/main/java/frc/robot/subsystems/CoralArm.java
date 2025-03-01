@@ -18,6 +18,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -100,9 +101,29 @@ public class CoralArm extends SubsystemBase {
 
     // state
     public Angle hexPosition() {
+        // by default, 0.315 rotations at vertical
+        double rotations = hexEncoder.get();
+
+        // using that system, the mechanism rotation ranges from 0 to 0.35 at the top, and between 0.94 and 1, below that, split due to the hex encoder's constrained range
+        // thus, we can unify it into the range between 0.94 and 1.35 by adding 1 if the rotation is roughly between 0 and 0.35, as it will only be in that range if it is within the next rotation
+        if (rotations < 0.5) rotations += 1.0;
+
+        // now that we have a continuous range, we can properly define zero at horizontal
+        // first, define zero at vertical (we use 1.315 instead of 0.315 because we added 1 for values between 0 and 0.35, which 0.315 is inside)
+        rotations -= 1.315;
+
+        // then, define it at horizontal
+        rotations += 0.25;
+
+        // finally, invert the sign to make upwards rotation positive instead of negative
+        rotations *= -1;
+
         // the hex encoder is positioned after the gearbox, so 1 hex encoder rotation = 1 mechanism rotation
-        return Rotations.of(hexEncoder.get());
+        return Rotations.of(rotations);
     }
+    
+    @Logged public double hexPositionRadians() { return hexPosition().in(Radians); }
+    @Logged public double hexPositionRotations() { return hexPosition().in(Rotations); }
 
     // system identification
     /** sets arm motor voltage for system identification; because applying voltage outside the acceptable range of motion risks damage to the robot,

@@ -40,6 +40,7 @@ public class Elevator extends SubsystemBase {
 
     // logging
     public Voltage sysIdVoltage;
+    @Logged public double lastHeight;
     @Logged public double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
     @Logged public double lastLeftVoltageVolts, lastRightVoltageVolts;
 
@@ -178,6 +179,8 @@ public class Elevator extends SubsystemBase {
         final double rightFeed = ff.calculate(rightPID.getSetpoint().velocity);
 
         // update logged values
+        lastHeight = height.in(Meters);
+
         lastLeftVelocityMetersPerSecond = leftPID.getSetpoint().velocity;
         lastRightVelocityMetersPerSecond = rightPID.getSetpoint().velocity;
 

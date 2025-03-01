@@ -33,6 +33,7 @@ public class AlgaeWheelConstants {
     public static final Distance WHEEL_DIAMETER = Inches.of(4);
 
     /** circumference of the wheel */
+    // 0.3191858136 m
     public static final Distance WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER.times(Math.PI);
 
     /**
