@@ -18,7 +18,6 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -130,6 +129,14 @@ public class AlgaeArm extends SubsystemBase {
 
     @Logged public double hexPositionRadians() { return hexPosition().in(Radians); }
     @Logged public double hexPositionRotations() { return hexPosition().in(Rotations); }
+
+    public Voltage lastVoltage() {
+        return Volts.of(lastVoltageVolts);
+    }
+
+    public AngularVelocity angularVelocity() {
+        return RadiansPerSecond.of(relativeEncoder.getVelocity());
+    }
 
     // system identification
     /** sets arm motor voltage for system identification; because applying voltage outside the acceptable range of motion risks damage to the robot,

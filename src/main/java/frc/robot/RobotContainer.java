@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.input.debug.DebugInputProcessor;
+import frc.robot.input.shuffleboard.ShuffleboardInputProcessor;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeWheel;
 import frc.robot.subsystems.CoralArm;
@@ -33,6 +34,7 @@ public class RobotContainer {
     
     // input processors
     @Logged public DebugInputProcessor processor;
+    public ShuffleboardInputProcessor shuffleboardProcessor;
 
     public RobotContainer(double period) {
         // subsystems
@@ -51,6 +53,8 @@ public class RobotContainer {
         processor = new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver);
         processor.configure();
 
+        shuffleboardProcessor = new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel);
+
         // autos
         autos = new Autos();
     }
@@ -58,5 +62,6 @@ public class RobotContainer {
     // periodic
     public void periodic() {
         processor.periodic();
+        shuffleboardProcessor.periodic();
     }
 }

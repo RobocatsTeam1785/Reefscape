@@ -105,8 +105,25 @@ public class AlgaeWheel extends SubsystemBase {
         rightRateLimiter = new SlewRateLimiter(AlgaeWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
+    // state
+    public Voltage lastLeftVoltage() {
+        return Volts.of(lastLeftVoltageVolts);
+    }
+
+    public Voltage lastRightVoltage() {
+        return Volts.of(lastRightVoltageVolts);
+    }
+
+    public LinearVelocity lastLeftVelocity() {
+        return MetersPerSecond.of(leftEncoder.getVelocity());
+    }
+
+    public LinearVelocity lastRightVelocity() {
+        return MetersPerSecond.of(rightEncoder.getVelocity());
+    }
+
     // system identification
-     public void sysIdDrive(Voltage voltage) {
+    public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
         sysIdVoltage = voltage;
         lastLeftVoltageVolts = voltage.in(Volts);

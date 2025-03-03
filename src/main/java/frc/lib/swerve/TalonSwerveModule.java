@@ -241,6 +241,17 @@ public class TalonSwerveModule {
         return turnPID.getPositionError();
     }
 
+    // - voltage
+    @NotLogged
+    public Voltage lastDriveVoltage() {
+        return Volts.of(lastDriveVoltage);
+    }
+
+    @NotLogged
+    public Voltage lastTurnVoltage() {
+        return Volts.of(lastTurnVoltage);
+    }
+
     // state modification
     public void drivePosition(Distance position) {
         double meters = position.in(Meters);
@@ -361,6 +372,26 @@ public class TalonSwerveModule {
     }
 
     // setpoints
+    public void updateDriveSetpoint(LinearVelocity velocity) {
+        double currentMps = driveVelocity().in(MetersPerSecond);
+        double setpointMps = velocity.in(MetersPerSecond);
+
+        // calculate voltage
+        final double driveOutput = drivePID.calculate(currentMps, setpointMps);
+        final double driveFeed = driveFF.calculate(setpointMps);
+
+        // apply voltage
+        driveMotor.setVoltage(driveOutput + driveFeed);
+
+        // update logging values
+        lastDriveOutput = driveOutput;
+        lastDriveFeed = driveFeed;
+        lastDriveVoltage = driveOutput + driveFeed;
+
+        lastDriveSetpointVelocity = setpointMps;
+        lastAbsDriveSetpointVelocity = Math.abs(lastDriveSetpointVelocity);
+    }
+
     public void updateDriveSetpoint(SwerveModuleState state) {
         // current values
         Rotation2d relativeAngle = new Rotation2d(turnPosition());
@@ -387,6 +418,25 @@ public class TalonSwerveModule {
 
         lastDriveSetpointVelocity = state.speedMetersPerSecond;
         lastAbsDriveSetpointVelocity = Math.abs(lastDriveSetpointVelocity);
+    }
+
+    public void updateTurnSetpoint(Angle rotation) {
+        // calculate voltage
+        // - we're using position PID control, not velocity PID control, as we care more about turn position
+        final double turnOutput = turnPID.calculate(turnPosition().in(Radians), rotation.in(Radians));
+
+        // - we use turnPID.getSetpoint().velocity instead of state.angle.getRadians(), because simple feedforward
+        // lacks a position term, and thus requires velocity instead, and because we're using a motion profile
+        // to generate that velocity
+        final double turnFeed = turnFF.calculate(turnPID.getSetpoint().velocity);
+
+        // set voltage
+        turnMotor.setVoltage(turnOutput + turnFeed);
+
+        // update logging values
+        lastTurnOutput = turnOutput;
+        lastTurnFeed = turnFeed;
+        lastTurnVoltage = turnOutput + turnFeed;
     }
 
     public void updateTurnSetpoint(SwerveModuleState state) {

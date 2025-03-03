@@ -85,6 +85,11 @@ public class CoralWheel extends SubsystemBase {
         rateLimiter = new SlewRateLimiter(CoralWheelConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
+    // state
+    public LinearVelocity linearVelocity() {
+        return MetersPerSecond.of(encoder.getVelocity());
+    }
+
     // system identification
      public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging

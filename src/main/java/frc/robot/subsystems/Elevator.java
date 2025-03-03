@@ -110,6 +110,34 @@ public class Elevator extends SubsystemBase {
         rateLimiter = new SlewRateLimiter(ElevatorConstants.MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
+    // state
+    // - position
+    public Distance leftHeight() {
+        return Meters.of(leftEncoder.getPosition());
+    }
+
+    public Distance rightHeight() {
+        return Meters.of(rightEncoder.getPosition());
+    }
+
+    // - velocity
+    public LinearVelocity leftVelocity() {
+        return MetersPerSecond.of(leftEncoder.getVelocity());
+    }
+
+    public LinearVelocity rightVelocity() {
+        return MetersPerSecond.of(rightEncoder.getVelocity());
+    }
+
+    // - voltage
+    public Voltage lastLeftVoltage() {
+        return Volts.of(lastLeftVoltageVolts);
+    }
+
+    public Voltage lastRightVoltage() {
+        return Volts.of(lastRightVoltageVolts);
+    }
+
     // system identification
     public void sysIdDrive(Voltage voltage) {
         // set value for use in SysIdRoutine logging
