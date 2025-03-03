@@ -84,6 +84,8 @@ public class Swerve extends SubsystemBase {
     @Logged public double lastDifference;
     @Logged public double lastAverageDifference;
 
+    @Logged public Pose2d lastEstimatedVisionPose;
+
     // organization
     public final TalonSwerveModule[] modules = { flModule, frModule, blModule, brModule };
 
@@ -129,6 +131,8 @@ public class Swerve extends SubsystemBase {
 
             Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
             double timestampSeconds = visionPose.timestampSeconds;
+
+            lastEstimatedVisionPose = visionRobotPoseMeters;
 
             estimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
         }

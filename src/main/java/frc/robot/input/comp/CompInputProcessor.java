@@ -2,11 +2,13 @@ package frc.robot.input.comp;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.constants.AlgaeArmConstants;
@@ -27,6 +29,7 @@ import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class CompInputProcessor {
     // controllers
     public final CommandXboxController driver;
@@ -43,7 +46,7 @@ public class CompInputProcessor {
     public final AlgaeWheel algaeWheel;
 
     // state
-    public double elevatorHeightMeters = 0.0;
+    @Logged public double elevatorHeightMeters = 0.0;
     
     // initialization
     public CompInputProcessor(
@@ -150,19 +153,20 @@ public class CompInputProcessor {
         ));
 
         // default commands
-        operator.leftTrigger().and(operator.rightTrigger()).whileTrue(new InstantCommand(() -> {
+        operator.leftTrigger().and(operator.rightTrigger()).whileTrue(new RepeatCommand(new InstantCommand(() -> {
             // determine input values
             // fully up means -1, which is unintuitive, so it requires inversion
             double controllerVerticalSpeed = -operator.getLeftY();
 
             // process them
             controllerVerticalSpeed = MathUtil.applyDeadband(controllerVerticalSpeed, ElevatorConstants.SPEED_DEADBAND);
-            controllerVerticalSpeed *= 0.01;
+            controllerVerticalSpeed *= 0.1;
+            System.out.println("Controller vertical speed: " + controllerVerticalSpeed);
 
             elevatorHeightMeters += controllerVerticalSpeed;
 
             elevator.updateSetpoint(Meters.of(elevatorHeightMeters));
-        }, elevator));
+        }, elevator)));
     }
 
     // - defaults
@@ -193,5 +197,10 @@ public class CompInputProcessor {
 
             swerve.driveRobotRelative(xVel, yVel, angVel);
         }, swerve));
+    }
+
+    public void periodic() {
+        if (elevator.getCurrentCommand() != null)
+            System.out.println("elevator command: " + elevator.getCurrentCommand().getName());
     }
 }

@@ -3,6 +3,9 @@ package frc.robot.input.debug;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -96,7 +99,7 @@ public class DebugInputProcessor {
     public void configure() {
         configureSwitches();
         configureTriggers();
-        configureDefaults();
+        // configureDefaults();
     }
 
     /** configure mode-switching */
@@ -105,7 +108,7 @@ public class DebugInputProcessor {
         // d-pad up: a is swerve, and b is align
         swerveState.registerSwitch(this::setActiveState, DriveMode.SWERVE, driver.povUp().and(driver.a()));
         swerveState.registerSwitch(this::setActiveState, DriveMode.ALIGN, driver.povUp().and(driver.b()));
-        
+
         // d-pad right: y is FL, b is FR, x is BL, a is BR, so normal directions but rotated 45 degrees CW
         swerveState.registerSwitch(this::setActiveState, DriveMode.FL_ONLY, driver.povRight().and(driver.y()));
         swerveState.registerSwitch(this::setActiveState, DriveMode.FR_ONLY, driver.povRight().and(driver.b()));

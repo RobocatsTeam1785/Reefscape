@@ -181,6 +181,8 @@ public class Elevator extends SubsystemBase {
         // use the provided setpoint
         final double feed = ff.calculate(speed.in(MetersPerSecond));
 
+        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
+
         // update logged values
         lastLeftVelocityMetersPerSecond = speed.in(MetersPerSecond);
         lastRightVelocityMetersPerSecond = speed.in(MetersPerSecond);
@@ -209,6 +211,8 @@ public class Elevator extends SubsystemBase {
         // update logged values
         lastHeight = height.in(Meters);
 
+        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
+
         lastLeftVelocityMetersPerSecond = leftPID.getSetpoint().velocity;
         lastRightVelocityMetersPerSecond = rightPID.getSetpoint().velocity;
 
@@ -224,6 +228,8 @@ public class Elevator extends SubsystemBase {
      * <p>
      * directly applies the specified voltage to the motor */
     public void updateVoltage(Voltage voltage) {
+        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
+
         // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
         lastLeftVoltageVolts = voltage.in(Volts);
         lastRightVoltageVolts = voltage.in(Volts);

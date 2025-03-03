@@ -25,10 +25,10 @@ public class VisionConstants {
     public static final Distance CAMERA_HEIGHT = Inches.of(0.0);
 
     /** the translation from the center of the robot to the camera */
-    public static final Translation2d CAMERA_OFFSET = new Translation2d(Inches.of(0.0), Inches.of(0.0));
+    public static final Translation2d CAMERA_OFFSET = new Translation2d(Inches.of(4.0), Inches.of(0.0));
 
     /** the angle of the camera from the ground, where positive means upwards rotation */
-    public static final Angle CAMERA_ANGLE = Degrees.of(0.0);
+    public static final Angle CAMERA_ANGLE = Degrees.of(60.0);
 
     public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
         CAMERA_OFFSET.getMeasureX(),

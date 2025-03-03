@@ -46,8 +46,8 @@ public class CoralArmConstants {
 
     // TODO measure and determine these
     // maximum speed and acceleration
-    public static final AngularVelocity MAX_SPEED = RadiansPerSecond.of(10.0);
-    public static final AngularAcceleration MAX_ACCELERATION = RadiansPerSecondPerSecond.of(10.0);
+    public static final AngularVelocity MAX_SPEED = RadiansPerSecond.of(1.0);
+    public static final AngularAcceleration MAX_ACCELERATION = RadiansPerSecondPerSecond.of(1.0);
 
     // range of motion, where zero is defined as directly forward, and upwards rotation is defined as positive
     public static final Angle MAX_ANGLE = Degrees.of(55);

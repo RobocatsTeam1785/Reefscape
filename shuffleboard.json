@@ -5,7 +5,7 @@
       "autoPopulate": true,
       "autoPopulatePrefix": "SmartDashboard/",
       "widgetPane": {
-        "gridSize": 1.0,
+        "gridSize": 20.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
@@ -26,8 +26,8 @@
           },
           "1,0": {
             "size": [
-              5,
-              5
+              3,
+              3
             ],
             "content": {
               "_type": "ComboBox Chooser",
@@ -45,7 +45,20 @@
       "autoPopulate": true,
       "autoPopulatePrefix": "LiveWindow/",
       "widgetPane": {
-        "gridSize": 1.0,
+        "gridSize": 20.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {}
+      }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 20.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
@@ -53,8 +66,8 @@
         "tiles": {
           "0,0": {
             "size": [
-              113,
-              59
+              42,
+              20
             ],
             "content": {
               "_type": "Grid Layout",
@@ -72,9 +85,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -651.0,
-    "y": -11.0,
-    "width": 1942.0,
-    "height": 1150.0
+    "x": -7.199999809265137,
+    "y": -7.199999809265137,
+    "width": 1550.4000244140625,
+    "height": 838.4000244140625
   }
 }

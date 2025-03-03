@@ -24,7 +24,7 @@ public class ElevatorConstants {
         KD = 0.0,
 
         KG = 1.0,
-        KS = 0.0,
+        KS = 1.0,
         KV = 7.0,
         KA = 3.0;
     
@@ -61,9 +61,11 @@ public class ElevatorConstants {
 
     // TODO measure and determine these
     // TODO decide whether zero height will be defined as the floor or the lowest height the elevator can reach
-    public static final Distance MAX_HEIGHT = Meters.of(0.0);
-    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1000.0);
-    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(1000.0);
+    public static final Distance MAX_HEIGHT = Meters.of(2.0);
+    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(1.0);
+
+    public static final Distance HEIGHT_SOFT_LIMIT = MAX_HEIGHT.minus(Inches.of(4.0));
 
     // scoring/intake-relevant heights
     // TODO measure these

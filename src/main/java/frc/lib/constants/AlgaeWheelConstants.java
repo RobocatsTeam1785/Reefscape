@@ -49,6 +49,6 @@ public class AlgaeWheelConstants {
     // TODO measure and determine these
     // maximum speed and acceleration
     // TODO reduce to safe values after testing
-    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1000.0);
-    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(1000.0);
+    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(10.0);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(10.0);
 }

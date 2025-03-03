@@ -38,7 +38,7 @@ public class ShuffleboardInputProcessor {
         ShuffleboardLayout layout = tab.getLayout("Control", BuiltInLayouts.kGrid)
             .withProperties(Map.of("Number of columns", 9, "Number of rows", 4))
             .withPosition(0, 0)
-            .withSize(80, 40);
+            .withSize(40, 19);
 
         // swerve FL module
         ResponsiveToggleableSlider.voltSlider(
