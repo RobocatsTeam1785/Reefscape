@@ -33,10 +33,12 @@ public class ShuffleboardInputProcessor {
     ) {
         this.tab = Shuffleboard.getTab(tabTitle);
 
+        // SbBox box = new SbBox(tab, 0, 0, 80, 40);
+
         ShuffleboardLayout layout = tab.getLayout("Control", BuiltInLayouts.kGrid)
             .withProperties(Map.of("Number of columns", 9, "Number of rows", 4))
             .withPosition(0, 0)
-            .withSize(113, 59);
+            .withSize(80, 40);
 
         // swerve FL module
         ResponsiveToggleableSlider.voltSlider(

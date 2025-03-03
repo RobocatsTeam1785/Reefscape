@@ -1,14 +1,16 @@
-package frc.robot.commands.coralwheel;
+package frc.robot.commands.algaewheel;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralWheel;
+import frc.robot.subsystems.AlgaeWheel;
 
-public class CoralIntakeCommand extends Command {
-    public final CoralWheel wheel;
+public class AlgaeEjectCommand extends Command {
+    public final AlgaeWheel wheel;
+    public final LinearVelocity SPEED = MetersPerSecond.of(20.0);
 
-    public CoralIntakeCommand(CoralWheel wheel) {
+    public AlgaeEjectCommand(AlgaeWheel wheel) {
         this.wheel = wheel;
         addRequirements(wheel);
     }
@@ -22,7 +24,7 @@ public class CoralIntakeCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        wheel.updateSetpoint(MetersPerSecond.of(20.0));
+        wheel.updateSetpoint(SPEED);
     }
 
     /**
@@ -47,6 +49,6 @@ public class CoralIntakeCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return wheel.encoder.getVelocity() < 0.1;
+        return Math.abs(wheel.leftEncoder.getVelocity() - SPEED.in(MetersPerSecond)) < 0.5 && Math.abs(wheel.rightEncoder.getVelocity() - SPEED.in(MetersPerSecond)) < 0.5;
     }
 }

@@ -1,6 +1,5 @@
 package frc.lib.constants;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
@@ -52,4 +51,10 @@ public class AlgaeArmConstants {
     // range of motion, where zero is defined as directly forward, and upwards rotation is defined as positive
     public static final Angle MAX_ANGLE = Rotations.of(0.12);
     public static final Angle MIN_ANGLE = Rotations.of(-0.271);
+
+    public static final Angle
+        L23_INTAKE_ANGLE = Rotations.of(0.0),
+        GROUND_INTAKE_ANGLE = Rotations.of(0.0),
+
+        PROCESSOR_EJECT_ANGLE = Rotations.of(0.0);
 }

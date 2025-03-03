@@ -1,14 +1,19 @@
 package frc.robot.commands.coralarm;
 
+import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.constants.CoralArmConstants;
 import frc.robot.subsystems.CoralArm;
 
-public class CoralArmUpCommand extends Command {
+public class CoralArmAngleCommand extends Command {
     public final CoralArm arm;
+    public final Angle angle;
 
-    public CoralArmUpCommand(CoralArm arm) {
+    public CoralArmAngleCommand(CoralArm arm, Angle angle) {
         this.arm = arm;
+        this.angle = angle;
+
         addRequirements(arm);
     }
 
@@ -21,7 +26,7 @@ public class CoralArmUpCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        arm.updateSetpoint(CoralArmConstants.MAX_ANGLE);
+        arm.updateSetpoint(angle);
     }
 
     /**
@@ -46,6 +51,6 @@ public class CoralArmUpCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return false;
+        return arm.hexPosition().minus(angle).abs(Radians) < 0.2;
     }
 }

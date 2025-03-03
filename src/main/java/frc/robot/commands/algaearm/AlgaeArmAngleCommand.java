@@ -1,16 +1,20 @@
-package frc.robot.commands.coralwheel;
+package frc.robot.commands.algaearm;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralWheel;
+import frc.robot.subsystems.AlgaeArm;
 
-public class CoralIntakeCommand extends Command {
-    public final CoralWheel wheel;
+public class AlgaeArmAngleCommand extends Command {
+    public final AlgaeArm arm;
+    public final Angle angle;
 
-    public CoralIntakeCommand(CoralWheel wheel) {
-        this.wheel = wheel;
-        addRequirements(wheel);
+    public AlgaeArmAngleCommand(AlgaeArm arm, Angle angle) {
+        this.arm = arm;
+        this.angle = angle;
+
+        addRequirements(arm);
     }
 
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
@@ -22,7 +26,7 @@ public class CoralIntakeCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        wheel.updateSetpoint(MetersPerSecond.of(20.0));
+        arm.updateSetpoint(angle);
     }
 
     /**
@@ -36,7 +40,7 @@ public class CoralIntakeCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        wheel.updateSetpoint(MetersPerSecond.of(0.0));
+        
     }
 
     /**
@@ -47,6 +51,6 @@ public class CoralIntakeCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return wheel.encoder.getVelocity() < 0.1;
+        return arm.hexPosition().minus(angle).abs(Radians) < 0.2;
     }
 }

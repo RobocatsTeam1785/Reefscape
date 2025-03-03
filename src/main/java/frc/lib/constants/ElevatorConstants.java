@@ -68,6 +68,8 @@ public class ElevatorConstants {
     // scoring/intake-relevant heights
     // TODO measure these
     public static final Distance
+        GROUND = Meters.of(0.0),
+
         // coral intake and score height
         CORAL_STATION_INTAKE_HEIGHT = Meters.of(0.0),
 

@@ -1,15 +1,18 @@
-package frc.robot.commands.algaearm;
+package frc.robot.commands.coralwheel;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.lib.constants.AlgaeArmConstants;
-import frc.robot.subsystems.AlgaeArm;
+import frc.robot.subsystems.CoralWheel;
 
-public class AlgaeArmUpCommand extends Command {
-    public final AlgaeArm arm;
+public class CoralEjectCommand extends Command {
+    public final CoralWheel wheel;
+    public final LinearVelocity SPEED = MetersPerSecond.of(20.0);
 
-    public AlgaeArmUpCommand(AlgaeArm arm) {
-        this.arm = arm;
-        addRequirements(arm);
+    public CoralEjectCommand(CoralWheel wheel) {
+        this.wheel = wheel;
+        addRequirements(wheel);
     }
 
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
@@ -21,7 +24,7 @@ public class AlgaeArmUpCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        arm.updateSetpoint(AlgaeArmConstants.MAX_ANGLE);
+        wheel.updateSetpoint(SPEED);
     }
 
     /**
@@ -35,7 +38,7 @@ public class AlgaeArmUpCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        
+        wheel.updateSetpoint(MetersPerSecond.of(0.0));
     }
 
     /**
@@ -46,6 +49,6 @@ public class AlgaeArmUpCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return false;
+        return Math.abs(wheel.encoder.getVelocity() - SPEED.in(MetersPerSecond)) < 0.5;
     }
 }

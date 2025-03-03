@@ -106,22 +106,13 @@ public class AlgaeArm extends SubsystemBase {
 
         // the physical mechanism range is about 0.75 to 1.1, but 1.1 is reset to 0.1 because the value is constrained between 0 and 1
         // so, we just change the area below 0.25, which it can essentially not reach, to be above 1, so we see continuous input
-        // if (rotations < 0.25) rotations += 1.0;
+        if (rotations < 0.25) rotations += 1.0;
 
-        // at rest, the detected rotation after the previous step is about 273 degrees, but the actual mechanism rotation is -16 degrees (AlgaeArmConstants.MIN_ANGLE),
-        // so we adjust it to match that
-        // rotations -= Units.degreesToRotations(273);
-        // rotations += Units.degreesToRotations(-16);
+        // now that we have a continuous range, we can properly define zero at horizontal
+        rotations -= 0.805;
 
-        // 0.753
-        // 0.765
-        // 0.767
-        // 0.761
-
-        // 0.753
-        // 0.765
-
-        // 0.766
+        // finally, invert the sign to make upwards rotation positive instead of negative
+        // rotations *= -1;
 
         // the hex encoder is positioned after the gearbox, so 1 hex encoder rotation = 1 mechanism rotation
         return Rotations.of(rotations);

@@ -3,6 +3,7 @@ package frc.lib.constants;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -51,4 +52,13 @@ public class CoralArmConstants {
     // range of motion, where zero is defined as directly forward, and upwards rotation is defined as positive
     public static final Angle MAX_ANGLE = Degrees.of(55);
     public static final Angle MIN_ANGLE = Degrees.of(-90);
+
+    public static final Angle
+        STATION_INTAKE_ANGLE = Rotations.of(0.0),
+
+        L1_SCORE_ANGLE = Rotations.of(0.0),
+        L23_SCORE_ANGLE = Rotations.of(0.0),
+        L4_SCORE_ANGLE = Rotations.of(0.0),
+
+        DOWN_ANGLE = Degrees.of(-90.0);
 }

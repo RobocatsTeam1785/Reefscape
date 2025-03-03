@@ -1,16 +1,21 @@
-package frc.robot.commands.coralwheel;
+package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralWheel;
+import frc.robot.subsystems.Elevator;
 
-public class CoralIntakeCommand extends Command {
-    public final CoralWheel wheel;
+public class ElevatorHeightCommand extends Command {
+    public final Elevator elevator;
+    public final Distance height;
 
-    public CoralIntakeCommand(CoralWheel wheel) {
-        this.wheel = wheel;
-        addRequirements(wheel);
+    public ElevatorHeightCommand(Elevator elevator, Distance height) {
+        this.elevator = elevator;
+        this.height = height;
+
+        addRequirements(elevator);
     }
 
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
@@ -22,7 +27,7 @@ public class CoralIntakeCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        wheel.updateSetpoint(MetersPerSecond.of(20.0));
+        elevator.updateSetpoint(height);
     }
 
     /**
@@ -36,7 +41,7 @@ public class CoralIntakeCommand extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        wheel.updateSetpoint(MetersPerSecond.of(0.0));
+        elevator.updateVoltage(Volts.of(0.0));
     }
 
     /**
@@ -47,6 +52,6 @@ public class CoralIntakeCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return wheel.encoder.getVelocity() < 0.1;
+        return elevator.leftHeight().minus(height).abs(Meters) < 0.1 && elevator.rightHeight().minus(height).abs(Meters) < 0.1;
     }
 }

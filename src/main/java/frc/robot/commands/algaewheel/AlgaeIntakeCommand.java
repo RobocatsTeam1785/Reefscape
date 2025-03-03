@@ -7,8 +7,6 @@ import frc.robot.subsystems.AlgaeWheel;
 
 public class AlgaeIntakeCommand extends Command {
     public final AlgaeWheel wheel;
-    public boolean started;
-    public long startTimeMs;
 
     public AlgaeIntakeCommand(AlgaeWheel wheel) {
         this.wheel = wheel;
@@ -18,8 +16,7 @@ public class AlgaeIntakeCommand extends Command {
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
     @Override
     public void initialize() {
-        started = true;
-        startTimeMs = System.currentTimeMillis();
+        
     }
 
     /** The main body of a command. Called repeatedly while the command is scheduled. */
@@ -40,7 +37,6 @@ public class AlgaeIntakeCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         wheel.updateSetpoint(MetersPerSecond.of(0.0));
-        started = false;
     }
 
     /**
@@ -51,6 +47,6 @@ public class AlgaeIntakeCommand extends Command {
      */
     @Override
     public boolean isFinished() {
-        return started && (System.currentTimeMillis() - startTimeMs) > 100 && wheel.leftEncoder.getVelocity() < 0.1 && wheel.rightEncoder.getVelocity() < 0.1;
+        return wheel.leftEncoder.getVelocity() < 0.1 && wheel.rightEncoder.getVelocity() < 0.1;
     }
 }
