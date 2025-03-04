@@ -86,6 +86,10 @@ public class CoralWheel extends SubsystemBase {
     }
 
     // state
+    public Voltage lastVoltage() {
+        return Volts.of(lastVoltageVolts);
+    }
+
     public LinearVelocity linearVelocity() {
         return MetersPerSecond.of(encoder.getVelocity());
     }

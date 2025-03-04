@@ -153,6 +153,12 @@ public class ResponsiveToggleableSlider {
     private void toggle() {
         enabled = !enabled;
         enabledBoxEntry.setBoolean(enabled);
+
+        // if we toggled to false
+        if (enabled == false) {
+            // stop supplying power
+            valueConsumer.accept(safeValue);
+        }
     }
 
     // periodic
