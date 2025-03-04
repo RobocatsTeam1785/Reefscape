@@ -1,9 +1,9 @@
 package frc.lib.input.shuffleboard;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
@@ -296,53 +296,54 @@ public class ResponsiveToggleableSlider {
 
     public static ResponsiveToggleableSlider meterPerSecondSlider(
         ShuffleboardContainer container, String title,
-        int columnIndex, int rowIndex, double maxValue,
+        int columnIndex, int rowIndex, double magnitude,
         Consumer<LinearVelocity> meterPerSecondConsumer, Supplier<LinearVelocity> responseSupplier
     ) {
         return unitSlider(
             container, title,
             columnIndex, rowIndex,
             meterPerSecondConsumer, responseSupplier, MetersPerSecond,
-            0.0, 0.0, 0.0, 0.0, maxValue, false
+            0.0, 0.0, 0.0, -magnitude, magnitude, false
         );
     }
 
     public static ResponsiveToggleableSlider meterPerSecondSlider(
         ShuffleboardContainer container, String title,
-        int columnIndex, int rowIndex, double maxValue,
+        int columnIndex, int rowIndex, double magnitude,
         Consumer<LinearVelocity> meterPerSecondConsumer, Supplier<LinearVelocity> leftResponseSupplier, Supplier<LinearVelocity> rightResponseSupplier
     ) {
         return unitSlider(
             container, title,
             columnIndex, rowIndex,
             meterPerSecondConsumer, leftResponseSupplier, rightResponseSupplier, MetersPerSecond,
-            0.0, 0.0, 0.0, 0.0, maxValue, false
+            0.0, 0.0, 0.0, -magnitude, magnitude, false
         );
     }
 
-    public static ResponsiveToggleableSlider radianSlider(
+    public static ResponsiveToggleableSlider degreeSlider(
         ShuffleboardContainer container, String title,
         int columnIndex, int rowIndex,
+        double safeValue, double initialValue, double centerValue, double minValue, double maxValue,
         Consumer<Angle> radianConsumer, Supplier<Angle> responseSupplier
     ) {
         return unitSlider(
             container, title,
             columnIndex, rowIndex,
-            radianConsumer, responseSupplier, Radians,
-            0.0, 0.0, 0.0, 0.0, 2 * Math.PI, false
+            radianConsumer, responseSupplier, Degrees,
+            0.0, 0.0, 0.0, minValue, maxValue, false
         );
     }
 
-    public static ResponsiveToggleableSlider radianPerSecondSlider(
+    public static ResponsiveToggleableSlider degreePerSecondSlider(
         ShuffleboardContainer container, String title,
-        int columnIndex, int rowIndex, double maxValue,
+        int columnIndex, int rowIndex, double magnitude,
         Consumer<AngularVelocity> radianConsumer, Supplier<AngularVelocity> responseSupplier
     ) {
         return unitSlider(
             container, title,
             columnIndex, rowIndex,
-            radianConsumer, responseSupplier, RadiansPerSecond,
-            0.0, 0.0, 0.0, 0.0, maxValue, false
+            radianConsumer, responseSupplier, DegreesPerSecond,
+            0.0, 0.0, 0.0, -magnitude, magnitude, false
         );
     }
 }

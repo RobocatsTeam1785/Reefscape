@@ -1,11 +1,17 @@
 package frc.robot.input.shuffleboard;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+
 import java.util.Map;
 
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.lib.constants.AlgaeArmConstants;
+import frc.lib.constants.CoralArmConstants;
+import frc.lib.constants.ElevatorConstants;
 import frc.lib.input.shuffleboard.ResponsiveToggleableSlider;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeWheel;
@@ -95,80 +101,80 @@ public class ShuffleboardInputProcessor {
         //     swerve.flModule::sysIdDrive, swerve.flModule::lastDriveVoltage
         // );
 
-        // flDriveVoltage = ResponsiveToggleableSlider.meterPerSecondSlider(
+        // flDriveVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
         //     layout, "Swerve FL Drive Velocity", 0, 1, 10.0,
         //     swerve.flModule::updateDriveSetpoint, swerve.flModule::driveVelocity
         // );
         
-        // flDriveVoltage = ResponsiveToggleableSlider.voltSlider(
+        // flTurnVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve FL Turn Voltage", 0, 2,
         //     swerve.flModule::sysIdTurn, swerve.flModule::lastTurnVoltage
         // );
 
-        // ResponsiveToggleableSlider.radianSlider(
+        // flTurnPosition = ResponsiveToggleableSlider.radianSlider(
         //     layout, "Swerve FL Turn Position", 0, 3,
         //     swerve.flModule::updateTurnSetpoint, swerve.flModule::turnPosition
         // );
 
         // // swerve FR module
-        // ResponsiveToggleableSlider.voltSlider(
+        // frDriveVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve FR Drive Voltage", 1, 0,
         //     swerve.frModule::sysIdDrive, swerve.frModule::lastDriveVoltage
         // );
 
-        // ResponsiveToggleableSlider.meterPerSecondSlider(
+        // frDriveVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
         //     layout, "Swerve FR Drive Velocity", 1, 1, 10.0,
         //     swerve.frModule::updateDriveSetpoint, swerve.frModule::driveVelocity
         // );
         
-        // ResponsiveToggleableSlider.voltSlider(
+        // frTurnVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve FR Turn Voltage", 1, 2,
         //     swerve.frModule::sysIdTurn, swerve.frModule::lastTurnVoltage
         // );
 
-        // ResponsiveToggleableSlider.radianSlider(
+        // frTurnPosition = ResponsiveToggleableSlider.radianSlider(
         //     layout, "Swerve FR Turn Position", 1, 3,
         //     swerve.frModule::updateTurnSetpoint, swerve.frModule::turnPosition
         // );
 
         // // swerve BL module
-        // ResponsiveToggleableSlider.voltSlider(
+        // blDriveVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve BL Drive Voltage", 2, 0, 
         //     swerve.blModule::sysIdDrive, swerve.blModule::lastDriveVoltage
         // );
 
-        // ResponsiveToggleableSlider.meterPerSecondSlider(
+        // blDriveVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
         //     layout, "Swerve BL Drive Velocity", 2, 1, 10.0,
         //     swerve.blModule::updateDriveSetpoint, swerve.blModule::driveVelocity
         // );
         
-        // ResponsiveToggleableSlider.voltSlider(
+        // blTurnVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve BL Turn Voltage", 2, 2,
         //     swerve.blModule::sysIdTurn, swerve.blModule::lastTurnVoltage
         // );
 
-        // ResponsiveToggleableSlider.radianSlider(
+        // blTurnPosition = ResponsiveToggleableSlider.radianSlider(
         //     layout, "Swerve BL Turn Position", 2, 3,
         //     swerve.blModule::updateTurnSetpoint, swerve.blModule::turnPosition
         // );
 
         // // swerve BR module
-        // ResponsiveToggleableSlider.voltSlider(
+        // brDriveVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve BR Drive Voltage", 3, 0, 
         //     swerve.brModule::sysIdDrive, swerve.brModule::lastDriveVoltage
         // );
 
-        // ResponsiveToggleableSlider.meterPerSecondSlider(
+        // brDriveVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
         //     layout, "Swerve BR Drive Velocity", 3, 1, 10.0,
         //     swerve.brModule::updateDriveSetpoint, swerve.brModule::driveVelocity
         // );
         
-        // ResponsiveToggleableSlider.voltSlider(
+        // brTurnVoltage = ResponsiveToggleableSlider.voltSlider(
         //     layout, "Swerve BR Turn Voltage", 3, 2,
         //     swerve.brModule::sysIdTurn, swerve.brModule::lastTurnVoltage
         // );
 
-        // ResponsiveToggleableSlider.radianSlider(
+        // brTurnPosition = ResponsiveToggleableSlider.radianSlider(
         //     layout, "Swerve BR Turn Position", 3, 3,
         //     swerve.brModule::updateTurnSetpoint, swerve.brModule::turnPosition
         // );
@@ -181,7 +187,7 @@ public class ShuffleboardInputProcessor {
 
         // TODO measure the max height
         elevatorPosition = ResponsiveToggleableSlider.meterSlider(
-            layout, "Elevator Position", 4, 1, 0.0, 100.0,
+            layout, "Elevator Position", 4, 1, 0.0, ElevatorConstants.MAX_HEIGHT.in(Meters),
             elevator::updateSetpoint, elevator::leftHeight, elevator::rightHeight
         );
 
@@ -197,13 +203,18 @@ public class ShuffleboardInputProcessor {
             coralArm::updateVoltage, coralArm::lastVoltage
         );
 
-        coralArmRotation = ResponsiveToggleableSlider.radianSlider(
+        double minAngle = CoralArmConstants.MIN_ANGLE.in(Degrees);
+        double maxAngle = CoralArmConstants.MAX_ANGLE.in(Degrees);
+        double mediumAngle = (maxAngle - minAngle) / 2.0;
+
+        coralArmRotation = ResponsiveToggleableSlider.degreeSlider(
             layout, "Coral Arm Rotation", 5, 1,
+            minAngle, minAngle, mediumAngle, minAngle, maxAngle,
             coralArm::updateSetpoint, coralArm::hexPosition
         );
 
-        coralArmVelocity = ResponsiveToggleableSlider.radianPerSecondSlider(
-            layout, "Coral Arm Angular Velocity", 5, 2, 2.0,
+        coralArmVelocity = ResponsiveToggleableSlider.degreePerSecondSlider(
+            layout, "Coral Arm Angular Velocity", 5, 2, 90.0,
             coralArm::updateSetpoint, coralArm::angularVelocity
         );
 
@@ -225,13 +236,18 @@ public class ShuffleboardInputProcessor {
             algaeArm::updateVoltage, algaeArm::lastVoltage
         );
 
-        algaeArmRotation = ResponsiveToggleableSlider.radianSlider(
+        minAngle = AlgaeArmConstants.MIN_ANGLE.in(Degrees);
+        maxAngle = AlgaeArmConstants.MAX_ANGLE.in(Degrees);
+        mediumAngle = (maxAngle - minAngle) / 2.0;
+
+        algaeArmRotation = ResponsiveToggleableSlider.degreeSlider(
             layout, "Algae Arm Rotation", 7, 1,
+            minAngle, minAngle, mediumAngle, minAngle, maxAngle,
             algaeArm::updateSetpoint, algaeArm::hexPosition
         );
 
-        algaeArmVelocity = ResponsiveToggleableSlider.radianPerSecondSlider(
-            layout, "Algae Arm Angular Velocity", 7, 2, 2.0,
+        algaeArmVelocity = ResponsiveToggleableSlider.degreePerSecondSlider(
+            layout, "Algae Arm Angular Velocity", 7, 2, 90.0,
             algaeArm::updateSetpoint, algaeArm::angularVelocity
         );
 
