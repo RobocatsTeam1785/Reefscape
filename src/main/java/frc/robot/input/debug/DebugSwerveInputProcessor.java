@@ -172,6 +172,7 @@ public class DebugSwerveInputProcessor extends InputProcessor {
         // convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
         // fully up means -1, which is unintuitive in ENU, so it requires inversion
         double speed = -driver.getLeftY();
+        speed = MathUtil.applyDeadband(speed, 0.1);
 
         if (alignEnabled) {
             swerve.only(moduleId, speed, rightAlignAngle(driver));

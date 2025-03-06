@@ -19,14 +19,14 @@ public class ElevatorConstants {
     // TODO tune these
     // PID and FF constants
     public static final double
-        KP = 0.1,
+        KP = 0.2,
         KI = 0.0,
         KD = 0.0,
 
-        KG = 1.0,
-        KS = 1.0,
-        KV = 7.0,
-        KA = 3.0;
+        KG = 0.38,
+        KS = 0.72,
+        KV = 0.1,
+        KA = 0.0;
     
     // conversion factor
     // 20:1 gear ratio
@@ -61,11 +61,11 @@ public class ElevatorConstants {
 
     // TODO measure and determine these
     // TODO decide whether zero height will be defined as the floor or the lowest height the elevator can reach
-    public static final Distance MAX_HEIGHT = Meters.of(2.0);
-    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(1.0);
-    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(1.0);
+    public static final Distance MAX_HEIGHT = Meters.of(1.14);
+    public static final LinearVelocity MAX_SPEED = MetersPerSecond.of(0.75);
+    public static final LinearAcceleration MAX_ACCELERATION = MetersPerSecondPerSecond.of(0.5);
 
-    public static final Distance HEIGHT_SOFT_LIMIT = MAX_HEIGHT.minus(Inches.of(4.0));
+    public static final Distance HEIGHT_SOFT_LIMIT = MAX_HEIGHT.minus(Inches.of(1.0));
 
     // scoring/intake-relevant heights
     // TODO measure these

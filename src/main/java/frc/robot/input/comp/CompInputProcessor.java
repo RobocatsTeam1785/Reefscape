@@ -1,11 +1,17 @@
 package frc.robot.input.comp;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
@@ -17,6 +23,7 @@ import frc.lib.constants.ElevatorConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.robot.commands.ElevatorHeightCommand;
 import frc.robot.commands.algaearm.AlgaeArmAngleCommand;
+import frc.robot.commands.algaearm.AlgaeArmDownCommand;
 import frc.robot.commands.algaewheel.AlgaeEjectCommand;
 import frc.robot.commands.algaewheel.AlgaeIntakeCommand;
 import frc.robot.commands.coralarm.CoralArmAngleCommand;
@@ -47,6 +54,8 @@ public class CompInputProcessor {
 
     // state
     @Logged public double elevatorHeightMeters = 0.0;
+
+    public boolean coralIfTrueAlgaeIfFalse = true;
     
     // initialization
     public CompInputProcessor(
@@ -89,37 +98,75 @@ public class CompInputProcessor {
         Trigger lb = driver.leftBumper();
         Trigger rb = driver.rightBumper();
 
-        Trigger noBumpers = lb.and(rb).negate();
-
         // commands
-        driver.a().and(noBumpers).onTrue(new CoralIntakeCommand(coralWheel));
-        driver.b().and(noBumpers).onTrue(new CoralEjectCommand(coralWheel));
+        // driver.a().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(5.0)), coralWheel));
+        // driver.b().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(-3.0)), coralWheel));
+        // driver.y().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(0.0)), coralWheel));
 
-        driver.a().and(lb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.CORAL_STATION_INTAKE_HEIGHT),
-            new CoralArmAngleCommand(coralArm, CoralArmConstants.STATION_INTAKE_ANGLE)
-        ));
+        // left bumper
+        // driver.a().and(lb).onTrue(new Command() {
+        //     @Override
+        //     public void initialize() {
+        //         coralArm.updateVoltage(Volts.of(1.0));
+        //     }
 
-        driver.x().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L1_CORAL_SCORE_HEIGHT),
-            new CoralArmAngleCommand(coralArm, CoralArmConstants.L1_SCORE_ANGLE)
-        ));
+        //     @Override
+        //     public void end(boolean interrupted) {
+        //         coralArm.updateVoltage(Volts.of(0.0));
+        //     }
 
-        driver.a().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_CORAL_SCORE_HEIGHT),
-            new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
-        ));
+        //     @Override
+        //     public boolean isFinished() {
+        //         return coralArm.hexPosition().minus(Degrees.of(30.0)).abs(Radians) < 0.1;
+        //     }
+        // });
 
-        driver.b().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_CORAL_SCORE_HEIGHT),
-            new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
-        ));
+        // driver.b().and(lb).onTrue(new Command() {
+        //     @Override
+        //     public void initialize() {
+        //         coralArm.updateVoltage(Volts.of(-1.0));
+        //     }
 
-        driver.y().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L4_CORAL_SCORE_HEIGHT),
-            new CoralArmAngleCommand(coralArm, CoralArmConstants.L4_SCORE_ANGLE)
-        ));
+        //     @Override
+        //     public void end(boolean interrupted) {
+        //         coralArm.updateVoltage(Volts.of(0.0));
+        //     }
+
+        //     @Override
+        //     public boolean isFinished() {
+        //         return coralArm.hexPosition().minus(CoralArmConstants.MIN_ANGLE).abs(Radians) < 0.1;
+        //     }
+        // });
+        
+        // driver.a().and(lb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.CORAL_STATION_INTAKE_HEIGHT),
+        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.STATION_INTAKE_ANGLE)
+        // ));
+
+        // righit bumper
+        // driver.x().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L1_CORAL_SCORE_HEIGHT),
+        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L1_SCORE_ANGLE)
+        // ));
+
+        // driver.a().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_CORAL_SCORE_HEIGHT),
+        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
+        // ));
+
+        // driver.b().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_CORAL_SCORE_HEIGHT),
+        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
+        // ));
+
+        // driver.y().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L4_CORAL_SCORE_HEIGHT),
+        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L4_SCORE_ANGLE)
+        // ));
     }
+
+    // TODO move this to top
+    private boolean coralEnabled = false, algaeEnabled = false;
 
     public void configureOperatorTriggers() {
         // triggers
@@ -128,45 +175,195 @@ public class CompInputProcessor {
 
         Trigger noBumpers = lb.and(rb).negate();
 
+        var a = new Command() {
+            private int i;
+
+            @Override
+            public void initialize() {
+                if (operator.leftTrigger().getAsBoolean()) {
+                    algaeEnabled = !algaeEnabled;
+                } else {
+                    coralEnabled = !coralEnabled;
+                }
+
+                i = 10;
+            }
+
+            @Override
+            public void execute() {
+                if (!operator.leftTrigger().getAsBoolean()) {
+                    if (coralEnabled) {
+                        coralWheel.updateSetpoint(MetersPerSecond.of(5.0));
+                    } else {
+                        coralWheel.updateVoltage(Volts.of(0.0));
+                    }
+                } else {
+                    if (algaeEnabled) {
+                        algaeWheel.updateSetpoint(MetersPerSecond.of(5.0));
+                    } else {
+                        algaeWheel.updateVoltage(Volts.of(0.0));
+                    }
+                }
+
+                i--;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return i == 0;
+            }
+        };
+        operator.a().onTrue(a);
+
+        var b = new Command() {
+            private int i;
+
+            @Override
+            public void initialize() {
+                if (operator.leftTrigger().getAsBoolean()) {
+                    algaeEnabled = !algaeEnabled;
+                } else {
+                    coralEnabled = !coralEnabled;
+                }
+
+                i = 10;
+            }
+
+            @Override
+            public void execute() {
+                if (!operator.leftTrigger().getAsBoolean()) {
+                    if (coralEnabled) {
+                        coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
+                    } else {
+                        coralWheel.updateVoltage(Volts.of(0.0));
+                    }
+                } else {
+                    if (algaeEnabled) {
+                        algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0));
+                    } else {
+                        algaeWheel.updateVoltage(Volts.of(0.0));
+                    }
+                }
+
+                i--;
+            }
+
+            @Override
+            public boolean isFinished() {
+                return i == 0;
+            }
+        };
+        operator.b().onTrue(b);
+
+        operator.leftTrigger().onChange(new InstantCommand(() -> {
+            if (operator.leftTrigger().getAsBoolean()) {
+                // newly pressed
+                coralArm.updateVoltage(Volts.of(0.0));
+            } else {
+                // newly unpressed
+                algaeArm.updateVoltage(Volts.of(0.0));
+            }
+        }, coralArm, algaeArm));
+
+        // var x = new Command() {
+        //     private boolean enabled = false;
+
+        //     @Override
+        //     public void initialize() {
+        //         enabled = !enabled;
+        //     }
+
+        //     @Override
+        //     public void execute() {
+        //         if (enabled) {
+        //             coralWheel.updateSetpoint(MetersPerSecond.of(5.0));
+        //         } else {
+        //             coralWheel.updateSetpoint(MetersPerSecond.of(0.0));
+        //         }
+        //     }
+
+        //     @Override
+        //     public boolean isFinished() {
+        //         return true;
+        //     }
+        // };
+        // operator.x().onTrue(x);
+
+        // var y = new Command() {
+        //     private boolean enabled = false;
+
+        //     @Override
+        //     public void initialize() {
+        //         enabled = !enabled;
+        //     }
+
+        //     @Override
+        //     public void execute() {
+        //         if (enabled) {
+        //             coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
+        //         } else {
+        //             coralWheel.updateSetpoint(MetersPerSecond.of(0.0));
+        //         }
+        //     }
+
+        //     @Override
+        //     public boolean isFinished() {
+        //         return true;
+        //     }
+        // };
+        // operator.y().onTrue(y);
+
         // commands
-        operator.a().and(noBumpers).onTrue(new AlgaeIntakeCommand(algaeWheel));
-        operator.b().and(noBumpers).onTrue(new AlgaeEjectCommand(algaeWheel));
+        // operator.a().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(5.0)), algaeWheel));
+        // operator.b().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0)), algaeWheel));
+        // operator.y().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(0.0)), algaeWheel));
 
-        operator.a().and(lb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.GROUND),
-            new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.GROUND_INTAKE_ANGLE)
-        ));
+        // left bumper
+        // operator.a().and(lb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.GROUND),
+        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.GROUND_INTAKE_ANGLE)
+        // ));
 
-        operator.b().and(lb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.PROCESSOR_ALGAE_SCORE_HEIGHT),
-            new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.PROCESSOR_EJECT_ANGLE)
-        ));
+        // operator.b().and(lb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.PROCESSOR_ALGAE_SCORE_HEIGHT),
+        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.PROCESSOR_EJECT_ANGLE)
+        // ));
 
-        operator.a().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_ALGAE_INTAKE_HEIGHT),
-            new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
-        ));
+        // operator.x().and(lb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.PROCESSOR_ALGAE_SCORE_HEIGHT),
+        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.MAX_ANGLE)
+        // ));
 
-        operator.b().and(rb).onTrue(new ParallelCommandGroup(
-            new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_ALGAE_INTAKE_HEIGHT),
-            new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
-        ));
+        // operator.leftTrigger().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(2.0)), algaeArm));
+        // operator.rightTrigger().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(-2.0)), algaeArm));
+        // operator.x().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(0.0)), algaeArm));
+
+        // right bumper
+        // operator.a().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_ALGAE_INTAKE_HEIGHT),
+        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
+        // ));
+
+        // operator.b().and(rb).onTrue(new ParallelCommandGroup(
+        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_ALGAE_INTAKE_HEIGHT),
+        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
+        // ));
 
         // default commands
-        operator.leftTrigger().and(operator.rightTrigger()).whileTrue(new RepeatCommand(new InstantCommand(() -> {
-            // determine input values
-            // fully up means -1, which is unintuitive, so it requires inversion
-            double controllerVerticalSpeed = -operator.getLeftY();
+        // operator.leftTrigger().and(operator.rightTrigger()).whileTrue(new RepeatCommand(new InstantCommand(() -> {
+        //     // determine input values
+        //     // fully up means -1, which is unintuitive, so it requires inversion
+        //     double controllerVerticalSpeed = -operator.getLeftY();
 
-            // process them
-            controllerVerticalSpeed = MathUtil.applyDeadband(controllerVerticalSpeed, ElevatorConstants.SPEED_DEADBAND);
-            controllerVerticalSpeed *= 0.1;
-            System.out.println("Controller vertical speed: " + controllerVerticalSpeed);
+        //     // process them
+        //     controllerVerticalSpeed = MathUtil.applyDeadband(controllerVerticalSpeed, ElevatorConstants.SPEED_DEADBAND);
+        //     controllerVerticalSpeed *= 0.1;
+        //     System.out.println("Controller vertical speed: " + controllerVerticalSpeed);
 
-            elevatorHeightMeters += controllerVerticalSpeed;
+        //     elevatorHeightMeters += controllerVerticalSpeed;
 
-            elevator.updateSetpoint(Meters.of(elevatorHeightMeters));
-        }, elevator)));
+        //     elevator.updateSetpoint(Meters.of(elevatorHeightMeters));
+        // }, elevator)));
     }
 
     // - defaults
@@ -175,10 +372,13 @@ public class CompInputProcessor {
             // calculate controller chassis speeds
             // - convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
             // - fully right means 1, which is intuitive
-            double xSpeed = driver.getLeftX();
+            double oxSpeed = driver.getLeftX();
 
             // - fully up means -1, which is unintuitive, so it requires inversion
-            double ySpeed = -driver.getLeftY();
+            double oySpeed = -driver.getLeftY();
+
+            double xSpeed = oySpeed;
+            double ySpeed = -oxSpeed;
 
             // - fully right means 1, which is positive; however, in WPILib, positive rotation means CCW rotation, and moving the joystick right is generally
             // - associated with CW rotation, so it requires inversion
@@ -197,10 +397,35 @@ public class CompInputProcessor {
 
             swerve.driveRobotRelative(xVel, yVel, angVel);
         }, swerve));
+
+        elevator.setDefaultCommand(new InstantCommand(() -> {
+            double voltage = -operator.getLeftY();
+            voltage = voltage * 5.0;
+            voltage = MathUtil.applyDeadband(voltage, 0.5);
+
+            elevator.updateVoltage(Volts.of(voltage));
+        }, elevator));
+
+        coralArm.setDefaultCommand(new InstantCommand(() -> {
+            if (!operator.leftTrigger().getAsBoolean()) {
+                double voltage = -operator.getRightY();
+                voltage *= 2.0;
+                voltage = MathUtil.applyDeadband(voltage, 0.1);
+
+                coralArm.updateVoltage(Volts.of(voltage));
+            }
+        }, coralArm));
+
+        algaeArm.setDefaultCommand(new InstantCommand(() -> {
+            if (operator.leftTrigger().getAsBoolean()) {
+                double voltage = -operator.getRightY();
+                voltage *= 2.0;
+                voltage = MathUtil.applyDeadband(voltage, 0.1);
+
+                algaeArm.updateVoltage(Volts.of(voltage));
+            }
+        }, algaeArm));
     }
 
-    public void periodic() {
-        if (elevator.getCurrentCommand() != null)
-            System.out.println("elevator command: " + elevator.getCurrentCommand().getName());
-    }
+    public void periodic() {}
 }

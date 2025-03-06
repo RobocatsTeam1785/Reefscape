@@ -8,7 +8,7 @@ import frc.robot.subsystems.CoralWheel;
 
 public class CoralEjectCommand extends Command {
     public final CoralWheel wheel;
-    public final LinearVelocity SPEED = MetersPerSecond.of(20.0);
+    public final LinearVelocity SPEED = MetersPerSecond.of(-5.0);
 
     public CoralEjectCommand(CoralWheel wheel) {
         this.wheel = wheel;
@@ -20,6 +20,7 @@ public class CoralEjectCommand extends Command {
     public void initialize() {
         
     }
+
 
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override

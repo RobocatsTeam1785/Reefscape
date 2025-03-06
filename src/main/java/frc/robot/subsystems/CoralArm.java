@@ -62,7 +62,8 @@ public class CoralArm extends SubsystemBase {
         // set motor parameters
         config
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
 
         // set encoder parameters
         config.encoder
@@ -96,6 +97,8 @@ public class CoralArm extends SubsystemBase {
         // configure PID and FF using constants and constraints
         pid = new ProfiledPIDController(CoralArmConstants.KP, CoralArmConstants.KI, CoralArmConstants.KD, constraints);
         ff = new ArmFeedforward(CoralArmConstants.KS, CoralArmConstants.KG, CoralArmConstants.KV, CoralArmConstants.KA);
+
+        // pid.enableContinuousInput(-Math.PI / 2.0, Math.PI / 2.0);
     }
 
     // state
@@ -156,6 +159,8 @@ public class CoralArm extends SubsystemBase {
     // drive
     /** updates the arm motor position setpoint to the provided angle from horizontal, where positive rotation is upwards rotation */
     public void updateSetpoint(Angle angle) {
+        pid.reset(relativeEncoder.getPosition());
+
         // ! applying voltage outside the acceptable range of motion risks damage to the robot - be very careful when using this method
         // TODO tweak the hexEncoder value until it achieves parity with the armEncoder value, and then replace the armEncoder value with it
         final double output = pid.calculate(relativeEncoder.getPosition(), angle.in(Radians));

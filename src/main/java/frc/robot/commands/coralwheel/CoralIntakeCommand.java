@@ -22,7 +22,7 @@ public class CoralIntakeCommand extends Command {
     /** The main body of a command. Called repeatedly while the command is scheduled. */
     @Override
     public void execute() {
-        wheel.updateSetpoint(MetersPerSecond.of(20.0));
+        wheel.updateSetpoint(MetersPerSecond.of(5.0));
     }
 
     /**

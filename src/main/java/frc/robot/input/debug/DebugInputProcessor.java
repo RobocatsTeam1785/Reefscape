@@ -99,7 +99,7 @@ public class DebugInputProcessor {
     public void configure() {
         configureSwitches();
         configureTriggers();
-        // configureDefaults();
+        configureDefaults();
     }
 
     /** configure mode-switching */
@@ -143,13 +143,13 @@ public class DebugInputProcessor {
     /** configure trigger-based commands */
     public void configureTriggers() {
         swerveProcessor.configureTriggers();
-        elevatorProcessor.configureTriggers();
+        // elevatorProcessor.configureTriggers();
 
-        coralArmProcessor.configureTriggers();
-        coralWheelProcessor.configureTriggers();
+        // coralArmProcessor.configureTriggers();
+        // coralWheelProcessor.configureTriggers();
 
-        algaeArmProcessor.configureTriggers();
-        algaeWheelProcessor.configureTriggers();
+        // algaeArmProcessor.configureTriggers();
+        // algaeWheelProcessor.configureTriggers();
     }
 
     /** configure default commands */
@@ -159,13 +159,13 @@ public class DebugInputProcessor {
 
         // add commands to map
         swerveProcessor.configureDefaults(defaults);
-        elevatorProcessor.configureDefaults(defaults);
+        // elevatorProcessor.configureDefaults(defaults);
 
-        coralArmProcessor.configureDefaults(defaults);
-        coralWheelProcessor.configureDefaults(defaults);
+        // coralArmProcessor.configureDefaults(defaults);
+        // coralWheelProcessor.configureDefaults(defaults);
 
-        algaeArmProcessor.configureDefaults(defaults);
-        algaeWheelProcessor.configureDefaults(defaults);
+        // algaeArmProcessor.configureDefaults(defaults);
+        // algaeWheelProcessor.configureDefaults(defaults);
 
         // set per-mode active-state-dependent default commands
         for (Map.Entry<Subsystem, Map<ModeState<?>, Command>> entry : defaults.entrySet()) {

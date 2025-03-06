@@ -8,7 +8,7 @@ import frc.robot.subsystems.AlgaeWheel;
 
 public class AlgaeEjectCommand extends Command {
     public final AlgaeWheel wheel;
-    public final LinearVelocity SPEED = MetersPerSecond.of(20.0);
+    public final LinearVelocity SPEED = MetersPerSecond.of(-5.0);
 
     public AlgaeEjectCommand(AlgaeWheel wheel) {
         this.wheel = wheel;

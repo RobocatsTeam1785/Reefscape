@@ -211,7 +211,7 @@ public class Swerve extends SubsystemBase {
 
         // update setpoints
         // TODO fix hacky logging
-        lastStates = new SwerveModuleState[]{ state, state, state, state };
+        // lastStates = new SwerveModuleState[]{ state, state, state, state };
 
         for (int i = 0; i < 4; i++) {
             modules[i].updateSetpoint(state);
@@ -239,8 +239,8 @@ public class Swerve extends SubsystemBase {
 
         // update the setpoint
         // TODO fix this somewhat cursed hack for logging states
-        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
-        lastStates[moduleId] = state;
+        // lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+        // lastStates[moduleId] = state;
 
         modules[moduleId].updateSetpoint(state);
     }
@@ -266,8 +266,8 @@ public class Swerve extends SubsystemBase {
 
         // update the setpoint
         // TODO fix hacky logging
-        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
-        lastStates[moduleId] = state;
+        // lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+        // lastStates[moduleId] = state;
 
         modules[moduleId].updateDriveSetpoint(state);
     }
@@ -289,7 +289,7 @@ public class Swerve extends SubsystemBase {
     /** zeroes the voltage of all modules */
     public void zeroVoltage() {
         // TODO fix hacky logging
-        lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
+        // lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
 
         perform(TalonSwerveModule::zeroVoltage);
     }
@@ -297,7 +297,7 @@ public class Swerve extends SubsystemBase {
     /** zeroes the voltage of the specified module */
     public void zeroVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[id.index] = new SwerveModuleState();
+        // lastStates[id.index] = new SwerveModuleState();
 
         perform(id, TalonSwerveModule::zeroVoltage);
     }
@@ -305,9 +305,9 @@ public class Swerve extends SubsystemBase {
     /** zeroes the drive voltage of all modules */
     public void zeroDriveVoltage() {
         // TODO fix hacky logging
-        for (SwerveModuleState state : lastStates) {
-            state.speedMetersPerSecond = 0.0;
-        }
+        // for (SwerveModuleState state : lastStates) {
+        //     state.speedMetersPerSecond = 0.0;
+        // }
 
         perform(TalonSwerveModule::zeroDriveVoltage);
     }
@@ -315,7 +315,7 @@ public class Swerve extends SubsystemBase {
     /** zeroes the drive voltage of the specified module */
     public void zeroDriveVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[id.index].speedMetersPerSecond = 0.0;
+        // lastStates[id.index].speedMetersPerSecond = 0.0;
 
         perform(TalonSwerveModule::zeroDriveVoltage);
     }
@@ -323,9 +323,9 @@ public class Swerve extends SubsystemBase {
     /** zeroes the turn voltage of all modules */
     public void zeroTurnVoltage() {
         // TODO fix hacky logging
-        for (int i = 0; i < 4; i++) {
-            lastStates[i].angle = new Rotation2d(modules[i].turnPosition());
-        }
+        // for (int i = 0; i < 4; i++) {
+        //     lastStates[i].angle = new Rotation2d(modules[i].turnPosition());
+        // }
 
         perform(TalonSwerveModule::zeroTurnVoltage);
     }
@@ -333,7 +333,7 @@ public class Swerve extends SubsystemBase {
     /** zeroes the turn voltage of the specified module */
     public void zeroTurnVoltage(ModuleId id) {
         // TODO fix hacky logging
-        lastStates[id.index].angle = new Rotation2d(modules[id.index].turnPosition());
+        // lastStates[id.index].angle = new Rotation2d(modules[id.index].turnPosition());
         
         perform(id, TalonSwerveModule::zeroTurnVoltage);
     }
@@ -361,7 +361,7 @@ public class Swerve extends SubsystemBase {
         double averageDifference = difference / 4.0;
 
         // record new values
-        lastStates = states;
+        // lastStates = states;
 
         lastDifference = difference;
         lastAverageDifference = averageDifference;

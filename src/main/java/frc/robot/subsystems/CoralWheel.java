@@ -59,7 +59,8 @@ public class CoralWheel extends SubsystemBase {
         // set motor parameters
         config
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
 
         // set encoder parameters
         config.encoder

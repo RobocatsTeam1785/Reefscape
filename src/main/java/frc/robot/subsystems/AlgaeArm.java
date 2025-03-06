@@ -97,6 +97,8 @@ public class AlgaeArm extends SubsystemBase {
         // configure PID and FF using constants and constraints
         pid = new ProfiledPIDController(AlgaeArmConstants.KP, AlgaeArmConstants.KI, AlgaeArmConstants.KD, constraints);
         ff = new ArmFeedforward(AlgaeArmConstants.KS, AlgaeArmConstants.KG, AlgaeArmConstants.KV, AlgaeArmConstants.KA);
+
+        // pid.enableContinuousInput(-Math.PI / 2.0, Math.PI / 2.0);
     }
 
     // state

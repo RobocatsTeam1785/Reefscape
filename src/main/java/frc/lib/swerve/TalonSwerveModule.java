@@ -198,6 +198,11 @@ public class TalonSwerveModule {
         return Meters.of(meters);
     }
 
+    @Logged public double drivePositionMeters() { return drivePosition().in(Meters); }
+    @Logged public double driveVelocityMetersPerSecond() { return driveVelocity().in(MetersPerSecond); }
+    @Logged public double turnPositionRadians() { return turnPosition().in(Radians); }
+    @Logged public double turnVelocityRadiansPerSecond() { return turnVelocity().in(RadiansPerSecond); }
+
     public LinearVelocity driveVelocity() {
         double rotationsPerSecond = driveMotor.getVelocity().getValue().in(RotationsPerSecond);
         double metersPerSecond = rotationsPerSecond * SwerveConstants.DRIVE_CF;

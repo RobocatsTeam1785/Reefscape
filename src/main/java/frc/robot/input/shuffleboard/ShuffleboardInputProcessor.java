@@ -252,16 +252,16 @@ public class ShuffleboardInputProcessor {
         );
 
         // algae wheel
-        algaeWheelVoltage = ResponsiveToggleableSlider.voltSlider(
-            layout, "Algae Wheel Voltage", 8, 0, 
-            algaeWheel::updateVoltage, algaeWheel::lastLeftVoltage, algaeWheel::lastRightVoltage
-        );
+        // algaeWheelVoltage = ResponsiveToggleableSlider.voltSlider(
+        //     layout, "Algae Wheel Voltage", 8, 0, 
+        //     algaeWheel::updateVoltage, algaeWheel::lastLeftVoltage, algaeWheel::lastRightVoltage
+        // );
 
-        // TODO measure a reasonable max velocity
-        algaeWheelVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
-            layout, "Algae Wheel Velocity", 8, 1, 10.0,
-            algaeWheel::updateSetpoint, algaeWheel::lastLeftVelocity, algaeWheel::lastRightVelocity
-        );
+        // // TODO measure a reasonable max velocity
+        // algaeWheelVelocity = ResponsiveToggleableSlider.meterPerSecondSlider(
+        //     layout, "Algae Wheel Velocity", 8, 1, 10.0,
+        //     algaeWheel::updateSetpoint, algaeWheel::lastLeftVelocity, algaeWheel::lastRightVelocity
+        // );
     }
 
     // periodic
@@ -274,9 +274,9 @@ public class ShuffleboardInputProcessor {
 
             elevatorVoltage, elevatorPosition, elevatorVelocity,
             coralArmVoltage, coralArmRotation, coralArmVelocity,
-            coralWheelVoltage, coralWheelVelocity,
+            // coralWheelVoltage, coralWheelVelocity,
             algaeArmVoltage, algaeArmRotation, algaeArmVelocity,
-            algaeWheelVoltage, algaeWheelVelocity
+            // algaeWheelVoltage, algaeWheelVelocity
         };
 
         for (ResponsiveToggleableSlider slider : sliders) {

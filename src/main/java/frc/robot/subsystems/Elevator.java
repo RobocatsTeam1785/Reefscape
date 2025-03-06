@@ -63,12 +63,12 @@ public class Elevator extends SubsystemBase {
         // set motor parameters
         leftConfig
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake)
-            .inverted(true);
+            .idleMode(IdleMode.kBrake);
 
         rightConfig
             .smartCurrentLimit(40)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
         
         // set encoder parameters
         leftConfig.encoder
@@ -89,6 +89,10 @@ public class Elevator extends SubsystemBase {
         // initialize encoders
         leftEncoder = leftMotor.getEncoder();
         rightEncoder = rightMotor.getEncoder();
+
+        // the robot should be at base position when initialized, so it should be zero
+        leftEncoder.setPosition(0.0);
+        rightEncoder.setPosition(0.0);
     }
 
     public void initControl() {
@@ -119,6 +123,9 @@ public class Elevator extends SubsystemBase {
     public Distance rightHeight() {
         return Meters.of(rightEncoder.getPosition());
     }
+
+    @Logged public double leftHeightMeters() { return leftHeight().in(Meters); }
+    @Logged public double rightHeightMeters() { return rightHeight().in(Meters); }
 
     // - velocity
     public LinearVelocity leftVelocity() {
@@ -181,7 +188,10 @@ public class Elevator extends SubsystemBase {
         // use the provided setpoint
         final double feed = ff.calculate(speed.in(MetersPerSecond));
 
-        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
+        // if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) {
+        //     leftMotor.setVoltage(0.0);
+        //     rightMotor.setVoltage(0.0);
+        // }
 
         // update logged values
         lastLeftVelocityMetersPerSecond = speed.in(MetersPerSecond);
@@ -197,21 +207,33 @@ public class Elevator extends SubsystemBase {
 
     /** applies feedforward and PID control to reach the desired height, within the maximum speed and acceleration */
     public void updateSetpoint(Distance height) {
+        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) {
+            if (height.in(Meters) > lastHeight) {
+                height = Meters.of(lastHeight);
+            }
+        }
+        
         // ! applying voltage outside the acceptable range of motion risks damage to the robot
         // TODO implement a safety mechanism that disables movement outside of safe ranges - currently safe due to low max speed and acceleration
         // TODO update units if necessary
-        final double leftOutput = leftPID.calculate(leftEncoder.getPosition(), height.in(Meters));
-        final double rightOutput = rightPID.calculate(rightEncoder.getPosition(), height.in(Meters));
+        double leftOutput = leftPID.calculate(leftEncoder.getPosition(), height.in(Meters));
+        double rightOutput = rightPID.calculate(rightEncoder.getPosition(), height.in(Meters));
 
         // FF requires a velocity argument which is not directly provided by a height, so we use the motion profile in the ProfiledPIDControllers
         // to smoothly generate setpoints that the FF can use, hence, the .getSetpoint().velocity
-        final double leftFeed = ff.calculate(leftPID.getSetpoint().velocity);
-        final double rightFeed = ff.calculate(rightPID.getSetpoint().velocity);
+        double leftFeed = ff.calculate(leftPID.getSetpoint().velocity);
+        double rightFeed = ff.calculate(rightPID.getSetpoint().velocity);
+
+        if (Math.abs(leftFeed - ElevatorConstants.KG) < 0.01 && leftOutput > 0.0) {
+            leftOutput += ElevatorConstants.KS * Math.signum(leftOutput);
+        }
+
+        if (Math.abs(rightFeed - ElevatorConstants.KG) < 0.01 && rightOutput > 0.0) {
+            rightOutput += ElevatorConstants.KS * Math.signum(rightOutput);
+        }
 
         // update logged values
         lastHeight = height.in(Meters);
-
-        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
 
         lastLeftVelocityMetersPerSecond = leftPID.getSetpoint().velocity;
         lastRightVelocityMetersPerSecond = rightPID.getSetpoint().velocity;
@@ -226,9 +248,13 @@ public class Elevator extends SubsystemBase {
 
     /** <b>BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS</b>
      * <p>
+     * 
      * directly applies the specified voltage to the motor */
     public void updateVoltage(Voltage voltage) {
-        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) return;
+        if (leftHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT) || rightHeight().gt(ElevatorConstants.HEIGHT_SOFT_LIMIT)) {
+            leftMotor.setVoltage(0.0);
+            rightMotor.setVoltage(0.0);
+        }
 
         // ! BE EXTREMELY CAREFUL WITH THIS METHOD - IF YOU ACCELERATE THE ARM TOO QUICKLY INTO THE ROBOT, YOU RISK DAMAGING IMPORTANT COMPONENTS
         lastLeftVoltageVolts = voltage.in(Volts);

@@ -46,7 +46,7 @@ public class ShuffleboardUtils {
     }
 
     public static SimpleWidget slider(ShuffleboardContainer container, String title, double initial, double min, double max) {
-        return simpleWidget(BuiltInWidgets.kNumberSlider, container, title, initial, Map.of("Min", min, "Max", max));
+        return simpleWidget(BuiltInWidgets.kNumberSlider, container, title, initial, Map.of("Min", min, "Max", max, "Block increment", 0.01));
     }
 
     public static SimpleWidget bar(ShuffleboardContainer container, String title, double initial, double center, double min, double max) {

@@ -18,10 +18,10 @@ public class RobotContainer {
     // subsystems
     public Vision vision;
 
-    public Swerve swerve;
-    public Elevator elevator;
+    @Logged public Swerve swerve;
+    @Logged public Elevator elevator;
 
-    public CoralArm coralArm;
+    @Logged public CoralArm coralArm;
     public CoralWheel coralWheel;
 
     public AlgaeArm algaeArm;
@@ -33,10 +33,10 @@ public class RobotContainer {
     // controllers use NED CCC (https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html)
     public final CommandXboxController driver = new CommandXboxController(0);
     public final CommandXboxController operator = new CommandXboxController(1);
-    public final CommandXboxController controller3 = new CommandXboxController(2);
+    // public final CommandXboxController controller3 = new CommandXboxController(1);
     
     // input processors
-    // @Logged public DebugInputProcessor processor;
+    @Logged public DebugInputProcessor processor;
     @Logged public CompInputProcessor compProcessor;
     public ShuffleboardInputProcessor shuffleboardProcessor;
 
@@ -60,7 +60,7 @@ public class RobotContainer {
         compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver, operator);
         compProcessor.configure();
 
-        shuffleboardProcessor = new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel);
+        // shuffleboardProcessor = new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel);
 
         // autos
         autos = new Autos();
@@ -69,8 +69,14 @@ public class RobotContainer {
     // periodic
     public void periodic() {
         // processor.periodic();
-        shuffleboardProcessor.periodic();
+        // shuffleboardProcessor.periodic();
         compProcessor.periodic();
+
+        elevator.tune();
+        coralArm.tune();
+        coralWheel.tune();
+        algaeArm.tune();
+        algaeWheel.tune();
     }
 
     // init

@@ -61,6 +61,9 @@ public abstract class InputProcessor {
         double y = -driver.getRightY();
 
         double angleRadians = Math.atan2(y, x);
-        return Radians.of(angleRadians);
+
+        return Radians.of(-driver.getRightY() * Math.PI);
+
+        // return Radians.of(angleRadians);
     }
 }

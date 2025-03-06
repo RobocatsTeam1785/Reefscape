@@ -22,11 +22,11 @@ public class CoralArmConstants {
     // TODO tune these
     // PID and FF constants
     public static final double
-        KP = 0.1,
+        KP = 0.0,
         KI = 0.0,
         KD = 0.0,
 
-        KS = 0.0,
+        KS = 0.5,
         KG = 0.0,
         KV = 1.0,
         KA = 0.0;
@@ -54,7 +54,7 @@ public class CoralArmConstants {
     public static final Angle MIN_ANGLE = Degrees.of(-90);
 
     public static final Angle
-        STATION_INTAKE_ANGLE = Rotations.of(0.0),
+        STATION_INTAKE_ANGLE = Degrees.of(20),
 
         L1_SCORE_ANGLE = Rotations.of(0.0),
         L23_SCORE_ANGLE = Rotations.of(0.0),

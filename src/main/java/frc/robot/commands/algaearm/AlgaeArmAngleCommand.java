@@ -17,10 +17,11 @@ public class AlgaeArmAngleCommand extends Command {
         addRequirements(arm);
     }
 
+    
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
     @Override
     public void initialize() {
-        
+        System.out.println("algae arm angle command initializing!");
     }
 
     /** The main body of a command. Called repeatedly while the command is scheduled. */
