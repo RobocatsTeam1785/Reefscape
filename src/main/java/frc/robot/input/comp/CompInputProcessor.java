@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,8 @@ public class CompInputProcessor {
     @Logged public double elevatorHeightMeters = 0.0;
 
     public boolean coralIfTrueAlgaeIfFalse = true;
+
+    public Angle coralArmSetpoint = null;
     
     // initialization
     public CompInputProcessor(
@@ -196,6 +199,12 @@ public class CompInputProcessor {
                     algaeEnabled = !algaeEnabled;
                 } else {
                     coralEnabled = !coralEnabled;
+
+                    // if (coralEnabled) {
+                    //     coralArmSetpoint = CoralArmConstants.STATION_INTAKE_ANGLE;
+                    // } else {
+                    //     coralArmSetpoint = null;
+                    // }
                 }
 
                 i = 10;
@@ -425,11 +434,11 @@ public class CompInputProcessor {
             // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
             // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
-            // if (swerve.navX2.isConnected() && !swerve.navX2.isCalibrating()) {
-                // swerve.driveFieldRelative(xVel, yVel, angVel);
-            // } else {
+            if (swerve.navX2.isConnected() && !swerve.navX2.isCalibrating()) {
+                swerve.driveFieldRelative(xVel, yVel, angVel);
+            } else {
                 swerve.driveRobotRelative(xVel, yVel, angVel);  
-            // }
+            }
         }, swerve));
 
         elevator.setDefaultCommand(new InstantCommand(() -> {
@@ -449,13 +458,23 @@ public class CompInputProcessor {
 
         coralArm.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
-            
-            if (!operator.leftTrigger().getAsBoolean()) {
-                double voltage = -operator.getRightY();
-                voltage *= 2.0;
-                voltage = MathUtil.applyDeadband(voltage, 0.1);
 
-                coralArm.updateVoltage(Volts.of(voltage));
+            if (coralArmSetpoint != null) {
+                if (coralArm.hexPosition().minus(coralArmSetpoint).abs(Degrees) >= 5.0) {
+                    if (coralArm.hexPosition().gt(coralArmSetpoint)) {
+                        coralArm.updateVoltage(Volts.of(-1.0));
+                    } else if (coralArm.hexPosition().lt(coralArmSetpoint)) {
+                        coralArm.updateVoltage(Volts.of(1.0));
+                    }
+                }
+            } else {
+                if (!operator.leftTrigger().getAsBoolean()) {
+                    double voltage = -operator.getRightY();
+                    voltage *= 1.0;
+                    voltage = MathUtil.applyDeadband(voltage, 0.1);
+    
+                    coralArm.updateVoltage(Volts.of(voltage));
+                }
             }
         }, coralArm));
 
@@ -468,6 +487,13 @@ public class CompInputProcessor {
                 voltage = MathUtil.applyDeadband(voltage, 0.1);
 
                 algaeArm.updateVoltage(Volts.of(voltage));
+            } else {
+                // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
+                if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
+                    algaeArm.updateVoltage(Volts.of(0.5));
+                } else {
+                    algaeArm.updateVoltage(Volts.of(0.0));
+                }
             }
         }, algaeArm));
     }
