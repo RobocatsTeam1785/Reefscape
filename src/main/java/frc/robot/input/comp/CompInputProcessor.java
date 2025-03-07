@@ -102,6 +102,10 @@ public class CompInputProcessor {
         Trigger rb = driver.rightBumper();
 
         // commands
+        driver.a().onTrue(new InstantCommand(() -> {
+            swerve.navX2.zeroYaw();
+        }, swerve));
+
         // driver.a().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(5.0)), coralWheel));
         // driver.b().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(-3.0)), coralWheel));
         // driver.y().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(0.0)), coralWheel));
@@ -416,7 +420,11 @@ public class CompInputProcessor {
             // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
             // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
-            swerve.driveRobotRelative(xVel, yVel, angVel);            
+            if (swerve.navX2.isConnected() && !swerve.navX2.isCalibrating()) {
+                swerve.driveFieldRelative(xVel, yVel, angVel);
+            } else {
+                swerve.driveRobotRelative(xVel, yVel, angVel);  
+            }
         }, swerve));
 
         elevator.setDefaultCommand(new InstantCommand(() -> {

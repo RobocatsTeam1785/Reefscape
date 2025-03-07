@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
@@ -177,6 +178,18 @@ public class Swerve extends SubsystemBase {
     }
 
     // drive
+    public void driveFieldRelative(LinearVelocity xVelocity, LinearVelocity yVelocity, AngularVelocity angularVelocity) {
+        driveFieldRelative(new ChassisSpeeds(xVelocity, yVelocity, angularVelocity));
+    }
+
+    public void driveFieldRelative(ChassisSpeeds speeds) {
+        // TODO confirm robot angle is CCW+ and zeroed when facing frontwards
+        double gyroAngle = navX2.getAngle();
+        Rotation2d robotAngle = Rotation2d.fromDegrees(gyroAngle);
+
+        driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, robotAngle));
+    }
+
     /** drives the robot with the given robot-relative x velocity, y velocity, and angular velocity */
     public void driveRobotRelative(LinearVelocity xVelocity, LinearVelocity yVelocity, AngularVelocity angularVelocity) {
         driveRobotRelative(new ChassisSpeeds(xVelocity, yVelocity, angularVelocity));
