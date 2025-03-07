@@ -292,6 +292,7 @@ public class Elevator extends SubsystemBase {
         // and so trying to reach the setpoint could shoot the elevator too high, breaking it
         if (initializedAboveZero) return;
 
+        
         // sign of the elevator movement - positive if upwards, negative if downwards
         double movementSign = Math.signum(height.in(Meters) - leftEncoder.getPosition());
 
@@ -312,6 +313,13 @@ public class Elevator extends SubsystemBase {
         // move to the domain to an inversed [0, 10] to make the voltage roughly constant for longer
         // and apply a horizontal flip to apply roughly constant voltage first and then decay near the end
         double normalizedVoltage = Math.sqrt(-10.0 * (normalizedHeight - 1.0));
+
+        // if normalizedVoltage is NaN, then its input argument was negative, meaning we exceeded the maximum height
+        // that shouldn't happen, but if it did, we should immediately reset voltage to zero to lower the elevator
+        if (Double.isNaN(normalizedVoltage)) {
+            updateVoltage(Volts.of(0.0));
+            return;
+        }
         
         // TODO tune this value to find a speed that's not too fast and not too slow
         double movementVoltage = normalizedVoltage * 1.0;
