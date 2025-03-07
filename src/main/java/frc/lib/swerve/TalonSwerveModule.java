@@ -406,29 +406,13 @@ public class TalonSwerveModule {
     public void updateDriveSetpoint(SwerveModuleState state) {
         // current values
         Rotation2d relativeAngle = new Rotation2d(turnPosition());
-        double currentSpeedMetersPerSecond = driveVelocity().in(MetersPerSecond);
         
         // apply cosine compensation - if perfectly aligned with the setpoint, use normal speed, but if perpendicular, apply zero speed, with the area
         // between following the cosine curve while state.angle - relativeAngle technically produces somewhat unintuitive values (negative for CCW,
         // positive for CW), the graph of cosine between -90 degrees and 90 degrees is symmetrical, making their order irrelevant
         state.speedMetersPerSecond *= state.angle.minus(relativeAngle).getCos();
 
-        // calculate voltage
-        final double driveOutput = drivePID.calculate(currentSpeedMetersPerSecond, state.speedMetersPerSecond);
-        final double driveFeed = driveFF.calculate(state.speedMetersPerSecond);
-
-        // apply voltage
-        driveMotor.setVoltage(driveOutput + driveFeed);
-
-        // update logging values
-        lastDriveOutput = driveOutput;
-        lastDriveFeed = driveFeed;
-        lastDriveVoltage = driveOutput + driveFeed;
-
-        lastDriveState = state;
-
-        lastDriveSetpointVelocity = state.speedMetersPerSecond;
-        lastAbsDriveSetpointVelocity = Math.abs(lastDriveSetpointVelocity);
+        updateDriveSetpoint(MetersPerSecond.of(state.speedMetersPerSecond));
     }
 
     public void updateTurnSetpoint(Angle rotation) {
