@@ -45,6 +45,11 @@ public class Elevator extends SubsystemBase {
 
     public SlewRateLimiter rateLimiter;
 
+    // state
+    /** whether the elevator has gone below the negative threshold, e.g., 0.1, and thus was initialized when not fully down,
+     * risking breaking the elevator if the robot tries to automatically reach a setpoint with the misconfigured zero point */
+    public boolean initializedAboveZero = false;
+
     // logging
     public Voltage sysIdVoltage;
     @Logged public double lastHeight;
@@ -282,9 +287,47 @@ public class Elevator extends SubsystemBase {
         rightMotor.setVoltage(voltage);
     }
 
+    public void graduallyReachHeight(Distance height) {
+        // if we initialized above zero we're interpreting zero as above where it actually should be,
+        // and so trying to reach the setpoint could shoot the elevator too high, breaking it
+        if (initializedAboveZero) return;
+
+        // sign of the elevator movement - positive if upwards, negative if downwards
+        double movementSign = Math.signum(height.in(Meters) - leftEncoder.getPosition());
+
+        // voltage required to keep the elevator at a certain height
+        double gravityVoltage = ElevatorConstants.KG;
+
+        // voltage required to make the elevator start moving
+        double staticVoltage = 0.0;
+        
+        // we only add static voltage if we're moving upwards, as simply subtracting voltage from the gravity voltage is sufficient for moving downwards,
+        // as gravity does much of the work for us
+        if (movementSign > 0.0) {
+            staticVoltage += ElevatorConstants.KS;
+        }
+
+        double normalizedHeight = leftEncoder.getPosition() / ElevatorConstants.MAX_HEIGHT.in(Meters);
+
+        // move to the domain to an inversed [0, 10] to make the voltage roughly constant for longer
+        // and apply a horizontal flip to apply roughly constant voltage first and then decay near the end
+        double normalizedVoltage = Math.sqrt(-10.0 * (normalizedHeight - 1.0));
+        
+        // TODO tune this value to find a speed that's not too fast and not too slow
+        double movementVoltage = normalizedVoltage * 1.0;
+
+        double totalVoltage = gravityVoltage + staticVoltage + movementVoltage;
+        updateVoltage(Volts.of(totalVoltage));
+    }
+
     // periodic
     public void periodic() {
         heightEntry.setDouble(leftEncoder.getPosition() * 100.0);
+
+        // TODO tweak negative threshold value to ensure it's never reached in normal conditions, and only when the elevator is initialized when not fully down
+        if (leftEncoder.getPosition() < -0.1) {
+            initializedAboveZero = true;
+        }
     }
 
     // tuning
