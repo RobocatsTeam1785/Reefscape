@@ -184,7 +184,7 @@ public class Swerve extends SubsystemBase {
 
     public void driveFieldRelative(ChassisSpeeds speeds) {
         // TODO confirm robot angle is CCW+ and zeroed when facing frontwards
-        double gyroAngle = navX2.getAngle();
+        double gyroAngle = -navX2.getAngle();
         Rotation2d robotAngle = Rotation2d.fromDegrees(gyroAngle);
 
         driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, robotAngle));
