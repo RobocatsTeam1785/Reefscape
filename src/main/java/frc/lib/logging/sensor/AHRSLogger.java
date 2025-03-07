@@ -17,5 +17,7 @@ public class AHRSLogger extends ClassSpecificLogger<AHRS> {
         backend.log("Continuous yaw (degrees)", ahrs.getAngle());
         backend.log("Yaw (degrees)", ahrs.getYaw());
         backend.log("Heading (degrees)", ahrs.getFusedHeading());
+        backend.log("Connected", ahrs.isConnected());
+        backend.log("Calibrating", ahrs.isCalibrating());
     }
 }
