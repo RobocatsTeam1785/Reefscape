@@ -56,7 +56,7 @@ public class SwerveConstants {
 
         TRANSLATIONAL_KS = 0.5,
         TRANSLATIONAL_KV = 2.8,
-        TRANSLATIONAL_KA = 0.1,
+        TRANSLATIONAL_KA = 0.0,
 
         // calculated using the log generated at 9:11 AM on 2/8/25
         // ROTATIONAL_KP = 43.539,
@@ -91,8 +91,8 @@ public class SwerveConstants {
         ROTATIONAL_KD = 0.1, // 4.0337,
 
         ROTATIONAL_KS = 0.18342,
-        ROTATIONAL_KV = 0.8, // 2.6252,
-        ROTATIONAL_KA = 0*0.18483;//0.28483;
+        ROTATIONAL_KV = 0.5, // 2.6252,
+        ROTATIONAL_KA = 0 * 0.18483;//0.28483;
     
     // hardware constants - we're using the MK4i Swerve Module from Swerve Drive Specialties with the L2 gear ratio
     public static final double
@@ -111,11 +111,11 @@ public class SwerveConstants {
     public static final double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
     // TODO test these 4 constants to ensure accuracy
-    public static final LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(2);
-    public static final AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(0.5);
+    public static final LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
+    public static final AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
 
     public static final LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
-    public static final AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(0.5);
+    public static final AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
 
     // position constants
     // distance from the robot's center to the center of a side, in meters
