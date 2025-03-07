@@ -53,7 +53,7 @@ public class CompInputProcessor {
     public final CoralArm coralArm;
     public final CoralWheel coralWheel;
 
-    public final AlgaeArm algaeArm;
+    // public final AlgaeArm algaeArm;
     // public final AlgaeWheel algaeWheel;
 
     // state
@@ -74,7 +74,7 @@ public class CompInputProcessor {
         CoralArm coralArm,
         CoralWheel coralWheel,
 
-        AlgaeArm algaeArm,
+        // AlgaeArm algaeArm,
         // AlgaeWheel algaeWheel,
 
         CommandXboxController driver,
@@ -89,7 +89,7 @@ public class CompInputProcessor {
         this.coralArm = coralArm;
         this.coralWheel = coralWheel;
 
-        this.algaeArm = algaeArm;
+        // this.algaeArm = algaeArm;
         // this.algaeWheel = algaeWheel;
     }
 
@@ -298,12 +298,12 @@ public class CompInputProcessor {
                 coralWheel.updateVoltage(Volts.of(0.0));
                 coralEnabled = false;
             } else {
-                // newly unpressed
-                algaeArm.updateVoltage(Volts.of(0.0));
-                // algaeWheel.updateVoltage(Volts.of(0.0));
-                algaeEnabled = false;
+                // // newly unpressed
+                // algaeArm.updateVoltage(Volts.of(0.0));
+                // // algaeWheel.updateVoltage(Volts.of(0.0));
+                // algaeEnabled = false;
             }
-        }, coralArm, algaeArm));
+        }, coralArm/*, algaeArm */));
 
         // var x = new Command() {
         //     private boolean enabled = false;
@@ -500,29 +500,29 @@ public class CompInputProcessor {
             }
         }, coralArm));
 
-        algaeArm.setDefaultCommand(new InstantCommand(() -> {
-            if (Robot.inAutoMode) return;
+        // algaeArm.setDefaultCommand(new InstantCommand(() -> {
+        //     if (Robot.inAutoMode) return;
 
-            if (operator.leftTrigger().getAsBoolean()) {
-                double voltage = -operator.getRightY();
-                voltage *= 2.0;
-                voltage = MathUtil.applyDeadband(voltage, 0.1);
+        //     if (operator.leftTrigger().getAsBoolean()) {
+        //         double voltage = -operator.getRightY();
+        //         voltage *= 2.0;
+        //         voltage = MathUtil.applyDeadband(voltage, 0.1);
 
-                algaeArm.updateVoltage(Volts.of(voltage));
-            } else {
-                // // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
-                // if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
-                //     algaeArm.updateVoltage(Volts.of(0.5));
-                // } else {
-                //     algaeArm.updateVoltage(Volts.of(0.0));
-                // }
-            }
-        }, algaeArm));
+        //         algaeArm.updateVoltage(Volts.of(voltage));
+        //     } else {
+        //         // // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
+        //         // if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
+        //         //     algaeArm.updateVoltage(Volts.of(0.5));
+        //         // } else {
+        //         //     algaeArm.updateVoltage(Volts.of(0.0));
+        //         // }
+        //     }
+        // }, algaeArm));
     }
 
     public void periodic() {
         elevator.periodic();
         coralArm.periodic();
-        algaeArm.periodic();
+        // algaeArm.periodic();
     }
 }

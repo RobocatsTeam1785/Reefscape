@@ -30,7 +30,7 @@ public class RobotContainer {
     @Logged public CoralArm coralArm;
     public CoralWheel coralWheel;
 
-    public AlgaeArm algaeArm;
+    // public AlgaeArm algaeArm;
     // public AlgaeWheel algaeWheel;
 
     // autos
@@ -60,14 +60,14 @@ public class RobotContainer {
         coralArm = new CoralArm();
         coralWheel = new CoralWheel();
 
-        algaeArm = new AlgaeArm();
+        // algaeArm = new AlgaeArm();
         // algaeWheel = new AlgaeWheel();
 
         // processors
         // processor = new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3);
         // processor.configure();
 
-        compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, /* algaeWheel, */ driver, operator);
+        compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ driver, operator);
 
         compProcessor.configureDriverTriggers();
         compProcessor.configureOperatorTriggers();
@@ -93,7 +93,7 @@ public class RobotContainer {
         elevator.tune();
         coralArm.tune();
         coralWheel.tune();
-        algaeArm.tune();
+        // algaeArm.tune();
         // algaeWheel.tune();
     }
 
