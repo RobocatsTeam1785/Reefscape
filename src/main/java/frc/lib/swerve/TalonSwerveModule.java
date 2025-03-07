@@ -389,7 +389,7 @@ public class TalonSwerveModule {
 
         // calculate voltage
         final double driveOutput = drivePID.calculate(currentMps, setpointMps);
-        final double driveFeed = driveFF.calculate(setpointMps);
+        final double driveFeed = driveFF.calculateWithVelocities(currentMps, setpointMps);
 
         // apply voltage
         driveMotor.setVoltage(driveOutput + driveFeed);
