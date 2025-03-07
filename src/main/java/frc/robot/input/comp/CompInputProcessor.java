@@ -62,6 +62,9 @@ public class CompInputProcessor {
     public boolean coralIfTrueAlgaeIfFalse = true;
 
     public Angle coralArmSetpoint = null;
+
+    public boolean speedHalvedToggle = false;
+    public boolean speedHalvedButton = false;
     
     // initialization
     public CompInputProcessor(
@@ -113,6 +116,18 @@ public class CompInputProcessor {
                 return true;
             }
         });
+
+        driver.b().onTrue(new InstantCommand(() -> {
+            speedHalvedToggle = !speedHalvedToggle;
+        }));
+
+        driver.rightBumper().onTrue(new InstantCommand(() -> {
+            speedHalvedButton = true;
+        }));
+
+        driver.rightBumper().onFalse(new InstantCommand(() -> {
+            speedHalvedButton = false;
+        }));
 
         // driver.a().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(5.0)), coralWheel));
         // driver.b().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(-3.0)), coralWheel));
@@ -200,11 +215,11 @@ public class CompInputProcessor {
                 } else {
                     coralEnabled = !coralEnabled;
 
-                    if (coralEnabled) {
-                        coralArmSetpoint = CoralArmConstants.STATION_INTAKE_ANGLE;
-                    } else {
-                        coralArmSetpoint = null;
-                    }
+                    // if (coralEnabled) {
+                    //     coralArmSetpoint = CoralArmConstants.STATION_INTAKE_ANGLE;
+                    // } else {
+                    //     coralArmSetpoint = null;
+                    // }
                 }
 
                 i = 10;
@@ -425,6 +440,11 @@ public class CompInputProcessor {
             // SmartDashboard.putNumber("cip db y speed", ySpeed);
             // SmartDashboard.putNumber("cip db rot speed", rotSpeed);
 
+            if (speedHalvedButton || speedHalvedToggle) {
+                xSpeed *= 0.5;
+                ySpeed *= 0.5;
+            }
+
             // - convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
             LinearVelocity xVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
             LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
@@ -490,12 +510,12 @@ public class CompInputProcessor {
 
                 algaeArm.updateVoltage(Volts.of(voltage));
             } else {
-                // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
-                if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
-                    algaeArm.updateVoltage(Volts.of(0.5));
-                } else {
-                    algaeArm.updateVoltage(Volts.of(0.0));
-                }
+                // // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
+                // if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
+                //     algaeArm.updateVoltage(Volts.of(0.5));
+                // } else {
+                //     algaeArm.updateVoltage(Volts.of(0.0));
+                // }
             }
         }, algaeArm));
     }
