@@ -416,6 +416,8 @@ public class TalonSwerveModule {
     }
 
     public void updateTurnSetpoint(Angle rotation) {
+        double currentRps = turnVelocity().in(RadiansPerSecond);
+
         // calculate voltage
         // - we're using position PID control, not velocity PID control, as we care more about turn position
         final double turnOutput = turnPID.calculate(turnPosition().in(Radians), rotation.in(Radians));
@@ -423,7 +425,7 @@ public class TalonSwerveModule {
         // - we use turnPID.getSetpoint().velocity instead of state.angle.getRadians(), because simple feedforward
         // lacks a position term, and thus requires velocity instead, and because we're using a motion profile
         // to generate that velocity
-        final double turnFeed = turnFF.calculate(turnPID.getSetpoint().velocity);
+        final double turnFeed = turnFF.calculateWithVelocities(currentRps, turnPID.getSetpoint().velocity);
 
         // set voltage
         turnMotor.setVoltage(turnOutput + turnFeed);
