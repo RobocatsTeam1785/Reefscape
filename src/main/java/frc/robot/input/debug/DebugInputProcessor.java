@@ -82,7 +82,7 @@ public class DebugInputProcessor {
         this.algaeWheelState = new ModeState<>(AlgaeWheelMode.DEBUG);
 
         this.activeState = swerveState;
-
+        
         // - processors
         this.swerveProcessor = new DebugSwerveInputProcessor(swerve, driver, swerveState, this::isModeActive);
         this.elevatorProcessor = new DebugElevatorInputProcessor(elevator, driver, elevatorState, this::isModeActive);

@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
+
+import java.util.Map;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -18,13 +21,19 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.AlgaeArmConstants;
+import frc.lib.constants.CoralArmConstants;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class AlgaeArm extends SubsystemBase {
@@ -42,10 +51,21 @@ public class AlgaeArm extends SubsystemBase {
     @Logged public double lastVelocityRadiansPerSecond;
     @Logged public double lastVoltageVolts;
 
+    // shuffleboard
+    public GenericEntry angleEntry;
+
     public AlgaeArm() {
         initMotor();
         initHexEncoder();
         initControl();
+
+        ShuffleboardTab tab = Shuffleboard.getTab("LiveWindow");
+
+        SimpleWidget heightWidget = tab.add("Algae Arm Angle", hexPosition().in(Degrees))
+            .withWidget(BuiltInWidgets.kNumberBar)
+            .withProperties(Map.of("Min", CoralArmConstants.MIN_ANGLE.in(Degrees), "Max", CoralArmConstants.MAX_ANGLE.in(Degrees)));
+        
+        angleEntry = heightWidget.getEntry();
     }
 
     // initialization
@@ -197,5 +217,10 @@ public class AlgaeArm extends SubsystemBase {
     public void tune() {
         pid.setPID(AlgaeArmConstants.KP, AlgaeArmConstants.KI, AlgaeArmConstants.KD);
         ff = new ArmFeedforward(AlgaeArmConstants.KS, AlgaeArmConstants.KG, AlgaeArmConstants.KV, AlgaeArmConstants.KA);
+    }
+
+    // periodic
+    public void periodic() {
+        angleEntry.setDouble(hexPosition().in(Degrees));
     }
 }

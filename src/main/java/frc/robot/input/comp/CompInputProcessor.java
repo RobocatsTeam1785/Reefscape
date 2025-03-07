@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -21,6 +23,7 @@ import frc.lib.constants.AlgaeArmConstants;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.ElevatorConstants;
 import frc.lib.constants.SwerveConstants;
+import frc.robot.Robot;
 import frc.robot.commands.ElevatorHeightCommand;
 import frc.robot.commands.algaearm.AlgaeArmAngleCommand;
 import frc.robot.commands.algaearm.AlgaeArmDownCommand;
@@ -259,9 +262,13 @@ public class CompInputProcessor {
             if (operator.leftTrigger().getAsBoolean()) {
                 // newly pressed
                 coralArm.updateVoltage(Volts.of(0.0));
+                coralWheel.updateVoltage(Volts.of(0.0));
+                coralEnabled = false;
             } else {
                 // newly unpressed
                 algaeArm.updateVoltage(Volts.of(0.0));
+                algaeWheel.updateVoltage(Volts.of(0.0));
+                algaeEnabled = false;
             }
         }, coralArm, algaeArm));
 
@@ -369,6 +376,8 @@ public class CompInputProcessor {
     // - defaults
     public void configureDefaults() {
         swerve.setDefaultCommand(new InstantCommand(() -> {
+            if (Robot.inAutoMode) return;
+
             // calculate controller chassis speeds
             // - convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
             // - fully right means 1, which is intuitive
@@ -384,29 +393,50 @@ public class CompInputProcessor {
             // - associated with CW rotation, so it requires inversion
             double rotSpeed = -driver.getRightX();
 
+            // SmartDashboard.putNumber("cip x speed", xSpeed);
+            // SmartDashboard.putNumber("cip y speed", ySpeed);
+            // SmartDashboard.putNumber("cip rot speed", rotSpeed);
+
             // calculate actual chassis speeds
             // - deadband x, y, and rotation speeds to avoid accidental idle drift
             xSpeed = MathUtil.applyDeadband(xSpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
             ySpeed = MathUtil.applyDeadband(ySpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
             rotSpeed = MathUtil.applyDeadband(rotSpeed, SwerveConstants.ROTATIONAL_SPEED_DEADBAND);
 
+            // SmartDashboard.putNumber("cip db x speed", xSpeed);
+            // SmartDashboard.putNumber("cip db y speed", ySpeed);
+            // SmartDashboard.putNumber("cip db rot speed", rotSpeed);
+
             // - convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
             LinearVelocity xVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
             LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
             AngularVelocity angVel = SwerveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
 
-            swerve.driveRobotRelative(xVel, yVel, angVel);
+            // SmartDashboard.putNumber("cip x vel m|s", xVel.in(MetersPerSecond));
+            // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
+            // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
+
+            swerve.driveRobotRelative(xVel, yVel, angVel);            
         }, swerve));
 
         elevator.setDefaultCommand(new InstantCommand(() -> {
+            if (Robot.inAutoMode) return;
+
             double voltage = -operator.getLeftY();
-            voltage = voltage * 5.0;
-            voltage = MathUtil.applyDeadband(voltage, 0.5);
+            voltage = MathUtil.applyDeadband(voltage, 0.1);
+
+            if (voltage > 0.0) {
+                voltage *= 5.0;
+            } else if (voltage < 0.0) {
+                voltage *= 2.5;
+            }
 
             elevator.updateVoltage(Volts.of(voltage));
         }, elevator));
 
         coralArm.setDefaultCommand(new InstantCommand(() -> {
+            if (Robot.inAutoMode) return;
+            
             if (!operator.leftTrigger().getAsBoolean()) {
                 double voltage = -operator.getRightY();
                 voltage *= 2.0;
@@ -417,6 +447,8 @@ public class CompInputProcessor {
         }, coralArm));
 
         algaeArm.setDefaultCommand(new InstantCommand(() -> {
+            if (Robot.inAutoMode) return;
+
             if (operator.leftTrigger().getAsBoolean()) {
                 double voltage = -operator.getRightY();
                 voltage *= 2.0;
@@ -427,5 +459,9 @@ public class CompInputProcessor {
         }, algaeArm));
     }
 
-    public void periodic() {}
+    public void periodic() {
+        elevator.periodic();
+        coralArm.periodic();
+        algaeArm.periodic();
+    }
 }

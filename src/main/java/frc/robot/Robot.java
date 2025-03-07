@@ -20,6 +20,8 @@ public class Robot extends TimedRobot {
   public RobotContainer container;
   // public SysIdBot bot;
 
+  @Logged public static boolean inAutoMode = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -34,21 +36,28 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-    container.periodic();
   }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    inAutoMode = true;
+    container.autonomousInit();
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    container.autonomousPeriodic();
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    inAutoMode = false;
+  }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    container.periodic();
+  }
 
   @Override
   public void disabledInit() {

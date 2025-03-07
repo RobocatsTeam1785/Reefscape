@@ -43,7 +43,7 @@ public class SysIdDrive extends Swerve {
             SwerveModuleState state = new SwerveModuleState(0.0, new Rotation2d(yawRadians));
 
             for (int i = 0; i < 4; i++) {
-                modules[i].updateSetpoint(state);
+                modules[i].updateSetpoint(state, i);
             }
         }).until(() -> {
             double totalErrorRadians = 0.0;

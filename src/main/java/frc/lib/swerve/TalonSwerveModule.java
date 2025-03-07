@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -32,6 +33,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.constants.RobotConstants;
@@ -203,6 +205,10 @@ public class TalonSwerveModule {
     @Logged public double turnPositionRadians() { return turnPosition().in(Radians); }
     @Logged public double turnVelocityRadiansPerSecond() { return turnVelocity().in(RadiansPerSecond); }
 
+    @Logged public double turnPosRadMod() {
+        return MathUtil.angleModulus(turnPositionRadians());
+    }
+
     public LinearVelocity driveVelocity() {
         double rotationsPerSecond = driveMotor.getVelocity().getValue().in(RotationsPerSecond);
         double metersPerSecond = rotationsPerSecond * SwerveConstants.DRIVE_CF;
@@ -368,7 +374,7 @@ public class TalonSwerveModule {
     // utility
     // for understanding this code, see https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-kinematics.html
     public SwerveModuleState optimizeState(SwerveModuleState state) {
-        Rotation2d relativeAngle = new Rotation2d(turnPosition());
+        Rotation2d relativeAngle = new Rotation2d(MathUtil.angleModulus(turnPosition().in(Radians)));
 
         // minimize rotational movement required by taking the shorter path to the setpoint, if possible
         state.optimize(relativeAngle);
@@ -465,7 +471,7 @@ public class TalonSwerveModule {
         lastTurnState = state;
     }
 
-    public void updateSetpoint(SwerveModuleState state) {
+    public void updateSetpoint(SwerveModuleState state, int i) {
         // update PID values
         if (RobotConstants.TUNING)
             tune();
@@ -473,6 +479,11 @@ public class TalonSwerveModule {
         if (SwerveConstants.OPTIMIZE_STATES)
             state = optimizeState(state);
         
+        SmartDashboard.putNumber(i + " postop state vel m|s", state.speedMetersPerSecond);
+        SmartDashboard.putNumber(i + " postop state turn pos rad", state.angle.getRadians());
+
+        SmartDashboard.putNumber(i + " postop turn pos rad", turnPositionRadians());
+
         updateDriveSetpoint(state);
         updateTurnSetpoint(state);
 

@@ -27,6 +27,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.swerve.TalonSwerveModule;
@@ -192,12 +193,19 @@ public class Swerve extends SubsystemBase {
         // https://www.chiefdelphi.com/t/looking-for-an-explanation-of-chassisspeeds-discretize/462069/2
         speeds = ChassisSpeeds.discretize(speeds, period);
 
+        SmartDashboard.putNumber("s disc x speed m|s", speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("s disc y speed m|s", speeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("s disc rot speed rad|s", speeds.omegaRadiansPerSecond);
+
         // perform inverse kinematics using the provided SwerveDriveKinematics class to receive swerve module states in FL, FR, BL, BR order
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         
         // update swerve module setpoints
         for (int i = 0; i < 4; i++) {
-            modules[i].updateSetpoint(states[i]);
+            SmartDashboard.putNumber(i + " state vel m|s", states[i].speedMetersPerSecond);
+            SmartDashboard.putNumber(i + " state turn pos rad", states[i].angle.getRadians());
+
+            modules[i].updateSetpoint(states[i], i);
         }
 
         // update logging
@@ -214,7 +222,7 @@ public class Swerve extends SubsystemBase {
         // lastStates = new SwerveModuleState[]{ state, state, state, state };
 
         for (int i = 0; i < 4; i++) {
-            modules[i].updateSetpoint(state);
+            modules[i].updateSetpoint(state, i);
         }
     }
 
@@ -242,7 +250,7 @@ public class Swerve extends SubsystemBase {
         // lastStates = new SwerveModuleState[]{ new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState() };
         // lastStates[moduleId] = state;
 
-        modules[moduleId].updateSetpoint(state);
+        modules[moduleId].updateSetpoint(state, moduleId);
     }
 
     /** controls a single swerve module using a controller speed value */

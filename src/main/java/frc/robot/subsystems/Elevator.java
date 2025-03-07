@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Map;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -18,9 +20,14 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.ElevatorConstants;
@@ -44,9 +51,20 @@ public class Elevator extends SubsystemBase {
     @Logged public double lastLeftVelocityMetersPerSecond, lastRightVelocityMetersPerSecond;
     @Logged public double lastLeftVoltageVolts, lastRightVoltageVolts;
 
+    // shuffleboard
+    public GenericEntry heightEntry;
+
     public Elevator() {
         initMotors();
         initControl();
+
+        ShuffleboardTab tab = Shuffleboard.getTab("LiveWindow");
+
+        SimpleWidget heightWidget = tab.add("Elevator Height", leftEncoder.getPosition())
+            .withWidget(BuiltInWidgets.kDial)
+            .withProperties(Map.of("Min", 0.0, "Max", ElevatorConstants.MAX_HEIGHT.in(Meters) * 100));
+        
+        heightEntry = heightWidget.getEntry();
     }
 
     // initialization
@@ -262,6 +280,11 @@ public class Elevator extends SubsystemBase {
 
         leftMotor.setVoltage(voltage);
         rightMotor.setVoltage(voltage);
+    }
+
+    // periodic
+    public void periodic() {
+        heightEntry.setDouble(leftEncoder.getPosition() * 100.0);
     }
 
     // tuning
