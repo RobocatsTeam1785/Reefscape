@@ -18,7 +18,7 @@ import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class RobotContainer {
     // subsystems
@@ -31,7 +31,7 @@ public class RobotContainer {
     public CoralWheel coralWheel;
 
     public AlgaeArm algaeArm;
-    public AlgaeWheel algaeWheel;
+    // public AlgaeWheel algaeWheel;
 
     // autos
     public Autos autos;
@@ -61,13 +61,13 @@ public class RobotContainer {
         coralWheel = new CoralWheel();
 
         algaeArm = new AlgaeArm();
-        algaeWheel = new AlgaeWheel();
+        // algaeWheel = new AlgaeWheel();
 
         // processors
         // processor = new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3);
         // processor.configure();
 
-        compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, driver, operator);
+        compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, /* algaeWheel, */ driver, operator);
 
         compProcessor.configureDriverTriggers();
         compProcessor.configureOperatorTriggers();
@@ -94,7 +94,7 @@ public class RobotContainer {
         coralArm.tune();
         coralWheel.tune();
         algaeArm.tune();
-        algaeWheel.tune();
+        // algaeWheel.tune();
     }
 
     // rotation of the default driveRobotRelative to apply the same rotation the default drive controller left joystick control applies

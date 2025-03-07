@@ -54,7 +54,7 @@ public class CompInputProcessor {
     public final CoralWheel coralWheel;
 
     public final AlgaeArm algaeArm;
-    public final AlgaeWheel algaeWheel;
+    // public final AlgaeWheel algaeWheel;
 
     // state
     @Logged public double elevatorHeightMeters = 0.0;
@@ -72,7 +72,7 @@ public class CompInputProcessor {
         CoralWheel coralWheel,
 
         AlgaeArm algaeArm,
-        AlgaeWheel algaeWheel,
+        // AlgaeWheel algaeWheel,
 
         CommandXboxController driver,
         CommandXboxController operator
@@ -87,7 +87,7 @@ public class CompInputProcessor {
         this.coralWheel = coralWheel;
 
         this.algaeArm = algaeArm;
-        this.algaeWheel = algaeWheel;
+        // this.algaeWheel = algaeWheel;
     }
 
     // configuration
@@ -200,11 +200,11 @@ public class CompInputProcessor {
                 } else {
                     coralEnabled = !coralEnabled;
 
-                    // if (coralEnabled) {
-                    //     coralArmSetpoint = CoralArmConstants.STATION_INTAKE_ANGLE;
-                    // } else {
-                    //     coralArmSetpoint = null;
-                    // }
+                    if (coralEnabled) {
+                        coralArmSetpoint = CoralArmConstants.STATION_INTAKE_ANGLE;
+                    } else {
+                        coralArmSetpoint = null;
+                    }
                 }
 
                 i = 10;
@@ -219,11 +219,11 @@ public class CompInputProcessor {
                         coralWheel.updateVoltage(Volts.of(0.0));
                     }
                 } else {
-                    if (algaeEnabled) {
-                        algaeWheel.updateSetpoint(MetersPerSecond.of(5.0));
-                    } else {
-                        algaeWheel.updateVoltage(Volts.of(0.0));
-                    }
+                    // if (algaeEnabled) {
+                    //     algaeWheel.updateSetpoint(MetersPerSecond.of(5.0));
+                    // } else {
+                    //     algaeWheel.updateVoltage(Volts.of(0.0));
+                    // }
                 }
 
                 i--;
@@ -259,11 +259,11 @@ public class CompInputProcessor {
                         coralWheel.updateVoltage(Volts.of(0.0));
                     }
                 } else {
-                    if (algaeEnabled) {
-                        algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0));
-                    } else {
-                        algaeWheel.updateVoltage(Volts.of(0.0));
-                    }
+                    // if (algaeEnabled) {
+                    //     algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0));
+                    // } else {
+                    //     algaeWheel.updateVoltage(Volts.of(0.0));
+                    // }
                 }
 
                 i--;
@@ -285,7 +285,7 @@ public class CompInputProcessor {
             } else {
                 // newly unpressed
                 algaeArm.updateVoltage(Volts.of(0.0));
-                algaeWheel.updateVoltage(Volts.of(0.0));
+                // algaeWheel.updateVoltage(Volts.of(0.0));
                 algaeEnabled = false;
             }
         }, coralArm, algaeArm));
@@ -460,7 +460,9 @@ public class CompInputProcessor {
             if (Robot.inAutoMode) return;
 
             if (coralArmSetpoint != null) {
-                if (coralArm.hexPosition().minus(coralArmSetpoint).abs(Degrees) >= 5.0) {
+                if (coralArm.hexPosition().minus(coralArmSetpoint).abs(Degrees) < 5.0) {
+                    coralArm.updateVoltage(Volts.of(0.1));
+                } else {
                     if (coralArm.hexPosition().gt(coralArmSetpoint)) {
                         coralArm.updateVoltage(Volts.of(-1.0));
                     } else if (coralArm.hexPosition().lt(coralArmSetpoint)) {
