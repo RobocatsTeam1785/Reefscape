@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -135,7 +136,10 @@ public class TalonSwerveModule {
     public void initControl() {
         // TODO tune these velocity and acceleration parameters - Andrew simply used very high values to essentially remove limits, but it might
         // TODO (cont.) be better to use specific constraint values, instead - would need testing to determine if that has any merit, though
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2 * Math.PI * 5, 2 * Math.PI * 5);
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
+            SwerveConstants.ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+            SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+        );
 
         drivePID = new PIDController(
             SwerveConstants.TRANSLATIONAL_KP,
