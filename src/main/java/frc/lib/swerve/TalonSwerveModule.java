@@ -3,6 +3,7 @@ package frc.lib.swerve;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
@@ -25,6 +26,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -52,6 +54,8 @@ public class TalonSwerveModule {
     public ProfiledPIDController turnPID;
 
     @NotLogged public SimpleMotorFeedforward driveFF, turnFF;
+
+    public SlewRateLimiter driveAccelerationLimiter;
 
     // logging
     @NotLogged public Voltage sysIdDriveVoltage = Volts.of(0.0),
@@ -172,6 +176,9 @@ public class TalonSwerveModule {
         // kinds of distance exist between angles: the major arc, and the minor arc. for our purposes, the minor
         // arc is more useful, as it prevents sudden spikes in distance as either point crosses the 2pi/0 boundary
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
+
+        // rate limiting
+        driveAccelerationLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond));
     }
 
     // logging
@@ -390,6 +397,8 @@ public class TalonSwerveModule {
     public void updateDriveSetpoint(LinearVelocity velocity) {
         double currentMps = driveVelocity().in(MetersPerSecond);
         double setpointMps = velocity.in(MetersPerSecond);
+
+        setpointMps = driveAccelerationLimiter.calculate(setpointMps);
 
         // calculate voltage
         final double driveOutput = drivePID.calculate(currentMps, setpointMps);
