@@ -54,7 +54,7 @@ public class CoralArmConstants {
     public static final Angle MIN_ANGLE = Degrees.of(-90);
 
     public static final Angle
-        STATION_INTAKE_ANGLE = Degrees.of(20),
+        STATION_INTAKE_ANGLE = Rotations.of(0.08),
 
         L1_SCORE_ANGLE = Rotations.of(0.0),
         L23_SCORE_ANGLE = Rotations.of(0.0),
