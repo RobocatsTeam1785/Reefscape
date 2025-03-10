@@ -10,6 +10,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.net.PortForwarder;
@@ -44,6 +49,10 @@ public class Vision extends SubsystemBase {
         PortForwarder.add(5800, "10.17.85.11", 5800);
         
         camera.setPipelineIndex(VisionConstants.PIPELINE);
+
+        // // usb camera
+        // UsbCamera usb = new UsbCamera("Coral Arm Camera", UsbCamera.enumerateUsbCameras()[0].dev);
+        // CameraServer.startAutomaticCapture(usb);
     }
 
     // state

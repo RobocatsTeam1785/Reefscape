@@ -1,6 +1,8 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.epilogue.Logged;
@@ -107,11 +109,13 @@ public class RobotContainer {
 
     public void autonomousPeriodic() {
         if (alignTimer.isRunning()) {
-            LinearVelocity xSpeed = MetersPerSecond.of(-0.1);
-            LinearVelocity ySpeed = MetersPerSecond.of(0.0);
-            AngularVelocity angularVelocity = RadiansPerSecond.of(0.0);
+            // LinearVelocity xSpeed = MetersPerSecond.of(-0.1);
+            // LinearVelocity ySpeed = MetersPerSecond.of(0.0);
+            // AngularVelocity angularVelocity = RadiansPerSecond.of(0.0);
 
-            drive(xSpeed, ySpeed, angularVelocity);
+            // drive(xSpeed, ySpeed, angularVelocity);
+
+            swerve.align(Degrees.of(90.0));
 
             if (alignTimer.hasElapsed(1.0)) {
                 alignTimer.stop();
@@ -146,15 +150,12 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
+        // zero gyro based on roborio facing driver station
+        swerve.navX2.zeroYaw();
+        swerve.navX2.setAngleAdjustment(-(swerve.navX2.getAngle()) - 90.0);
+
         // update timers
         alignTimer.reset();
         alignTimer.start();
-
-        // move backwards
-        LinearVelocity xSpeed = MetersPerSecond.of(-0.1);
-        LinearVelocity ySpeed = MetersPerSecond.of(0.0);
-        AngularVelocity angularVelocity = RadiansPerSecond.of(0.0);
-
-        drive(xSpeed, ySpeed, angularVelocity);
     }
 }
