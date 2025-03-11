@@ -130,71 +130,6 @@ public class CompInputProcessor {
         driver.rightBumper().onFalse(new InstantCommand(() -> {
             speedHalvedButton = false;
         }));
-
-        // driver.a().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(5.0)), coralWheel));
-        // driver.b().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(-3.0)), coralWheel));
-        // driver.y().and(lb.negate()).and(rb.negate()).onTrue(new InstantCommand(() -> coralWheel.updateSetpoint(MetersPerSecond.of(0.0)), coralWheel));
-
-        // left bumper
-        // driver.a().and(lb).onTrue(new Command() {
-        //     @Override
-        //     public void initialize() {
-        //         coralArm.updateVoltage(Volts.of(1.0));
-        //     }
-
-        //     @Override
-        //     public void end(boolean interrupted) {
-        //         coralArm.updateVoltage(Volts.of(0.0));
-        //     }
-
-        //     @Override
-        //     public boolean isFinished() {
-        //         return coralArm.hexPosition().minus(Degrees.of(30.0)).abs(Radians) < 0.1;
-        //     }
-        // });
-
-        // driver.b().and(lb).onTrue(new Command() {
-        //     @Override
-        //     public void initialize() {
-        //         coralArm.updateVoltage(Volts.of(-1.0));
-        //     }
-
-        //     @Override
-        //     public void end(boolean interrupted) {
-        //         coralArm.updateVoltage(Volts.of(0.0));
-        //     }
-
-        //     @Override
-        //     public boolean isFinished() {
-        //         return coralArm.hexPosition().minus(CoralArmConstants.MIN_ANGLE).abs(Radians) < 0.1;
-        //     }
-        // });
-        
-        // driver.a().and(lb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.CORAL_STATION_INTAKE_HEIGHT),
-        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.STATION_INTAKE_ANGLE)
-        // ));
-
-        // righit bumper
-        // driver.x().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L1_CORAL_SCORE_HEIGHT),
-        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L1_SCORE_ANGLE)
-        // ));
-
-        // driver.a().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_CORAL_SCORE_HEIGHT),
-        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
-        // ));
-
-        // driver.b().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_CORAL_SCORE_HEIGHT),
-        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L23_SCORE_ANGLE)
-        // ));
-
-        // driver.y().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L4_CORAL_SCORE_HEIGHT),
-        //     new CoralArmAngleCommand(coralArm, CoralArmConstants.L4_SCORE_ANGLE)
-        // ));
     }
 
     // TODO move this to top
@@ -326,120 +261,6 @@ public class CompInputProcessor {
                 }
             }
         }));
-
-        // operator.leftTrigger().onChange(new InstantCommand(() -> {
-        //     if () {
-        //         // newly pressed
-        //         coralArm.updateVoltage(Volts.of(0.0));
-        //         coralWheel.updateVoltage(Volts.of(0.0));
-        //         coralEnabled = false;
-        //     } else {
-        //         // // newly unpressed
-        //         // algaeArm.updateVoltage(Volts.of(0.0));
-        //         // // algaeWheel.updateVoltage(Volts.of(0.0));
-        //         // algaeEnabled = false;
-        //     }
-        // }, coralArm/*, algaeArm */));
-
-        // var x = new Command() {
-        //     private boolean enabled = false;
-
-        //     @Override
-        //     public void initialize() {
-        //         enabled = !enabled;
-        //     }
-
-        //     @Override
-        //     public void execute() {
-        //         if (enabled) {
-        //             coralWheel.updateSetpoint(MetersPerSecond.of(5.0));
-        //         } else {
-        //             coralWheel.updateSetpoint(MetersPerSecond.of(0.0));
-        //         }
-        //     }
-
-        //     @Override
-        //     public boolean isFinished() {
-        //         return true;
-        //     }
-        // };
-        // operator.x().onTrue(x);
-
-        // var y = new Command() {
-        //     private boolean enabled = false;
-
-        //     @Override
-        //     public void initialize() {
-        //         enabled = !enabled;
-        //     }
-
-        //     @Override
-        //     public void execute() {
-        //         if (enabled) {
-        //             coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
-        //         } else {
-        //             coralWheel.updateSetpoint(MetersPerSecond.of(0.0));
-        //         }
-        //     }
-
-        //     @Override
-        //     public boolean isFinished() {
-        //         return true;
-        //     }
-        // };
-        // operator.y().onTrue(y);
-
-        // commands
-        // operator.a().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(5.0)), algaeWheel));
-        // operator.b().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0)), algaeWheel));
-        // operator.y().and(noBumpers).onTrue(new InstantCommand(() -> algaeWheel.updateSetpoint(MetersPerSecond.of(0.0)), algaeWheel));
-
-        // left bumper
-        // operator.a().and(lb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.GROUND),
-        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.GROUND_INTAKE_ANGLE)
-        // ));
-
-        // operator.b().and(lb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.PROCESSOR_ALGAE_SCORE_HEIGHT),
-        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.PROCESSOR_EJECT_ANGLE)
-        // ));
-
-        // operator.x().and(lb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.PROCESSOR_ALGAE_SCORE_HEIGHT),
-        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.MAX_ANGLE)
-        // ));
-
-        // operator.leftTrigger().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(2.0)), algaeArm));
-        // operator.rightTrigger().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(-2.0)), algaeArm));
-        // operator.x().onTrue(new InstantCommand(() -> algaeArm.updateVoltage(Volts.of(0.0)), algaeArm));
-
-        // right bumper
-        // operator.a().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L2_ALGAE_INTAKE_HEIGHT),
-        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
-        // ));
-
-        // operator.b().and(rb).onTrue(new ParallelCommandGroup(
-        //     // new ElevatorHeightCommand(elevator, ElevatorConstants.REEF_L3_ALGAE_INTAKE_HEIGHT),
-        //     new AlgaeArmAngleCommand(algaeArm, AlgaeArmConstants.L23_INTAKE_ANGLE)
-        // ));
-
-        // default commands
-        // operator.leftTrigger().and(operator.rightTrigger()).whileTrue(new RepeatCommand(new InstantCommand(() -> {
-        //     // determine input values
-        //     // fully up means -1, which is unintuitive, so it requires inversion
-        //     double controllerVerticalSpeed = -operator.getLeftY();
-
-        //     // process them
-        //     controllerVerticalSpeed = MathUtil.applyDeadband(controllerVerticalSpeed, ElevatorConstants.SPEED_DEADBAND);
-        //     controllerVerticalSpeed *= 0.1;
-        //     System.out.println("Controller vertical speed: " + controllerVerticalSpeed);
-
-        //     elevatorHeightMeters += controllerVerticalSpeed;
-
-        //     elevator.updateSetpoint(Meters.of(elevatorHeightMeters));
-        // }, elevator)));
     }
 
     double coralArmIdleVoltage = 0.2;
@@ -541,30 +362,10 @@ public class CompInputProcessor {
                 }
             }
         }, coralArm));
-
-        // algaeArm.setDefaultCommand(new InstantCommand(() -> {
-        //     if (Robot.inAutoMode) return;
-
-        //     if (operator.leftTrigger().getAsBoolean()) {
-        //         double voltage = -operator.getRightY();
-        //         voltage *= 2.0;
-        //         voltage = MathUtil.applyDeadband(voltage, 0.1);
-
-        //         algaeArm.updateVoltage(Volts.of(voltage));
-        //     } else {
-        //         // // when the operator isn't directly controlling the algae arm, make it keep itself up by applying small amounts of voltage if it falls down
-        //         // if (algaeArm.hexPosition().lt(AlgaeArmConstants.MAX_ANGLE)) {
-        //         //     algaeArm.updateVoltage(Volts.of(0.5));
-        //         // } else {
-        //         //     algaeArm.updateVoltage(Volts.of(0.0));
-        //         // }
-        //     }
-        // }, algaeArm));
     }
 
     public void periodic() {
         elevator.periodic();
         coralArm.periodic();
-        // algaeArm.periodic();
     }
 }
