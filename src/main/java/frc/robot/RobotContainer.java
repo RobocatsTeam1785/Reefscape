@@ -2,7 +2,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.epilogue.Logged;
@@ -11,10 +10,6 @@ import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.input.comp.CompInputProcessor;
-import frc.robot.input.debug.DebugInputProcessor;
-import frc.robot.input.shuffleboard.ShuffleboardInputProcessor;
-import frc.robot.subsystems.AlgaeArm;
-import frc.robot.subsystems.AlgaeWheel;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;

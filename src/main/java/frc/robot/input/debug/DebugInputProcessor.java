@@ -3,10 +3,6 @@ package frc.robot.input.debug;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
-
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;

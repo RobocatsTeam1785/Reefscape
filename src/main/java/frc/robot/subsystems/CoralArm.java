@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.constants.CoralArmConstants;
-import frc.lib.constants.ElevatorConstants;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CoralArm extends SubsystemBase {
