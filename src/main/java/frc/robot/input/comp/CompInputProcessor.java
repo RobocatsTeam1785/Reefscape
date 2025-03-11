@@ -53,9 +53,6 @@ public class CompInputProcessor {
     public final CoralArm coralArm;
     public final CoralWheel coralWheel;
 
-    // public final AlgaeArm algaeArm;
-    // public final AlgaeWheel algaeWheel;
-
     // state
     @Logged public double elevatorHeightMeters = 0.0;
 
@@ -76,9 +73,6 @@ public class CompInputProcessor {
         CoralArm coralArm,
         CoralWheel coralWheel,
 
-        // AlgaeArm algaeArm,
-        // AlgaeWheel algaeWheel,
-
         CommandXboxController driver,
         CommandXboxController operator
     ) {
@@ -90,9 +84,6 @@ public class CompInputProcessor {
 
         this.coralArm = coralArm;
         this.coralWheel = coralWheel;
-
-        // this.algaeArm = algaeArm;
-        // this.algaeWheel = algaeWheel;
     }
 
     // configuration
@@ -147,16 +138,12 @@ public class CompInputProcessor {
 
             @Override
             public void initialize() {
-                if (false) {
-                    algaeEnabled = !algaeEnabled;
-                } else {
-                    coralEnabled = !coralEnabled;
+                coralEnabled = !coralEnabled;
 
-                    if (coralEnabled && !operator.leftTrigger().getAsBoolean()) {
-                        coralArmSetpoint = coralArmIntakeAngle;
-                    } else {
-                        coralArmSetpoint = null;
-                    }
+                if (coralEnabled && !operator.leftTrigger().getAsBoolean()) {
+                    coralArmSetpoint = coralArmIntakeAngle;
+                } else {
+                    coralArmSetpoint = null;
                 }
 
                 i = 10;
@@ -164,18 +151,10 @@ public class CompInputProcessor {
 
             @Override
             public void execute() {
-                if (true) {
-                    if (coralEnabled) {
-                        coralWheel.updateSetpoint(MetersPerSecond.of(5.0));
-                    } else {
-                        coralWheel.updateVoltage(Volts.of(0.0));
-                    }
+                if (coralEnabled) {
+                    coralWheel.updateSetpoint(MetersPerSecond.of(5.0));
                 } else {
-                    // if (algaeEnabled) {
-                    //     algaeWheel.updateSetpoint(MetersPerSecond.of(5.0));
-                    // } else {
-                    //     algaeWheel.updateVoltage(Volts.of(0.0));
-                    // }
+                    coralWheel.updateVoltage(Volts.of(0.0));
                 }
 
                 i--;
@@ -193,16 +172,12 @@ public class CompInputProcessor {
 
             @Override
             public void initialize() {
-                if (false) {
-                    algaeEnabled = !algaeEnabled;
-                } else {
-                    coralEnabled = !coralEnabled;
+                coralEnabled = !coralEnabled;
 
-                    if (coralEnabled && !operator.leftTrigger().getAsBoolean()) {
-                        coralArmSetpoint = CoralArmConstants.L4_SCORE_ANGLE;
-                    } else {
-                        coralArmSetpoint = null;
-                    }
+                if (coralEnabled && !operator.leftTrigger().getAsBoolean()) {
+                    coralArmSetpoint = CoralArmConstants.L4_SCORE_ANGLE;
+                } else {
+                    coralArmSetpoint = null;
                 }
 
                 i = 10;
@@ -210,31 +185,23 @@ public class CompInputProcessor {
 
             @Override
             public void execute() {
-                if (true) {
-                    if (!operator.leftTrigger().getAsBoolean()) {
-                        if (coralArmSetpoint != null && coralEnabled && coralArm.hexPosition().minus(coralArmSetpoint).abs(Degrees) < CoralArmConstants.MARGIN_OF_ERROR.in(Degrees)) {
-                            coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
-                        } else {
-                            coralWheel.updateVoltage(Volts.of(0.0));
-
-                            // if we're outside of the accepted range, we'll reach it eventually, since the compensation is currently programmed correctly,
-                            // so we can counteract the counter decreasing until we reach the range
-                            i++;
-                        }
+                if (!operator.leftTrigger().getAsBoolean()) {
+                    if (coralArmSetpoint != null && coralEnabled && coralArm.hexPosition().minus(coralArmSetpoint).abs(Degrees) < CoralArmConstants.MARGIN_OF_ERROR.in(Degrees)) {
+                        coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
                     } else {
-                        if (coralEnabled) {
-                            coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
-                        } else {
-                            coralWheel.updateVoltage(Volts.of(0.0));
-                        }
+                        coralWheel.updateVoltage(Volts.of(0.0));
+
+                        // if we're outside of the accepted range, we'll reach it eventually, since the compensation is currently programmed correctly,
+                        // so we can counteract the counter decreasing until we reach the range
+                        i++;
                     }
                 } else {
-                    // if (algaeEnabled) {
-                    //     algaeWheel.updateSetpoint(MetersPerSecond.of(-5.0));
-                    // } else {
-                    //     algaeWheel.updateVoltage(Volts.of(0.0));
-                    // }
-                }
+                    if (coralEnabled) {
+                        coralWheel.updateSetpoint(MetersPerSecond.of(-3.0));
+                    } else {
+                        coralWheel.updateVoltage(Volts.of(0.0));
+                    }
+                    }
 
                 i--;
             }
