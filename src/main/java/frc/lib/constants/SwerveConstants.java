@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 
@@ -17,6 +19,7 @@ import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -110,12 +113,30 @@ public class SwerveConstants {
     public static final double TRANSLATIONAL_SPEED_DEADBAND = 0.1;
     public static final double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
-    // TODO test these 4 constants to ensure accuracy
+    // wheel-specific constants
     public static final LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
     public static final AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
 
+    // TODO actually apply wheel-specific max translational acceleration, as it's currently unrestricted and only affected by robot-specific max translational acceleration
     public static final LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
     public static final AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
+
+    public static final TrapezoidProfile.Constraints TURN_PROFILE_CONSTRAINTS_RADIANS = new TrapezoidProfile.Constraints(
+        ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+        ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+    );
+
+    // robot-specific constants
+    public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
+    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
+
+    public static final LinearAcceleration ROBOT_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
+    public static final AngularAcceleration ROBOT_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
+
+    public static final TrapezoidProfile.Constraints ROBOT_TURN_PROFILE_CONSTRAINTS_RADIANS = new TrapezoidProfile.Constraints(
+        ROBOT_ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+        ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+    );
 
     // position constants
     // distance from the robot's center to the center of a side, in meters

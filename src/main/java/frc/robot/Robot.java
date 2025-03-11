@@ -22,11 +22,15 @@ public class Robot extends TimedRobot {
 
   @Logged public static boolean inAutoMode = false;
 
+  public static final double PERIOD = TimedRobot.kDefaultPeriod;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   public Robot() {
+    super(PERIOD);
+
     container = new RobotContainer(getPeriod());
     // bot = new SysIdBot(getPeriod());
 

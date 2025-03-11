@@ -49,9 +49,9 @@ public class Swerve extends SubsystemBase {
     // motion manipulation
     // - filters
     public final SlewRateLimiter
-        xSpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        ySpeedLimiter = new SlewRateLimiter(SwerveConstants.TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
-        rotSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
+        xSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        ySpeedLimiter = new SlewRateLimiter(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond)),
+        rotSpeedLimiter = new SlewRateLimiter(SwerveConstants.ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond));
     
     // - setpoint generation
     public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -149,6 +149,16 @@ public class Swerve extends SubsystemBase {
         }
 
         return totalErrorRadians < 0.1;
+    }
+
+    public double totalTurnErrorRadians() {
+        double totalErrorRadians = 0.0;
+
+        for (TalonSwerveModule module : modules) {
+            totalErrorRadians += module.turnErrorRadians();
+        }
+
+        return totalErrorRadians;
     }
 
     @Logged

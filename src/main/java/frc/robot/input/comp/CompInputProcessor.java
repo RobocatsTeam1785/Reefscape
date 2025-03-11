@@ -254,9 +254,9 @@ public class CompInputProcessor {
             }
 
             // - convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
-            LinearVelocity xVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(xSpeed);
-            LinearVelocity yVel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(ySpeed);
-            AngularVelocity angVel = SwerveConstants.ROTATIONAL_MAX_SPEED.times(rotSpeed);
+            LinearVelocity xVel = SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed);
+            LinearVelocity yVel = SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed);
+            AngularVelocity angVel = SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed);
 
             // SmartDashboard.putNumber("cip x vel m|s", xVel.in(MetersPerSecond));
             // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));

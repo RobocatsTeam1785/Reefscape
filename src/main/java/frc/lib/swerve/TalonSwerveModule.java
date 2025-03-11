@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -25,10 +24,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -134,13 +133,6 @@ public class TalonSwerveModule {
     }
 
     public void initControl() {
-        // TODO tune these velocity and acceleration parameters - Andrew simply used very high values to essentially remove limits, but it might
-        // TODO (cont.) be better to use specific constraint values, instead - would need testing to determine if that has any merit, though
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            SwerveConstants.ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
-            SwerveConstants.ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
-        );
-
         drivePID = new PIDController(
             SwerveConstants.TRANSLATIONAL_KP,
             SwerveConstants.TRANSLATIONAL_KI,
@@ -152,7 +144,7 @@ public class TalonSwerveModule {
             SwerveConstants.ROTATIONAL_KP,
             SwerveConstants.ROTATIONAL_KI,
             SwerveConstants.ROTATIONAL_KD,
-            constraints
+            SwerveConstants.TURN_PROFILE_CONSTRAINTS_RADIANS
         );
 
         driveFF = new SimpleMotorFeedforward(
