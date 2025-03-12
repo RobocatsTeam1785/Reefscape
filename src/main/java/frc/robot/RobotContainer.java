@@ -8,8 +8,13 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.lib.input.MasterInputProcessor;
 import frc.robot.input.comp.CompInputProcessor;
+
+
+import frc.robot.input.debug.DebugInputProcessor;
+import frc.robot.input.shuffleboard.ShuffleboardInputProcessor;
+import frc.robot.input.shuffleboard.TestInputProcessor;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
@@ -32,16 +37,9 @@ public class RobotContainer {
 
     // autos
     public Autos autos;
-
-    // controllers use NED CCC (https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html)
-    public final CommandXboxController driver = new CommandXboxController(0);
-    public final CommandXboxController operator = new CommandXboxController(1);
-    // public final CommandXboxController controller3 = new CommandXboxController(1);
     
     // input processors
-    // @Logged public DebugInputProcessor processor;
-    @Logged public CompInputProcessor compProcessor;
-    // public ShuffleboardInputProcessor shuffleboardProcessor;
+    public final MasterInputProcessor[] processors;
 
     // data
     private Timer alignTimer;
@@ -57,21 +55,17 @@ public class RobotContainer {
         coralArm = new CoralArm();
         coralWheel = new CoralWheel();
 
-        // algaeArm = new AlgaeArm();
-        // algaeWheel = new AlgaeWheel();
-
         // processors
-        // processor = new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3);
-        // processor.configure();
+        processors = new MasterInputProcessor[]{
+            // new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3),
+            new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ 0, 1),
+            // new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel),
+            // new TestInputProcessor(3, swerve)
+        };
 
-        compProcessor = new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ driver, operator);
-
-        compProcessor.configureDriverTriggers();
-        compProcessor.configureOperatorTriggers();
-
-        compProcessor.configureDefaults();
-
-        // shuffleboardProcessor = new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel);
+        for (MasterInputProcessor processor : processors) {
+            processor.configure();
+        }
 
         // autos
         autos = new Autos();
@@ -83,15 +77,13 @@ public class RobotContainer {
 
     // periodic
     public void periodic() {
-        // processor.periodic();
-        // shuffleboardProcessor.periodic();
-        compProcessor.periodic();
+        for (MasterInputProcessor processor : processors) {
+            processor.periodic();
+        }
 
         elevator.tune();
         coralArm.tune();
         coralWheel.tune();
-        // algaeArm.tune();
-        // algaeWheel.tune();
     }
 
     // rotation of the default driveRobotRelative to apply the same rotation the default drive controller left joystick control applies
@@ -104,12 +96,6 @@ public class RobotContainer {
 
     public void autonomousPeriodic() {
         if (alignTimer.isRunning()) {
-            // LinearVelocity xSpeed = MetersPerSecond.of(-0.1);
-            // LinearVelocity ySpeed = MetersPerSecond.of(0.0);
-            // AngularVelocity angularVelocity = RadiansPerSecond.of(0.0);
-
-            // drive(xSpeed, ySpeed, angularVelocity);
-
             swerve.align(Degrees.of(90.0));
 
             if (alignTimer.hasElapsed(1.0)) {
@@ -141,7 +127,7 @@ public class RobotContainer {
 
     // init
     public void onDisabled() {
-        compProcessor.elevatorHeightMeters = 0.0;
+        // compProcessor.elevatorHeightMeters = 0.0;
     }
 
     public void autonomousInit() {

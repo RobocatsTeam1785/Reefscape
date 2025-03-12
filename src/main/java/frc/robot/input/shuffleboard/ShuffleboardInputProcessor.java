@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.lib.constants.AlgaeArmConstants;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.ElevatorConstants;
+import frc.lib.input.MasterInputProcessor;
 import frc.lib.input.shuffleboard.ResponsiveToggleableSlider;
 import frc.robot.subsystems.AlgaeArm;
 import frc.robot.subsystems.AlgaeWheel;
@@ -20,7 +21,7 @@ import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
-public class ShuffleboardInputProcessor {
+public class ShuffleboardInputProcessor extends MasterInputProcessor {
     // properties
     String tabTitle;
 
@@ -70,22 +71,10 @@ public class ShuffleboardInputProcessor {
         
         this.algaeArm = algaeArm;
         this.algaeWheel = algaeWheel;
-
-        initialize(tabTitle, swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel);
     }
 
-    public void initialize(
-        String tabTitle,
-
-        final Swerve swerve,
-        final Elevator elevator,
-
-        final CoralArm coralArm,
-        final CoralWheel coralWheel,
-
-        final AlgaeArm algaeArm,
-        final AlgaeWheel algaeWheel
-    ) {
+    @Override
+    public void configure() {
         this.tab = Shuffleboard.getTab(tabTitle);
 
         // SbBox box = new SbBox(tab, 0, 0, 80, 40);
@@ -265,6 +254,7 @@ public class ShuffleboardInputProcessor {
     }
 
     // periodic
+    @Override
     public void periodic() {
         ResponsiveToggleableSlider[] sliders = {
             // flDriveVoltage, flDriveVelocity, flTurnVoltage, flTurnPosition,

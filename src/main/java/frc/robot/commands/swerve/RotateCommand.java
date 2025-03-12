@@ -7,7 +7,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.lib.constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
@@ -39,8 +41,13 @@ public class RotateCommand extends Command {
         // requirements
         addRequirements(swerve);
 
-        // dependencies
-        beforeStarting(new AlignWheelsForRotationCommand(swerve));
+        // shuffleboard
+        SmartDashboard.putNumber("Last RotateCommand angle (radians)", rotateToRadians);
+        SmartDashboard.putData("Last RotateCommand PID Controller", controller);
+    }
+
+    public SequentialCommandGroup afterAlignment() {
+        return beforeStarting(new AlignWheelsForRotationCommand(swerve));
     }
 
     // ! this command assumes the robot is not rotating when this command is initialized
@@ -64,5 +71,14 @@ public class RotateCommand extends Command {
         double speedRadiansPerSecond = controller.calculate(yawRadians, rotateToRadians);
 
         swerve.driveRobotRelative(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.of(speedRadiansPerSecond));
+
+        SmartDashboard.putBoolean("RotateCommand enabled", true);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.driveRobotRelative(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero());
+
+        SmartDashboard.putBoolean("RotateCommand enabled", false);
     }
 }

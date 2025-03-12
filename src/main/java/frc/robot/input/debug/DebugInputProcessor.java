@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.lib.command.DefaultableSelectCommand;
+import frc.lib.input.MasterInputProcessor;
 import frc.lib.mode.ModeState;
 import frc.robot.modes.AlgaeArmMode;
 import frc.robot.modes.AlgaeWheelMode;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
-public class DebugInputProcessor {
+public class DebugInputProcessor extends MasterInputProcessor {
     // controllers
     public final CommandXboxController driver;
 
@@ -92,6 +93,7 @@ public class DebugInputProcessor {
 
     // configuration
     /** perform all configuration */
+    @Override
     public void configure() {
         configureSwitches();
         configureTriggers();
@@ -187,6 +189,7 @@ public class DebugInputProcessor {
     }
 
     // periodic
+    @Override
     public void periodic() {
         swerveProcessor.periodic();
         elevatorProcessor.periodic();

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.SwerveConstants;
+import frc.lib.input.MasterInputProcessor;
 import frc.robot.Robot;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
-public class CompInputProcessor {
+public class CompInputProcessor extends MasterInputProcessor {
     // controllers
     public final CommandXboxController driver;
     public final CommandXboxController operator;
@@ -55,11 +56,11 @@ public class CompInputProcessor {
         CoralArm coralArm,
         CoralWheel coralWheel,
 
-        CommandXboxController driver,
-        CommandXboxController operator
+        int driverPort,
+        int operatorPort
     ) {
-        this.driver = driver;
-        this.operator = operator;
+        this.driver = new CommandXboxController(driverPort);
+        this.operator = new CommandXboxController(operatorPort);
 
         this.swerve = swerve;
         this.elevator = elevator;
@@ -69,6 +70,7 @@ public class CompInputProcessor {
     }
 
     // configuration
+    @Override
     public void configure() {
         configureDriverTriggers();
         configureOperatorTriggers();
@@ -313,6 +315,7 @@ public class CompInputProcessor {
         }, coralArm));
     }
 
+    @Override
     public void periodic() {
         elevator.periodic();
         coralArm.periodic();

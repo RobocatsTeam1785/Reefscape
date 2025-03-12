@@ -20,6 +20,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -29,6 +30,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.constants.AutoConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.swerve.TalonSwerveModule;
 
@@ -129,8 +131,17 @@ public class Swerve extends SubsystemBase {
 
         if (maybeVisionPose.isPresent()) {
             EstimatedRobotPose visionPose = maybeVisionPose.get();
-
             Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
+
+            // offset
+            Pose2d tagPose = AutoConstants.REEF_18.toPose2d();
+            Transform2d toTag = visionRobotPoseMeters.minus(tagPose);
+
+            SmartDashboard.putNumber("Tag relative X", toTag.getX());
+            SmartDashboard.putNumber("Tag relative Y", toTag.getY());
+            SmartDashboard.putNumber("Tag relative angle", toTag.getRotation().getRadians());
+
+            // vision measurement
             double timestampSeconds = visionPose.timestampSeconds;
 
             lastEstimatedVisionPose = visionRobotPoseMeters;

@@ -1,5 +1,6 @@
 package frc.robot.commands.swerve;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
@@ -19,6 +20,11 @@ public class AlignWheelsCommand extends Command {
     @Override
     public void execute() {
         swerve.align(alignTo);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.driveRobotRelative(new ChassisSpeeds());
     }
 
     @Override

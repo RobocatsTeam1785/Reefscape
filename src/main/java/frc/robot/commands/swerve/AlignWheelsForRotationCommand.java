@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve;
 
@@ -22,6 +23,15 @@ public class AlignWheelsForRotationCommand extends Command {
     @Override
     public void execute() {
         swerve.driveRobotRelative(MetersPerSecond.zero(), MetersPerSecond.zero(), EPSILON);
+
+        SmartDashboard.putBoolean("AlignWheelsForRotationCommand enabled", true);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        swerve.driveRobotRelative(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero());
+
+        SmartDashboard.putBoolean("AlignWheelsForRotationCommand enabled", false);
     }
 
     @Override
