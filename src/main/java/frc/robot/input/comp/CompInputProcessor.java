@@ -61,7 +61,12 @@ public class CompInputProcessor extends MasterInputProcessor {
     // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric driveFieldRelative = new SwerveRequest.FieldCentric()
+            .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
+            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+    private final SwerveRequest.RobotCentric driveRobotRelative = new SwerveRequest.RobotCentric()
             .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
             .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -271,9 +276,17 @@ public class CompInputProcessor extends MasterInputProcessor {
                 // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
                 // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
-                return drive.withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed)); // Drive counterclockwise with negative X (left)
+                if (driver.rightTrigger().getAsBoolean()) {
+                    return driveRobotRelative
+                        .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
+                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)
+                        .withRotationalRate(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed)); // Drive counterclockwise with negative X (left)
+                } else {
+                    return driveFieldRelative
+                        .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
+                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)
+                        .withRotationalRate(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed)); // Drive counterclockwise with negative X (left)
+                }
             })
         );
 
