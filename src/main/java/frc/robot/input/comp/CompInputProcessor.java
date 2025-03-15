@@ -23,6 +23,7 @@ import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.input.MasterInputProcessor;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -61,14 +62,17 @@ public class CompInputProcessor extends MasterInputProcessor {
     // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.RobotCentricFacingAngle driveRobotRelativeFacingAngle = new SwerveRequest.RobotCentricFacingAngle()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors  
+
     private final SwerveRequest.FieldCentric driveFieldRelative = new SwerveRequest.FieldCentric()
             .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
-            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
+            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a X% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.RobotCentric driveRobotRelative = new SwerveRequest.RobotCentric()
             .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
-            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
+            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a X% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -104,6 +108,8 @@ public class CompInputProcessor extends MasterInputProcessor {
         configureOperatorTriggers();
 
         configureDefaults();
+
+        swerve.registerTelemetry(logger::telemeterize);
     }
 
     // - triggers
@@ -276,7 +282,13 @@ public class CompInputProcessor extends MasterInputProcessor {
                 // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
                 // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
-                if (driver.rightTrigger().getAsBoolean()) {
+                // ! note: if both triggers are pressed, this implementation will always choose the left trigger behavior
+                if (driver.leftTrigger().getAsBoolean()) {
+                    return driveRobotRelativeFacingAngle
+                        .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive forward with negative Y (forward)
+                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive left with negative X (left)
+                        .withTargetDirection(RobotContainer.lastTagPose.getRotation().toRotation2d());
+                } else if (driver.rightTrigger().getAsBoolean()) {
                     return driveRobotRelative
                         .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
                         .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)

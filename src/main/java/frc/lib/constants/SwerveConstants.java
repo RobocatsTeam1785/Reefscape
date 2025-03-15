@@ -138,6 +138,9 @@ public class SwerveConstants {
         ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
     );
 
+    /** the fraction of max translational speed the robot moves at when slow mode is enabled (i.e., when the left driver trigger is held) */
+    public static final double ROBOT_SLOW_MODE_FRACTION = 0.3;
+
     // position constants
     // distance from the robot's center to the center of a side, in meters
     // the robot is 29in wide, so the apothem is simply 29/2 in
