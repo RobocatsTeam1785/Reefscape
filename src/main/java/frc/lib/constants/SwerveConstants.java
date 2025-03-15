@@ -114,16 +114,16 @@ public class SwerveConstants {
     public static final double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
     // wheel-specific constants
-    public static final LinearVelocity TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
-    public static final AngularVelocity ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
+    public static final LinearVelocity MODULE_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
+    public static final AngularVelocity MODULE_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
 
     // TODO actually apply wheel-specific max translational acceleration, as it's currently unrestricted and only affected by robot-specific max translational acceleration
-    public static final LinearAcceleration TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
-    public static final AngularAcceleration ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
+    public static final LinearAcceleration MODULE_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
+    public static final AngularAcceleration MODULE_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
 
-    public static final TrapezoidProfile.Constraints TURN_PROFILE_CONSTRAINTS_RADIANS = new TrapezoidProfile.Constraints(
-        ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
-        ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+    public static final TrapezoidProfile.Constraints MODULE_TURN_PROFILE_CONSTRAINTS_RADIANS = new TrapezoidProfile.Constraints(
+        MODULE_ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+        MODULE_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
     );
 
     // robot-specific constants

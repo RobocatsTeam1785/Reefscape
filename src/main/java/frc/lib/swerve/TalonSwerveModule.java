@@ -144,7 +144,7 @@ public class TalonSwerveModule {
             SwerveConstants.ROTATIONAL_KP,
             SwerveConstants.ROTATIONAL_KI,
             SwerveConstants.ROTATIONAL_KD,
-            SwerveConstants.TURN_PROFILE_CONSTRAINTS_RADIANS
+            SwerveConstants.MODULE_TURN_PROFILE_CONSTRAINTS_RADIANS
         );
 
         driveFF = new SimpleMotorFeedforward(

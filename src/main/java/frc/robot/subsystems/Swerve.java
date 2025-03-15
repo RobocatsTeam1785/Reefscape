@@ -273,7 +273,7 @@ public class Swerve extends SubsystemBase {
         }
 
         // convert controller speed to speed in m/s
-        LinearVelocity vel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(speed);
+        LinearVelocity vel = SwerveConstants.MODULE_TRANSLATIONAL_MAX_SPEED.times(speed);
 
         // compose speed and angle into a swerve module state
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), new Rotation2d(position));
@@ -300,7 +300,7 @@ public class Swerve extends SubsystemBase {
         }
 
         // convert controller speed to speed in m/s
-        LinearVelocity vel = SwerveConstants.TRANSLATIONAL_MAX_SPEED.times(speed);
+        LinearVelocity vel = SwerveConstants.MODULE_TRANSLATIONAL_MAX_SPEED.times(speed);
 
         // compose speed into a swerve module state
         SwerveModuleState state = new SwerveModuleState(vel.in(MetersPerSecond), new Rotation2d(modules[moduleId].turnPosition()));
