@@ -128,7 +128,7 @@ public class SwerveConstants {
 
     // robot-specific constants
     public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
-    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5);
+    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 * 0.75);
 
     public static final LinearAcceleration ROBOT_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
     public static final AngularAcceleration ROBOT_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
