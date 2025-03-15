@@ -290,24 +290,24 @@ public class CompInputProcessor extends MasterInputProcessor {
             })
         );
 
-        elevator.setDefaultCommand(new InstantCommand(() -> {
-            if (Robot.inAutoMode) return;
+        // elevator.setDefaultCommand(new InstantCommand(() -> {
+        //     if (Robot.inAutoMode) return;
 
-            double voltage = -operator.getLeftY();
-            voltage = MathUtil.applyDeadband(voltage, 0.1);
+        //     double voltage = -operator.getLeftY();
+        //     voltage = MathUtil.applyDeadband(voltage, 0.1);
 
-            if (voltage > 0.0) {
-                voltage *= 5.0;
-            } else if (voltage < 0.0) {
-                if (elevator.leftHeight().in(Meters) < 0.3) {
-                    voltage *= 1.25;
-                } else {
-                    voltage *= 5.0;
-                }
-            }
+        //     if (voltage > 0.0) {
+        //         voltage *= 5.0;
+        //     } else if (voltage < 0.0) {
+        //         if (elevator.leftHeight().in(Meters) < 0.3) {
+        //             voltage *= 1.25;
+        //         } else {
+        //             voltage *= 5.0;
+        //         }
+        //     }
 
-            elevator.updateVoltage(Volts.of(voltage));
-        }, elevator));
+        //     elevator.updateVoltage(Volts.of(voltage));
+        // }, elevator));
 
         coralArm.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
