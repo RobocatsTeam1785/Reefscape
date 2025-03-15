@@ -117,6 +117,11 @@ public class RobotContainer {
 
             if (movementTimer.hasElapsed(1.0)) {
                 movementTimer.stop();
+
+                // zero it to make it stop
+                swerve.applyRequest(() ->
+                    drive.withVelocityX(MetersPerSecond.of(0.0))
+                ).schedule();
             }
         }
     }
