@@ -3,7 +3,12 @@ package frc.robot.input.comp;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
@@ -18,10 +23,13 @@ import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.input.MasterInputProcessor;
 import frc.robot.Robot;
+import frc.robot.Telemetry;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Swerve;
+// import frc.robot.subsystems.Swerve;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CompInputProcessor extends MasterInputProcessor {
@@ -30,7 +38,7 @@ public class CompInputProcessor extends MasterInputProcessor {
     public final CommandXboxController operator;
 
     // subsystems
-    public final Swerve swerve;
+    public final CommandSwerveDrivetrain swerve;
     public final Elevator elevator;
 
     public final CoralArm coralArm;
@@ -47,10 +55,25 @@ public class CompInputProcessor extends MasterInputProcessor {
     public boolean speedHalvedButton = false;
 
     public Angle coralArmIntakeAngle = CoralArmConstants.STATION_INTAKE_ANGLE;
+
+    // tuner swerve
+    // private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
+            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+    private final Telemetry logger = new Telemetry(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.in(MetersPerSecond));
     
     // initialization
     public CompInputProcessor(
-        Swerve swerve,
+        CommandSwerveDrivetrain swerve,
         Elevator elevator,
 
         CoralArm coralArm,
@@ -85,14 +108,8 @@ public class CompInputProcessor extends MasterInputProcessor {
         Trigger rb = driver.rightBumper();
 
         // commands
-        driver.a().onTrue(new InstantCommand(() -> {
-            swerve.navX2.zeroYaw();
-        }, swerve) {
-            @Override
-            public boolean runsWhenDisabled() {
-                return true;
-            }
-        });
+        // reset the field-centric heading on a button press
+        driver.a().onTrue(swerve.runOnce(() -> swerve.seedFieldCentric()));
 
         driver.b().onTrue(new InstantCommand(() -> {
             speedHalvedToggle = !speedHalvedToggle;
@@ -218,58 +235,47 @@ public class CompInputProcessor extends MasterInputProcessor {
 
     // - defaults
     public void configureDefaults() {
-        swerve.setDefaultCommand(new InstantCommand(() -> {
-            if (Robot.inAutoMode) return;
+        swerve.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            swerve.applyRequest(() -> {
+                // Note that X is defined as forward according to WPILib convention,
+                // and Y is defined as to the left according to WPILib convention.
 
-            // calculate controller chassis speeds
-            // - convert X and Y rotation from NED CCC to X and Y coordinates in ENU CCC
-            // - fully right means 1, which is intuitive
-            double oxSpeed = driver.getLeftX();
+                // Drive forward with negative Y (forward)
+                double xSpeed = -driver.getLeftY();
 
-            // - fully up means -1, which is unintuitive, so it requires inversion
-            double oySpeed = -driver.getLeftY();
+                // Drive left with negative X (left)
+                double ySpeed = -driver.getLeftX();
 
-            double xSpeed = oySpeed;
-            double ySpeed = -oxSpeed;
+                // Drive counterclockwise with negative X (left)
+                double rotSpeed = -driver.getRightX();
 
-            // - fully right means 1, which is positive; however, in WPILib, positive rotation means CCW rotation, and moving the joystick right is generally
-            // - associated with CW rotation, so it requires inversion
-            double rotSpeed = -driver.getRightX();
+                // SmartDashboard.putNumber("cip x speed", xSpeed);
+                // SmartDashboard.putNumber("cip y speed", ySpeed);
+                // SmartDashboard.putNumber("cip rot speed", rotSpeed);
 
-            // SmartDashboard.putNumber("cip x speed", xSpeed);
-            // SmartDashboard.putNumber("cip y speed", ySpeed);
-            // SmartDashboard.putNumber("cip rot speed", rotSpeed);
+                // calculate actual chassis speeds
 
-            // calculate actual chassis speeds
-            // - deadband x, y, and rotation speeds to avoid accidental idle drift
-            xSpeed = MathUtil.applyDeadband(xSpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
-            ySpeed = MathUtil.applyDeadband(ySpeed, SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND);
-            rotSpeed = MathUtil.applyDeadband(rotSpeed, SwerveConstants.ROTATIONAL_SPEED_DEADBAND);
+                // SmartDashboard.putNumber("cip db x speed", xSpeed);
+                // SmartDashboard.putNumber("cip db y speed", ySpeed);
+                // SmartDashboard.putNumber("cip db rot speed", rotSpeed);
 
-            // SmartDashboard.putNumber("cip db x speed", xSpeed);
-            // SmartDashboard.putNumber("cip db y speed", ySpeed);
-            // SmartDashboard.putNumber("cip db rot speed", rotSpeed);
+                // ! deadbanding and max speed are already accounted for in the declaration of the `drive` command in this class, so look at the property declarations for details
 
-            if (speedHalvedButton || speedHalvedToggle) {
-                xSpeed *= 0.5;
-                ySpeed *= 0.5;
-            }
+                if (speedHalvedButton || speedHalvedToggle) {
+                    xSpeed *= 0.5;
+                    ySpeed *= 0.5;
+                }
 
-            // - convert velocity values from the unitless range [-1, 1] to the range with units [-max speed, max speed]
-            LinearVelocity xVel = SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed);
-            LinearVelocity yVel = SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed);
-            AngularVelocity angVel = SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed);
+                // SmartDashboard.putNumber("cip x vel m|s", xVel.in(MetersPerSecond));
+                // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
+                // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
-            // SmartDashboard.putNumber("cip x vel m|s", xVel.in(MetersPerSecond));
-            // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
-            // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
-
-            if (swerve.navX2.isConnected() && !swerve.navX2.isCalibrating()) {
-                swerve.driveFieldRelative(xVel, yVel, angVel);
-            } else {
-                swerve.driveRobotRelative(xVel, yVel, angVel);  
-            }
-        }, swerve));
+                return drive.withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed)); // Drive counterclockwise with negative X (left)
+            })
+        );
 
         elevator.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
