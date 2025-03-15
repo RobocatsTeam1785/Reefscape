@@ -4,13 +4,24 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.constants.AutoConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.input.MasterInputProcessor;
 import frc.robot.generated.TunerConstants;
@@ -51,6 +62,9 @@ public class RobotContainer {
     // data
     private Timer alignTimer;
     private Timer movementTimer;
+
+    public static int lastTagId;
+    public static Pose3d lastTagPose;
 
     // commands
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -98,6 +112,53 @@ public class RobotContainer {
         elevator.tune();
         coralArm.tune();
         coralWheel.tune();
+
+        // add vision measurement and log relative X, Y, and angle and absolute angle
+        Pose2d previousPose = swerve.getState().Pose;
+        Optional<EstimatedRobotPose> maybeVisionPose = vision.getEstimatedGlobalPose(previousPose);
+
+        if (maybeVisionPose.isPresent()) {
+            EstimatedRobotPose visionPose = maybeVisionPose.get();
+
+            Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
+            double timestampSeconds = visionPose.timestampSeconds;
+
+            swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+
+            // offset
+            if (vision.latestResult != null && vision.latestResult.hasTargets()) {
+                PhotonTrackedTarget tag = vision.latestResult.getBestTarget();
+                Transform3d toTag = tag.bestCameraToTarget;
+
+                int id = tag.getFiducialId();
+
+                double relativeX = toTag.getX();
+                double relativeY = toTag.getY();
+                double relativeAngle = toTag.getRotation().getZ();
+
+                SmartDashboard.putNumber("Tag ID", id);
+
+                SmartDashboard.putNumber("Tag relative X", relativeX);
+                SmartDashboard.putNumber("Tag relative Y", relativeY);
+                SmartDashboard.putNumber("Tag relative angle", relativeAngle);
+
+                Optional<Pose3d> maybeTagPose = AutoConstants.layout.getTagPose(id);
+
+                if (maybeTagPose.isPresent()) {
+                    Pose3d tagPose = maybeTagPose.get();
+
+                    double tagAngle = tagPose.getRotation().getZ();
+
+                    SmartDashboard.putNumber("Tag angle", tagAngle);
+
+                    // update state
+                    lastTagPose = tagPose;
+                }
+
+                // update state
+                lastTagId = id;
+            }
+        }
     }
 
     // rotation of the default driveRobotRelative to apply the same rotation the default drive controller left joystick control applies
