@@ -110,6 +110,9 @@ public class SwerveConstants {
 
     // speed and acceleration constants
     // converts speed from [-x, x] to [-x, -0.1) U (0.1, x]
+    public static final double SLOW_TRANSLATIONAL_SPEED_DEADBAND = 0.1;
+    public static final double SLOW_ROTATIONAL_SPEED_DEADBAND = 0.1;
+
     public static final double TRANSLATIONAL_SPEED_DEADBAND = 0.1;
     public static final double ROTATIONAL_SPEED_DEADBAND = 0.1;
 
@@ -128,7 +131,7 @@ public class SwerveConstants {
 
     // robot-specific constants
     public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
-    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 * 0.75);
+    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 * 0.5);
 
     public static final LinearAcceleration ROBOT_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
     public static final AngularAcceleration ROBOT_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
@@ -139,7 +142,7 @@ public class SwerveConstants {
     );
 
     /** the fraction of max translational speed the robot moves at when slow mode is enabled (i.e., when the left driver trigger is held) */
-    public static final double ROBOT_SLOW_MODE_FRACTION = 0.3;
+    public static final double ROBOT_SLOW_MODE_FRACTION = 0.1;
 
     // position constants
     // distance from the robot's center to the center of a side, in meters

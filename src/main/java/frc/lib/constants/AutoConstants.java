@@ -28,6 +28,11 @@ public class AutoConstants {
         REEF_18_LEFT = leftReefSide(REEF_18),
         REEF_18_RIGHT = rightReefSide(REEF_18);
 
+    {
+        var a = REEF_18.toMatrix();
+        new Pose3d(a);
+    }
+
     // private methods
     private static Pose3d reefSide(Pose3d tag, double sign) {
         // yaw (rotation about the axis perpendicular to the floor) in radians, where counterclockwise rotation is positive, and zero is defined as away from the blue alliance driver station wall

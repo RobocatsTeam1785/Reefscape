@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -65,6 +66,7 @@ public class RobotContainer {
 
     public static int lastTagId;
     public static Pose3d lastTagPose;
+    public static Rotation2d lastToTagAngle;
 
     // commands
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -141,6 +143,8 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Tag relative X", relativeX);
                 SmartDashboard.putNumber("Tag relative Y", relativeY);
                 SmartDashboard.putNumber("Tag relative angle", relativeAngle);
+
+                lastToTagAngle = toTag.getRotation().toRotation2d();
 
                 Optional<Pose3d> maybeTagPose = AutoConstants.layout.getTagPose(id);
 

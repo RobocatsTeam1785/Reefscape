@@ -9,12 +9,16 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.SwerveRequest.RobotCentricFacingAngle;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -63,11 +67,13 @@ public class CompInputProcessor extends MasterInputProcessor {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.RobotCentricFacingAngle driveRobotRelativeFacingAngle = new SwerveRequest.RobotCentricFacingAngle()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors  
+            .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
+            .withHeadingPID(12.5, 0.0, 0.5)
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.FieldCentric driveFieldRelative = new SwerveRequest.FieldCentric()
-            .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
-            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a X% deadband
+            .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.SLOW_TRANSLATIONAL_SPEED_DEADBAND))
+            .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.SLOW_ROTATIONAL_SPEED_DEADBAND)) // Add a X% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.RobotCentric driveRobotRelative = new SwerveRequest.RobotCentric()
@@ -282,16 +288,23 @@ public class CompInputProcessor extends MasterInputProcessor {
                 // SmartDashboard.putNumber("cip y vel m|s", yVel.in(MetersPerSecond));
                 // SmartDashboard.putNumber("cip rot vel rad|s", angVel.in(RadiansPerSecond));
 
+                SmartDashboard.putBoolean("LT auto-align active", driver.leftTrigger().getAsBoolean() && RobotContainer.lastTagPose != null);
+
                 // ! note: if both triggers are pressed, this implementation will always choose the left trigger behavior
                 if (driver.leftTrigger().getAsBoolean()) {
-                    return driveRobotRelativeFacingAngle
+                    RobotCentricFacingAngle request = driveRobotRelativeFacingAngle
                         .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive forward with negative Y (forward)
-                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive left with negative X (left)
-                        .withTargetDirection(RobotContainer.lastTagPose.getRotation().toRotation2d());
+                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)); // Drive left with negative X (left)
+                    
+                    if (RobotContainer.lastTagPose != null) {
+                        request = request.withTargetDirection(RobotContainer.lastTagPose.getRotation().toRotation2d().rotateBy(Rotation2d.k180deg));
+                    }
+
+                    return request;
                 } else if (driver.rightTrigger().getAsBoolean()) {
                     return driveRobotRelative
-                        .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed)) // Drive forward with negative Y (forward)
-                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed)) // Drive left with negative X (left)
+                        .withVelocityX(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(xSpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive forward with negative Y (forward)
+                        .withVelocityY(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(ySpeed * SwerveConstants.ROBOT_SLOW_MODE_FRACTION)) // Drive left with negative X (left)
                         .withRotationalRate(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(rotSpeed)); // Drive counterclockwise with negative X (left)
                 } else {
                     return driveFieldRelative
@@ -302,24 +315,24 @@ public class CompInputProcessor extends MasterInputProcessor {
             })
         );
 
-        // elevator.setDefaultCommand(new InstantCommand(() -> {
-        //     if (Robot.inAutoMode) return;
+        elevator.setDefaultCommand(new InstantCommand(() -> {
+            if (Robot.inAutoMode) return;
 
-        //     double voltage = -operator.getLeftY();
-        //     voltage = MathUtil.applyDeadband(voltage, 0.1);
+            double voltage = -operator.getLeftY();
+            voltage = MathUtil.applyDeadband(voltage, 0.1);
 
-        //     if (voltage > 0.0) {
-        //         voltage *= 5.0;
-        //     } else if (voltage < 0.0) {
-        //         if (elevator.leftHeight().in(Meters) < 0.3) {
-        //             voltage *= 1.25;
-        //         } else {
-        //             voltage *= 5.0;
-        //         }
-        //     }
+            if (voltage > 0.0) {
+                voltage *= 5.0;
+            } else if (voltage < 0.0) {
+                if (elevator.leftHeight().in(Meters) < 0.3) {
+                    voltage *= 1.25;
+                } else {
+                    voltage *= 5.0;
+                }
+            }
 
-        //     elevator.updateVoltage(Volts.of(voltage));
-        // }, elevator));
+            elevator.updateVoltage(Volts.of(voltage));
+        }, elevator));
 
         coralArm.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
