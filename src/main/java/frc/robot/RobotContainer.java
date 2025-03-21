@@ -125,7 +125,7 @@ public class RobotContainer {
             Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
             double timestampSeconds = visionPose.timestampSeconds;
 
-            swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+            // swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
 
             // offset
             if (vision.latestResult != null && vision.latestResult.hasTargets()) {
