@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.constants.ControlConstants;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.input.MasterInputProcessor;
@@ -30,6 +31,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Telemetry;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
@@ -48,6 +50,8 @@ public class CompInputProcessor extends MasterInputProcessor {
 
     public final CoralArm coralArm;
     public final CoralWheel coralWheel;
+
+    public final Climber climber;
 
     // state
     @Logged public double elevatorHeightMeters = 0.0;
@@ -94,6 +98,8 @@ public class CompInputProcessor extends MasterInputProcessor {
         CoralArm coralArm,
         CoralWheel coralWheel,
 
+        Climber climber,
+
         int driverPort,
         int operatorPort
     ) {
@@ -105,6 +111,8 @@ public class CompInputProcessor extends MasterInputProcessor {
 
         this.coralArm = coralArm;
         this.coralWheel = coralWheel;
+
+        this.climber = climber;
     }
 
     // configuration
@@ -315,8 +323,11 @@ public class CompInputProcessor extends MasterInputProcessor {
             })
         );
 
+        // if the operator right trigger is pressed, we control the voltage of the climber
+        // if the operator right trigger is not pressed, we control the voltage of the elevator
         elevator.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
+            if (operator.rightTrigger().getAsBoolean()) return;
 
             double voltage = -operator.getLeftY();
             voltage = MathUtil.applyDeadband(voltage, 0.1);
@@ -333,6 +344,22 @@ public class CompInputProcessor extends MasterInputProcessor {
 
             elevator.updateVoltage(Volts.of(voltage));
         }, elevator));
+
+        // ! be VERY careful when using this - the climber lifts the entire robot up, so mishandling this has a very real risk of damaging the entire robot to a severe degree
+        climber.setDefaultCommand(new InstantCommand(() -> {
+            if (!operator.rightTrigger().getAsBoolean()) return;
+
+            double volts = -operator.getLeftY(); // back is positive, we want back is negative
+            volts = MathUtil.applyDeadband(volts, ControlConstants.CLIMBER_VOLTAGE_CONTROL_DEADBAND);
+
+            if (volts > 0.0) {
+                volts *= ControlConstants.CLIMBER_VOLTAGE_CONTROL_POSITIVE_FACTOR;
+            } else if (volts < 0.0) {
+                volts *= ControlConstants.CLIMBER_VOLTAGE_CONTROL_NEGATIVE_FACTOR;
+            }
+
+            climber.updateVoltage(volts);
+        }, climber));
 
         coralArm.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;

@@ -32,6 +32,7 @@ import frc.robot.input.comp.CompInputProcessor;
 import frc.robot.input.debug.DebugInputProcessor;
 import frc.robot.input.shuffleboard.ShuffleboardInputProcessor;
 import frc.robot.input.shuffleboard.TestInputProcessor;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
@@ -53,6 +54,8 @@ public class RobotContainer {
 
     // public AlgaeArm algaeArm;
     // public AlgaeWheel algaeWheel;
+
+    public Climber climber;
 
     // autos
     public Autos autos;
@@ -85,10 +88,12 @@ public class RobotContainer {
         coralArm = new CoralArm();
         coralWheel = new CoralWheel();
 
+        climber = new Climber();
+
         // processors
         processors = new MasterInputProcessor[]{
             // new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3),
-            new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ 0, 1),
+            new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ climber, 0, 1),
             // new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel),
             // new TestInputProcessor(3, swerve)
         };
