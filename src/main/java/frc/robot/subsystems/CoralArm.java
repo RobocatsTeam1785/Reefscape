@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.constants.CoralArmConstants;
 
 @Logged(strategy = Logged.Strategy.OPT_IN)
@@ -52,6 +53,26 @@ public class CoralArm extends SubsystemBase {
 
     // shuffleboard
     public GenericEntry angleEntry;
+
+    public final SysIdRoutine routine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,        // Use default ramp rate (1 V/s)
+            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+            null,        // Use default timeout (10 s)
+            // (dont) Log state with SignalLogger class
+            null
+        ),
+        new SysIdRoutine.Mechanism(
+            output -> updateVoltage(output),
+            log -> {
+                log.motor("coral-arm")
+                    .angularPosition(hexPosition())
+                    .angularVelocity(RadiansPerSecond.of(relativeEncoder.getVelocity()))
+                    .voltage(sysIdVoltage);
+            },
+            this
+        )
+    );
 
     public CoralArm() {
         initMotor();
