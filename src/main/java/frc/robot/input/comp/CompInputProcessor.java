@@ -249,6 +249,16 @@ public class CompInputProcessor extends MasterInputProcessor {
         //         }
         //     }
         // }));
+
+        operator.rightTrigger().onChange(new InstantCommand(() -> {
+            if (operator.rightTrigger().getAsBoolean()) {
+                // if just pressed
+                elevator.updateVoltage(Volts.zero());
+            } else {
+                // if just unpressed
+                climber.updateVoltage(0.0);
+            }
+        }, elevator, climber));
     }
 
     double coralArmIdleVoltage = 0.2;
