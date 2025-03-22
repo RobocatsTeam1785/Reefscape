@@ -249,16 +249,6 @@ public class CompInputProcessor extends MasterInputProcessor {
         //         }
         //     }
         // }));
-
-        operator.rightTrigger().onChange(new InstantCommand(() -> {
-            if (operator.rightTrigger().getAsBoolean()) {
-                // if just pressed
-                elevator.updateVoltage(Volts.zero());
-            } else {
-                // if just unpressed
-                climber.updateVoltage(0.0);
-            }
-        }, elevator, climber));
     }
 
     double coralArmIdleVoltage = 0.2;
@@ -332,7 +322,11 @@ public class CompInputProcessor extends MasterInputProcessor {
         // if the operator right trigger is not pressed, we control the voltage of the elevator
         elevator.setDefaultCommand(new InstantCommand(() -> {
             if (Robot.inAutoMode) return;
-            if (operator.rightTrigger().getAsBoolean()) return;
+
+            if (operator.rightTrigger().getAsBoolean()) {
+                elevator.updateVoltage(Volts.zero());
+                return;
+            }
 
             double voltage = -operator.getLeftY();
             voltage = MathUtil.applyDeadband(voltage, 0.1);
@@ -352,7 +346,10 @@ public class CompInputProcessor extends MasterInputProcessor {
 
         // ! be VERY careful when using this - the climber lifts the entire robot up, so mishandling this has a very real risk of damaging the entire robot to a severe degree
         climber.setDefaultCommand(new InstantCommand(() -> {
-            if (!operator.rightTrigger().getAsBoolean()) return;
+            if (!operator.rightTrigger().getAsBoolean()) {
+                climber.updateVoltage(0.0);
+                return;
+            }
 
             double volts = -operator.getLeftY(); // back is positive, we want back is negative
             volts = MathUtil.applyDeadband(volts, ControlConstants.CLIMBER_VOLTAGE_CONTROL_DEADBAND);
