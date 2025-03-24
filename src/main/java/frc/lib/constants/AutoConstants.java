@@ -17,7 +17,7 @@ public class AutoConstants {
 
     // public fields
     public static final String[] ALL_AUTOS = {
-        
+        "Move"
     };
 
     public static final AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);

@@ -11,6 +11,9 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -85,6 +88,28 @@ public class RobotContainer {
         swerve = TunerConstants.createDrivetrain();
         elevator = new Elevator();
 
+        {
+        // configure autos
+            AutoBuilder.configure(
+                () -> swerve.getState().Pose,
+                swerve::resetPose,
+                () -> swerve.getState().Speeds,
+                (speeds, feedforwards) -> swerve.applyRequest(() -> {
+                    return new SwerveRequest.RobotCentric()
+                            .withVelocityX(speeds.vxMetersPerSecond)
+                            .withVelocityY(speeds.vyMetersPerSecond)
+                            .withRotationalRate(speeds.omegaRadiansPerSecond);
+                }),
+                new PPHolonomicDriveController(
+                    new PIDConstants(SwerveConstants.TRANSLATIONAL_KP, SwerveConstants.TRANSLATIONAL_KI, SwerveConstants.TRANSLATIONAL_KD), 
+                    new PIDConstants(SwerveConstants.ROTATIONAL_KP, SwerveConstants.ROTATIONAL_KI, SwerveConstants.ROTATIONAL_KD)
+                ),
+                SwerveConstants.PATHPLANNER_ROBOT_CONFIG,
+                SwerveConstants.SHOULD_FLIP_PATH,
+                swerve
+            );
+        }
+
         coralArm = new CoralArm();
         coralWheel = new CoralWheel();
 
@@ -103,7 +128,7 @@ public class RobotContainer {
         }
 
         // autos
-        // autos = new Autos();
+        autos = new Autos();
 
         // timers
         movementTimer = new Timer();
@@ -179,21 +204,21 @@ public class RobotContainer {
     // }
 
     public void autonomousPeriodic() {
-        if (movementTimer.isRunning()) {
-            // move -1 m/s in the X direction, and since positive X is defined as forwards, that's moving 1 m/s backwards
-            swerve.applyRequest(() ->
-                drive.withVelocityX(MetersPerSecond.of(-1.0))
-            ).schedule();
+        // if (movementTimer.isRunning()) {
+        //     // move -1 m/s in the X direction, and since positive X is defined as forwards, that's moving 1 m/s backwards
+        //     swerve.applyRequest(() ->
+        //         drive.withVelocityX(MetersPerSecond.of(-1.0))
+        //     ).schedule();
 
-            if (movementTimer.hasElapsed(1.0)) {
-                movementTimer.stop();
+        //     if (movementTimer.hasElapsed(1.0)) {
+        //         movementTimer.stop();
 
-                // zero it to make it stop
-                swerve.applyRequest(() ->
-                    drive.withVelocityX(MetersPerSecond.of(0.0))
-                ).schedule();
-            }
-        }
+        //         // zero it to make it stop
+        //         swerve.applyRequest(() ->
+        //             drive.withVelocityX(MetersPerSecond.of(0.0))
+        //         ).schedule();
+        //     }
+        // }
     }
 
     // init
@@ -206,7 +231,9 @@ public class RobotContainer {
         swerve.seedFieldCentric();
 
         // update timers
-        movementTimer.reset();
-        movementTimer.start();
+        // movementTimer.reset();
+        // movementTimer.start();
+
+        autos.autonomousCommand().schedule();
     }
 }
