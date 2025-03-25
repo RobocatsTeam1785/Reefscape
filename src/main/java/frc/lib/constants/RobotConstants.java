@@ -16,15 +16,16 @@ public class RobotConstants {
     public static final boolean TUNING = true;
 
     // TODO measure this value more precisely
-    public static final Mass ROBOT_WEIGHT = Pounds.of(115.0);
+    /** robot weight without bumpers and battery */
+    public static final Mass ROBOT_WEIGHT = Pounds.of(110.0);
 
     /** width of the robot, including the bumper */
     // TODO measure this
-    public static final Distance ROBOT_WIDTH = Inches.of(0.0);
+    public static final Distance ROBOT_WIDTH = Inches.of(35.5);
 
     /** length of the robot, including the bumper */
     // TODO measure this
-    public static final Distance ROBOT_LENGTH = Inches.of(0.0);
+    public static final Distance ROBOT_LENGTH = Inches.of(35.5);
 
     // TODO measure this value using sysid, as the current method assumes equal distribution of weight, which works, but isn't ideal
     public static final MomentOfInertia ROBOT_MOI;
