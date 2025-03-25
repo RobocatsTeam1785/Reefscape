@@ -19,6 +19,9 @@ public class RobotConstants {
     /** robot weight without bumpers and battery */
     public static final Mass ROBOT_WEIGHT = Pounds.of(110.0);
 
+    /** bumper and battery weight */
+    public static final Mass BUMPER_AND_BATTERY_WEIGHT = Pounds.of(2.3);
+
     /** width of the robot, including the bumper */
     // TODO measure this
     public static final Distance ROBOT_WIDTH = Inches.of(35.5);

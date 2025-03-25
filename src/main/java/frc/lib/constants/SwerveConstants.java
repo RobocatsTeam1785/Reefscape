@@ -212,7 +212,7 @@ public class SwerveConstants {
     );
 
     public static final RobotConfig PATHPLANNER_ROBOT_CONFIG = new RobotConfig(
-        RobotConstants.ROBOT_WEIGHT,
+        RobotConstants.ROBOT_WEIGHT.plus(RobotConstants.BUMPER_AND_BATTERY_WEIGHT),
         RobotConstants.ROBOT_MOI,
         PATHPLANNER_MODULE_CONFIG,
         FL_POS, FR_POS, BL_POS, BR_POS
