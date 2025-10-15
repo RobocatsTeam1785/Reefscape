@@ -130,8 +130,8 @@ public class SwerveConstants {
     );
 
     // robot-specific constants
-    public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4.0);
-    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 * 0.5);
+    public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4); // 4.0);
+    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 *0.5); // 3.5 * 0.5);
 
     public static final LinearAcceleration ROBOT_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
     public static final AngularAcceleration ROBOT_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
@@ -189,7 +189,7 @@ public class SwerveConstants {
     };
 
     // as per the drivetrain free speed table on https://www.swervedrivespecialties.com/products/mk4i-swerve-module, at Kraken X60, N for FOC, and the L2 ratio
-    public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(15.5);
+    public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(7.5);
 
     // ideally, this value would be actually measured, but we don't have enough space, so we're using 85% of the free speed,
     // as per the instructions on https://pathplanner.dev/robot-config.html#module-config-options

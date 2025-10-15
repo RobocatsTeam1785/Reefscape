@@ -38,6 +38,7 @@ import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
 // import frc.robot.subsystems.Swerve;
 
+// controls: https://www.padcrafter.com/?templates=1785+Reefscape+Driver%7C1785+Reefscape+Operator&leftStick=drive+parallel+to+the+floor%7Celevator+or+climber+up+and+down&plat=%7C%7C0&rightStick=rotate+the+robot%7Ccoral+arm+up+and+down&aButton=make+coral+arm+side+front%7Cpull+coral+in+via+wheel&bButton=toggle+slow+mode+factor+1%7Cpush+coral+out+via+wheel&rightTrigger=fast+field-rel.+%28unheld%29+or+slow+bot-rel.+%28held%29%7Ctoggle+elevator+%28unpressed%29+vs+climber+%28pressed%29&rightBumper=slow+mode+factor+2+%28held%29+or+normal+%28unheld%29%7C#
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CompInputProcessor extends MasterInputProcessor {
     // controllers
@@ -123,11 +124,20 @@ public class CompInputProcessor extends MasterInputProcessor {
 
         configureDefaults();
 
-        swerve.registerTelemetry(logger::telemeterize);
+        // swerve.registerTelemetry(logger::telemeterize);
     }
 
     // - triggers
     public void configureDriverTriggers() {
+
+        // l3
+        // operator.x().whileTrue(coralArm.run(() -> {
+        //     coralArm.updateSetpoint(Degrees.of(-48), 2.2);
+        // }));
+        // // l4
+        // operator.y().whileTrue(coralArm.run(() -> {
+        //     coralArm.updateSetpoint(Degrees.of(-62), 1.8);
+        // }));
         // triggers
         Trigger lb = driver.leftBumper();
         Trigger rb = driver.rightBumper();
@@ -258,6 +268,8 @@ public class CompInputProcessor extends MasterInputProcessor {
         swerve.setDefaultCommand(
             // Drivetrain will execute this command periodically
             swerve.applyRequest(() -> {
+                if (Robot.inAutoMode) return new SwerveRequest.Idle();
+
                 // Note that X is defined as forward according to WPILib convention,
                 // and Y is defined as to the left according to WPILib convention.
 
