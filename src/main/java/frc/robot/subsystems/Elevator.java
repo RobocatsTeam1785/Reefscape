@@ -24,6 +24,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -38,6 +39,7 @@ public class Elevator extends SubsystemBase {
     // hardware
     public SparkMax leftMotor, rightMotor;
     @Logged public RelativeEncoder leftEncoder, rightEncoder;
+    public DigitalInput maxHeightGarageDoorSensor;
 
     // control/filtering
     @Logged public ProfiledPIDController leftPID, rightPID;
@@ -58,7 +60,7 @@ public class Elevator extends SubsystemBase {
     @Logged public double lastLeftVoltageVolts, lastRightVoltageVolts;
 
     // shuffleboard
-    public GenericEntry heightEntry;
+    public GenericEntry heightEntry, maxHeightEntry;
 
     public final SysIdRoutine routine = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -89,13 +91,19 @@ public class Elevator extends SubsystemBase {
         initMotors();
         initControl();
 
+        maxHeightGarageDoorSensor = new DigitalInput(9);
+
         ShuffleboardTab tab = Shuffleboard.getTab("LiveWindow");
 
         SimpleWidget heightWidget = tab.add("Elevator Height", leftEncoder.getPosition())
             .withWidget(BuiltInWidgets.kDial)
             .withProperties(Map.of("Min", 0.0, "Max", ElevatorConstants.MAX_HEIGHT.in(Meters) * 100));
         
+        SimpleWidget maxHeightWidget = tab.add("Reached Max Height", maxHeightGarageDoorSensor.get())
+            .withWidget(BuiltInWidgets.kBooleanBox);
+        
         heightEntry = heightWidget.getEntry();
+        maxHeightEntry = maxHeightWidget.getEntry();
     }
 
     // initialization
@@ -357,6 +365,7 @@ public class Elevator extends SubsystemBase {
     // periodic
     public void periodic() {
         heightEntry.setDouble(leftEncoder.getPosition() * 100.0);
+        maxHeightEntry.setBoolean(maxHeightGarageDoorSensor.get());
 
         // TODO tweak negative threshold value to ensure it's never reached in normal conditions, and only when the elevator is initialized when not fully down
         if (leftEncoder.getPosition() < -0.1) {
