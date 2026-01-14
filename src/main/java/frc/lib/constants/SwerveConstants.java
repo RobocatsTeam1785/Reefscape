@@ -131,7 +131,7 @@ public class SwerveConstants {
 
     // robot-specific constants
     public static final LinearVelocity ROBOT_TRANSLATIONAL_MAX_SPEED = MetersPerSecond.of(4); // 4.0);
-    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 *0.5); // 3.5 * 0.5);
+    public static final AngularVelocity ROBOT_ROTATIONAL_MAX_SPEED = RotationsPerSecond.of(3.5 * 0.5); // 3.5 * 0.5);
 
     public static final LinearAcceleration ROBOT_TRANSLATIONAL_MAX_ACCELERATION = MetersPerSecondPerSecond.of(3);
     public static final AngularAcceleration ROBOT_ROTATIONAL_MAX_ACCELERATION = RotationsPerSecondPerSecond.of(3.5);
@@ -189,17 +189,17 @@ public class SwerveConstants {
     };
 
     // as per the drivetrain free speed table on https://www.swervedrivespecialties.com/products/mk4i-swerve-module, at Kraken X60, N for FOC, and the L2 ratio
-    public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(7.5);
+    public static final LinearVelocity MOTOR_FREE_SPEED = FeetPerSecond.of(15.5);
 
     // ideally, this value would be actually measured, but we don't have enough space, so we're using 85% of the free speed,
     // as per the instructions on https://pathplanner.dev/robot-config.html#module-config-options
     public static final LinearVelocity MAX_DRIVE_VELOCITY = MOTOR_FREE_SPEED.times(0.85);
 
     // TODO see if we can change this to 70, as that's the default current limit for Kraken X60s
-    public static final Current CURRENT_LIMIT = Amps.of(40.0);
+    public static final Current CURRENT_LIMIT = Amps.of(60.0);
 
     // I'm unsure how to calculate this, so we're using the placeholder value the documentation recommends
-    public static final double WHEEL_FRICTION_COEFFICIENT = 1.0;
+    public static final double WHEEL_FRICTION_COEFFICIENT = 0.08;
 
     // config objects
     public static final ModuleConfig PATHPLANNER_MODULE_CONFIG = new ModuleConfig(

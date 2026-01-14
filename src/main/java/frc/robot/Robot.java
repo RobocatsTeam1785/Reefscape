@@ -46,8 +46,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     inAutoMode = true;
-    // container.autonomousInit();
-    container.ppAutoInit();
+    container.autonomousInit();
+    // container.ppAutoInit();
   }
 
   @Override

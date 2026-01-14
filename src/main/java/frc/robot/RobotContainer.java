@@ -3,11 +3,15 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +22,10 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.epilogue.Logged;
@@ -32,6 +39,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -51,6 +59,19 @@ import frc.robot.subsystems.CoralArm;
 import frc.robot.subsystems.CoralWheel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Vision;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.RotationTarget;
+import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.GoalEndState;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import java.util.Set;
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class RobotContainer {
@@ -93,9 +114,12 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentricFacingAngle driveFacing = new SwerveRequest.FieldCentricFacingAngle()
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     
-    private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds();
+    private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final SendableChooser<List<Triple>> chooser;
+    private final SendableChooser<List<AutoFunction>> chooser;
+
+    @Logged public Pose2d latestVisionPose = new Pose2d();
 
     public RobotContainer(double period) {
         // subsystems
@@ -110,9 +134,10 @@ public class RobotContainer {
             () -> swerve.getState().Pose,
             swerve::resetPose,
             () -> swerve.getState().Speeds,
-            (speeds, feedforwards) -> swerve.applyRequest(() -> {
-                return autoDrive.withSpeeds(speeds);
-            }),
+            (speeds, feedforwards) -> {
+                // Apply the control
+                swerve.setControl(autoDrive.withSpeeds(speeds));
+            },
             new PPHolonomicDriveController(
                 new PIDConstants(SwerveConstants.TRANSLATIONAL_KP, SwerveConstants.TRANSLATIONAL_KI, SwerveConstants.TRANSLATIONAL_KD), 
                 new PIDConstants(SwerveConstants.ROTATIONAL_KP, SwerveConstants.ROTATIONAL_KI, SwerveConstants.ROTATIONAL_KD)
@@ -141,6 +166,8 @@ public class RobotContainer {
 
         // autos
         autos = new Autos();
+        autos.chooser.addOption("Move 1 Meter Relative", getMoveOneMeterCommand());
+        autos.chooser.addOption("Circle Spin", getCircleSpinCommand());
 
         // timers
         // movementTimer = new Timer();
@@ -153,11 +180,46 @@ public class RobotContainer {
         chooser.addOption("long horizontal L2", longHorizontalL2Auto);
         chooser.addOption("move", onlyMoveAuto);
 
-        SmartDashboard.putData("Custom auto chooser", chooser);
+        SmartDashboard.putData("Auto Chooser (Manual)", chooser);
     }
 
     // periodic
     public void robotPeriodic() {
+        // --- START SWERVE STATE LOGGING ---
+        var state = swerve.getState();
+
+        // 1. Log Pose (The most critical part for PathPlanner)
+        SmartDashboard.putNumber("SwerveState/PoseX", state.Pose.getX());
+        SmartDashboard.putNumber("SwerveState/PoseY", state.Pose.getY());
+        SmartDashboard.putNumber("SwerveState/PoseRot", state.Pose.getRotation().getDegrees());
+        
+        // Debug Flag: Is the pose corrupt?
+        boolean isNaN = Double.isNaN(state.Pose.getX()) || Double.isNaN(state.Pose.getY());
+        SmartDashboard.putBoolean("SwerveState/IsPoseNaN", isNaN);
+
+        // 2. Log Speeds
+        SmartDashboard.putNumber("SwerveState/SpeedVx", state.Speeds.vxMetersPerSecond);
+        SmartDashboard.putNumber("SwerveState/SpeedVy", state.Speeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("SwerveState/SpeedOmega", state.Speeds.omegaRadiansPerSecond);
+
+        // 3. Log Raw Inputs/Diagnostics
+        SmartDashboard.putNumber("SwerveState/RawHeading", state.RawHeading.getDegrees());
+        SmartDashboard.putNumber("SwerveState/Timestamp", state.Timestamp);
+        SmartDashboard.putNumber("SwerveState/OdometryFreq", 1.0 / state.OdometryPeriod);
+        SmartDashboard.putNumber("SwerveState/FailedDaqs", state.FailedDaqs);
+
+        // 4. Log Module States (assuming 4 modules)
+        if (state.ModuleStates != null && state.ModuleTargets != null) {
+            for (int i = 0; i < state.ModuleStates.length; i++) {
+                String key = "SwerveState/Mod" + i;
+                SmartDashboard.putNumber(key + "/CurrentSpeed", state.ModuleStates[i].speedMetersPerSecond);
+                SmartDashboard.putNumber(key + "/CurrentAngle", state.ModuleStates[i].angle.getDegrees());
+                SmartDashboard.putNumber(key + "/TargetSpeed", state.ModuleTargets[i].speedMetersPerSecond);
+                SmartDashboard.putNumber(key + "/TargetAngle", state.ModuleTargets[i].angle.getDegrees());
+            }
+        }
+        // --- END SWERVE STATE LOGGING ---
+
         // add vision measurement and log relative X, Y, and angle and absolute angle
         Pose2d previousPose = swerve.getState().Pose;
         Optional<EstimatedRobotPose> maybeVisionPose = vision.getEstimatedGlobalPose(previousPose);
@@ -167,6 +229,8 @@ public class RobotContainer {
 
             Pose2d visionRobotPoseMeters = visionPose.estimatedPose.toPose2d();
             double timestampSeconds = visionPose.timestampSeconds;
+
+            this.latestVisionPose = visionRobotPoseMeters;
 
             swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
 
@@ -228,95 +292,95 @@ public class RobotContainer {
 
     // sequential autonomous commands
     // ! this is the section for customizing autos - the red is irrelevant, it's just to draw attention to this line
-    private List<Triple> scoreL1Auto = List.of(
-        new Triple(
+    private List<AutoFunction> scoreL1Auto = List.of(
+        new AutoFunction(
             1.0,
             () -> flickCoralArmUp(1.0),
             () -> {}
         ),
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> fallToAngle(Degrees.of(-33), 0.6),
             () -> {}
         ),
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> spinCoralWheels(-3.0),
             () -> spinCoralWheels(0.0)
         )
     );
 
-    private List<Triple> scoreL2Auto = List.of(
-        new Triple(
+    private List<AutoFunction> scoreL2Auto = List.of(
+        new AutoFunction(
             1.0,
             () -> flickCoralArmUp(1.0),
             () -> {}
         ),
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> fallToAngle(Degrees.of(0), 0.4),
             () -> {}
         ),
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> spinCoralWheels(-3.0),
             () -> spinCoralWheels(0.0)
         )
     );
 
-    private List<Triple> straightL1Auto = List.of(
-        new Triple(
+    private List<AutoFunction> straightL1Auto = List.of(
+        new AutoFunction(
             2.5,
             () -> drive(-1.0, 0.0, 0.0),
             () -> drive(0.0, 0.0, 0.0)
         )
     );
 
-    private List<Triple> longHorizontalL1Auto = List.of(
-        new Triple(
+    private List<AutoFunction> longHorizontalL1Auto = List.of(
+        new AutoFunction(
             2.5 * 1.33,
             () -> drive(-1.0, 0.0, 0.0),
             () -> drive(0.0, 0.0, 0.0)
         )
     );
 
-    private List<Triple> longHorizontalL2Auto = List.of(
-        new Triple(
+    private List<AutoFunction> longHorizontalL2Auto = List.of(
+        new AutoFunction(
             1.0,
             () -> flickCoralArmUp(1.0),
             () -> {}
         ),
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> fallToAngle(Degrees.of(-33), 0.6),
             () -> {}
         ),
 
-        new Triple(
+        new AutoFunction(
             0.2,
             () -> drive(-0.001, 0.0, 0.0),
             () -> drive(0.0, 0.0, 0.0)
         ),
 
-        new Triple(
+        new AutoFunction(
             2.5 * 1.33 + 0.5,
             () -> drive(-1.0, 0.0, 0.0),
             () -> drive(0.0, 0.0, 0.0)
         ),
 
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> spinCoralWheels(-3.0),
             () -> spinCoralWheels(0.0)
         ),
 
-        new Triple(
+        new AutoFunction(
             0.1,
             () -> {},
             () -> {}
         ),
 
-        new Triple(
+        new AutoFunction(
             1.0,
             () -> {
                 spinCoralWheels(-1.0);
@@ -338,15 +402,15 @@ public class RobotContainer {
         longHorizontalL1Auto.addAll(scoreL1Auto);
     }
 
-    private final List<Triple> onlyMoveAuto = List.of(
-        new Triple(
+    private final List<AutoFunction> onlyMoveAuto = List.of(
+        new AutoFunction(
             1.0,
             () -> drive(-1.0, 0.0, 0.0),
             () -> drive(0.0, 0.0, 0.0)
         )
     );
 
-    private List<Triple> autoCommands = straightL1Auto;
+    private List<AutoFunction> autoCommands = straightL1Auto;
 
     private int autoCommandIndex = 0;
 
@@ -445,8 +509,8 @@ public class RobotContainer {
     }
 
     public void ppAutoInit() {
-        autos.autonomousCommand().schedule();
-        System.out.println(autos.autonomousCommand());
+        // autos.autonomousCommand().schedule();
+        // System.out.println(autos.autonomousCommand());
     }
 
     public void autonomousPeriodic() {
@@ -489,42 +553,143 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-        // the resetRotation function takes an angle from the blue alliance perspective, so the value we pass to it varies by the alliance color
-        if (DriverStation.getAlliance().isPresent()) {
-            DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+        // // the resetRotation function takes an angle from the blue alliance perspective, so the value we pass to it varies by the alliance color
+        // if (DriverStation.getAlliance().isPresent()) {
+        //     DriverStation.Alliance alliance = DriverStation.getAlliance().get();
 
-            if (alliance == DriverStation.Alliance.Red) {
-                // * the side with the coral arm should be facing away from and perpendicular to the blue alliance driver stations
-                swerve.resetRotation(Rotation2d.kZero);
-            } else {
-                // * the side with the coral arm should be facing towards and perpendicular to the blue alliance driver stations
-                swerve.resetRotation(Rotation2d.k180deg);
-            }
-        } else {
-            swerve.resetRotation(Rotation2d.kZero);
-        }
+        //     if (alliance == DriverStation.Alliance.Red) {
+        //         // * the side with the coral arm should be facing away from and perpendicular to the blue alliance driver stations
+        //         swerve.resetRotation(Rotation2d.kZero);
+        //     } else {
+        //         // * the side with the coral arm should be facing towards and perpendicular to the blue alliance driver stations
+        //         swerve.resetRotation(Rotation2d.k180deg);
+        //     }
+        // } else {
+        //     swerve.resetRotation(Rotation2d.kZero);
+        // }
 
         // update timers
         // movementTimer.reset();
         // movementTimer.start();
 
-        autoCommands = chooser.getSelected();
+        autoCommandIndex = -1;
+
+        // autoCommands = chooser.getSelected();
+
+        // DriverStation.reportWarning(autoCommands.toString(), true);
+        // System.out.print(autoCommands.toString());
 
         omegaController.enableContinuousInput(-Math.PI, Math.PI);
 
-        // if (autos.autonomousCommand() != null)
-        //     autos.autonomousCommand().schedule();
-        
-        if (autoCommands.size() == 0) {
-            autoCommandIndex = -1;
-            return;
-        } else {
-            autoCommandIndex = 0;
+        Command pathPlannerCommand = autos.autonomousCommand();
+
+        System.out.println("1" + pathPlannerCommand.getName());
+
+        if (pathPlannerCommand != null) {
+            System.out.println("2" + pathPlannerCommand.getName());
+
+            pathPlannerCommand.schedule();
         }
         
-        autoCommandTimer.reset();
-        autoCommandTimer.start();
+        // if (autoCommands.size() == 0) {
+        //     autoCommandIndex = -1;
+        //     return;
+        // } else {
+        //     autoCommandIndex = 0;
+        // }
+        
+        // autoCommandTimer.reset();
+        // autoCommandTimer.start();
     }
 
-    private record Triple(double seconds, Runnable duringPeriodic, Runnable onFinished) {};
+    private record AutoFunction(double seconds, Runnable duringPeriodic, Runnable onFinished) {};
+
+    public Command getMoveOneMeterCommand() {
+        return Commands.defer(() -> {
+            Pose2d currentPose = swerve.getState().Pose;
+            
+            // Calculate Target
+            Translation2d forwardVec = new Translation2d(1.85, 0.0).rotateBy(currentPose.getRotation());
+            Pose2d targetPose = new Pose2d(
+                currentPose.getTranslation().plus(forwardVec), 
+                currentPose.getRotation()
+            );
+
+            // Generate Path
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);
+            PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                new PathConstraints(
+                    SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.in(MetersPerSecond),
+                    SwerveConstants.ROBOT_TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond),
+                    SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.in(RadiansPerSecond), 
+                    SwerveConstants.ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+                ),
+                null, 
+                new GoalEndState(0.0, targetPose.getRotation())
+            );
+            path.preventFlipping = true;
+
+            return AutoBuilder.followPath(path);
+        }, Set.of(swerve));
+    }
+
+    public Command getCircleSpinCommand() {
+        return Commands.defer(() -> {
+            Pose2d startPose = swerve.getState().Pose;
+            Rotation2d startRot = startPose.getRotation();
+            
+            // Define points for a 5m diameter circle to the left of the robot
+            List<Pose2d> pathPoses = new ArrayList<>();
+            pathPoses.add(startPose); 
+            pathPoses.add(new Pose2d(
+                startPose.getTranslation().plus(new Translation2d(2.5, 2.5).rotateBy(startRot)),
+                startRot.plus(Rotation2d.fromDegrees(90))
+            ));
+            pathPoses.add(new Pose2d(
+                startPose.getTranslation().plus(new Translation2d(0.0, 5.0).rotateBy(startRot)),
+                startRot.plus(Rotation2d.fromDegrees(180))
+            ));
+            pathPoses.add(new Pose2d(
+                startPose.getTranslation().plus(new Translation2d(-2.5, 2.5).rotateBy(startRot)),
+                startRot.plus(Rotation2d.fromDegrees(270))
+            ));
+            pathPoses.add(new Pose2d(
+                startPose.getTranslation(),
+                startRot
+            ));
+
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(pathPoses);
+            
+            PathConstraints constraints = new PathConstraints(
+                3.0, 3.0, 
+                SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+                SwerveConstants.ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+            );
+
+            // Create the rotation targets list BEFORE constructing the path
+            List<RotationTarget> rotationTargets = new ArrayList<>();
+            rotationTargets.add(new RotationTarget(1.0, startRot.plus(Rotation2d.fromDegrees(180))));
+            rotationTargets.add(new RotationTarget(2.0, startRot.plus(Rotation2d.fromDegrees(360))));
+            rotationTargets.add(new RotationTarget(3.0, startRot.plus(Rotation2d.fromDegrees(540))));
+
+            GoalEndState endState = new GoalEndState(0.0, startRot.plus(Rotation2d.fromDegrees(720)));
+
+            // Use the full constructor to pass in the rotation targets
+            PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                rotationTargets,
+                Collections.emptyList(), // pointTowardsZones
+                Collections.emptyList(), // constraintZones
+                Collections.emptyList(), // eventMarkers
+                constraints,
+                null, // IdealStartingState
+                endState,
+                false // reversed
+            );
+            path.preventFlipping = true;
+
+            return AutoBuilder.followPath(path);
+        }, Set.of(swerve));
+    }
 }

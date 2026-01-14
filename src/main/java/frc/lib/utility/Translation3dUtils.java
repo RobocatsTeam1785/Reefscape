@@ -5,12 +5,12 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Unit;
 
 public class Translation3dUtils {
-    // for <U extends Unit>, U.of(x) always returns Measure<U>, so a cast is valid
+    // for <U extends Unit>, U.of(x) always returns U, so a cast is valid
     @SuppressWarnings("unchecked")
-    public static <U extends Unit> Translation3d convertUnits(Translation3d position, U from, U to) {
-        Measure<U> x = (Measure<U>)from.of(position.getX());
-        Measure<U> y = (Measure<U>)from.of(position.getY());
-        Measure<U> z = (Measure<U>)from.of(position.getZ());
+    public static <U extends Unit, M extends Measure<U>> Translation3d convertUnits(Translation3d position, U from, U to) {
+        M x = (M)from.of(position.getX());
+        M y = (M)from.of(position.getY());
+        M z = (M)from.of(position.getZ());
 
         return new Translation3d(x.in(to), y.in(to), z.in(to));
     }

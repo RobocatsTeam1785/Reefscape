@@ -1,0 +1,1 @@
+.\gradlew deploy -PteamNumber=1785
