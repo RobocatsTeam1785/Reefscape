@@ -54,7 +54,7 @@ public class SwerveConstants {
     // TODO use sysid to calculate these constants
         public static final double
         TRANSLATIONAL_KP = 2.0,
-        TRANSLATIONAL_KI = 0.0,
+        TRANSLATIONAL_KI = 0.1,
         TRANSLATIONAL_KD = 0.0,
 
         TRANSLATIONAL_KS = 0.5,
@@ -89,7 +89,7 @@ public class SwerveConstants {
         // ROTATIONAL_KA = 1.0;
 
         // calculated using the log generated at 4:05 PM on 2/11/25
-        ROTATIONAL_KP = 2.0, // 41.137,
+        ROTATIONAL_KP = 0.5, // 41.137,
         ROTATIONAL_KI = 0.0,
         ROTATIONAL_KD = 0.1, // 4.0337,
 

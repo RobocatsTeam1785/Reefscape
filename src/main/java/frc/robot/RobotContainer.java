@@ -6,14 +6,11 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -22,32 +19,28 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.constants.AutoConstants;
-import frc.lib.constants.CoralArmConstants;
+import frc.lib.constants.RobotConstants;
 import frc.lib.constants.SwerveConstants;
 import frc.lib.input.MasterInputProcessor;
 import frc.robot.generated.TunerConstants;
@@ -63,12 +56,11 @@ import frc.robot.subsystems.Vision;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.RotationTarget;
 import com.pathplanner.lib.path.Waypoint;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.GoalEndState;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import java.util.Set;
@@ -109,17 +101,18 @@ public class RobotContainer {
             .withDeadband(SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.times(SwerveConstants.TRANSLATIONAL_SPEED_DEADBAND))
             .withRotationalDeadband(SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.times(SwerveConstants.ROTATIONAL_SPEED_DEADBAND)) // Add a 10% deadband
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+            .withDriveRequestType(DriveRequestType.Velocity);
     
     private final SwerveRequest.FieldCentricFacingAngle driveFacing = new SwerveRequest.FieldCentricFacingAngle()
             .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
     
     private final SwerveRequest.ApplyRobotSpeeds autoDrive = new SwerveRequest.ApplyRobotSpeeds()
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        .withDriveRequestType(DriveRequestType.Velocity);
 
     private final SendableChooser<List<AutoFunction>> chooser;
 
     @Logged public Pose2d latestVisionPose = new Pose2d();
+    public static Pose2d lastTargetPose;
 
     public RobotContainer(double period) {
         // subsystems
@@ -135,6 +128,9 @@ public class RobotContainer {
             swerve::resetPose,
             () -> swerve.getState().Speeds,
             (speeds, feedforwards) -> {
+                if (lastTargetPose != null)
+                    System.out.println("Distance to targetPose: " + lastTargetPose.minus(swerve.getState().Pose));
+
                 // Apply the control
                 swerve.setControl(autoDrive.withSpeeds(speeds));
             },
@@ -155,7 +151,7 @@ public class RobotContainer {
         // processors
         processors = new MasterInputProcessor[]{
             // new DebugInputProcessor(swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel, controller3),
-            new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ climber, 0, 1),
+            new CompInputProcessor(swerve, elevator, coralArm, coralWheel, /* algaeArm, algaeWheel, */ climber, 0, 1, this),
             // new ShuffleboardInputProcessor("Control", swerve, elevator, coralArm, coralWheel, algaeArm, algaeWheel),
             // new TestInputProcessor(3, swerve)
         };
@@ -181,6 +177,7 @@ public class RobotContainer {
         chooser.addOption("move", onlyMoveAuto);
 
         SmartDashboard.putData("Auto Chooser (Manual)", chooser);
+
     }
 
     // periodic
@@ -213,9 +210,9 @@ public class RobotContainer {
             for (int i = 0; i < state.ModuleStates.length; i++) {
                 String key = "SwerveState/Mod" + i;
                 SmartDashboard.putNumber(key + "/CurrentSpeed", state.ModuleStates[i].speedMetersPerSecond);
-                SmartDashboard.putNumber(key + "/CurrentAngle", state.ModuleStates[i].angle.getDegrees());
+                SmartDashboard.putNumber(key + "/CurrentAngle", MathUtil.inputModulus(state.ModuleStates[i].angle.getDegrees(), -180, 180));
                 SmartDashboard.putNumber(key + "/TargetSpeed", state.ModuleTargets[i].speedMetersPerSecond);
-                SmartDashboard.putNumber(key + "/TargetAngle", state.ModuleTargets[i].angle.getDegrees());
+                SmartDashboard.putNumber(key + "/TargetAngle", MathUtil.inputModulus(state.ModuleTargets[i].angle.getDegrees(), -180, 180));
             }
         }
         // --- END SWERVE STATE LOGGING ---
@@ -232,7 +229,8 @@ public class RobotContainer {
 
             this.latestVisionPose = visionRobotPoseMeters;
 
-            swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds);
+            // Matrix<N3, N1> visionStdDevs = VecBuilder.fill(0.9, 0.9, 0.9); 
+            swerve.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds); //, visionStdDevs);
 
             // offset
             if (vision.latestResult != null && vision.latestResult.hasTargets()) {
@@ -689,6 +687,69 @@ public class RobotContainer {
             );
             path.preventFlipping = true;
 
+            return AutoBuilder.followPath(path);
+        }, Set.of(swerve));
+    }
+
+    /**
+     * Generates a deferred command that moves the robot to be flush with the wall of the specified AprilTag.
+     * 
+     * @param tagId The ID of the AprilTag to align with.
+     * @return A command that generates and follows a path to the tag.
+     */
+    public Command getAlignToTagCommand(int tagId) {
+        return Commands.defer(() -> {
+            // 1. Retrieve the pose of the AprilTag from the field layout
+            Optional<Pose3d> tagPose3d = AutoConstants.layout.getTagPose(tagId);
+
+            if (tagPose3d.isEmpty()) {
+                DriverStation.reportError("Attempted to align to invalid tag ID: " + tagId, false);
+                return Commands.none();
+            }
+
+            Pose2d tagPose = tagPose3d.get().toPose2d();
+
+            // Subtract 5cm to aim "into" the wall
+            double offsetCushion = 0.05; 
+            double targetDistanceFromTag = (RobotConstants.ROBOT_WIDTH.in(Meters) / 2.0) - offsetCushion;
+
+            Translation2d shiftVector = new Translation2d(targetDistanceFromTag, 0.0).rotateBy(tagPose.getRotation());
+            
+            // Add the shift to the tag's origin to get the robot's target center
+            Translation2d targetTranslation = tagPose.getTranslation().plus(shiftVector);
+
+            // 3. Calculate the target rotation
+            // To be flush with the wall, the robot must face the wall.
+            // Since the tag faces OUT of the wall, the robot must face the opposite direction (Tag Angle + 180).
+            Rotation2d targetRotation = tagPose.getRotation().plus(Rotation2d.fromDegrees(180));
+
+            // 4. Construct Poses
+            Pose2d targetPose = new Pose2d(targetTranslation, targetRotation);
+            Pose2d currentPose = swerve.getState().Pose;
+
+            lastTargetPose = targetPose;
+
+            // 5. Generate the PathPlanner path on-the-fly
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);
+            
+            PathConstraints constraints = new PathConstraints(
+                SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.in(MetersPerSecond),
+                SwerveConstants.ROBOT_TRANSLATIONAL_MAX_ACCELERATION.in(MetersPerSecondPerSecond),
+                SwerveConstants.ROBOT_ROTATIONAL_MAX_SPEED.in(RadiansPerSecond),
+                SwerveConstants.ROBOT_ROTATIONAL_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)
+            );
+
+            PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // Ideal starting state (null uses robot state)
+                new GoalEndState(0.0, targetRotation) // End with 0 velocity, facing the wall
+            );
+            
+            // Prevent the path from trying to drive backwards if the rotation logic is complex
+            path.preventFlipping = true;
+
+            // 6. Return the command to follow this path
             return AutoBuilder.followPath(path);
         }, Set.of(swerve));
     }

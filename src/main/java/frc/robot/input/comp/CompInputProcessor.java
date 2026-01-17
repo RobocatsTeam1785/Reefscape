@@ -41,6 +41,8 @@ import frc.robot.subsystems.Elevator;
 // controls: https://www.padcrafter.com/?templates=1785+Reefscape+Driver%7C1785+Reefscape+Operator&leftStick=drive+parallel+to+the+floor%7Celevator+or+climber+up+and+down&plat=%7C%7C0&rightStick=rotate+the+robot%7Ccoral+arm+up+and+down&aButton=make+coral+arm+side+front%7Cpull+coral+in+via+wheel&bButton=toggle+slow+mode+factor+1%7Cpush+coral+out+via+wheel&rightTrigger=fast+field-rel.+%28unheld%29+or+slow+bot-rel.+%28held%29%7Ctoggle+elevator+%28unpressed%29+vs+climber+%28pressed%29&rightBumper=slow+mode+factor+2+%28held%29+or+normal+%28unheld%29%7C#
 @Logged(strategy = Logged.Strategy.OPT_IN)
 public class CompInputProcessor extends MasterInputProcessor {
+    public final RobotContainer container;
+
     // controllers
     public final CommandXboxController driver;
     public final CommandXboxController operator;
@@ -102,7 +104,9 @@ public class CompInputProcessor extends MasterInputProcessor {
         Climber climber,
 
         int driverPort,
-        int operatorPort
+        int operatorPort,
+
+        RobotContainer container
     ) {
         this.driver = new CommandXboxController(driverPort);
         this.operator = new CommandXboxController(operatorPort);
@@ -114,6 +118,8 @@ public class CompInputProcessor extends MasterInputProcessor {
         this.coralWheel = coralWheel;
 
         this.climber = climber;
+
+        this.container = container;
     }
 
     // configuration
@@ -157,6 +163,9 @@ public class CompInputProcessor extends MasterInputProcessor {
         driver.rightBumper().onFalse(new InstantCommand(() -> {
             speedHalvedButton = false;
         }));
+
+        // Assuming 'container' is accessible or passed in
+        driver.x().onTrue(container.getAlignToTagCommand(21)); // Align to processor tag, etc.
     }
 
     // TODO move this to top

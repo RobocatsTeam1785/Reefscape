@@ -190,3 +190,4 @@ compile_commands.json
 .llmignore
 combine_files.py
 combined_files.md
+generate.py
