@@ -46,6 +46,8 @@ public class VisionConstants {
     // TODO write a layout for the home field
     public static final AprilTagFieldLayout COMPETITION_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
+    public static final int TRACKING_TAG_ID = 21;
+
     // TODO extract all relevant april tag heights from manual
     public static final Distance
         REEF_HEX_TAG_HEIGHT = Inches.of(0.0);

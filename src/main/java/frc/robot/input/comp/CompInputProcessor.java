@@ -23,6 +23,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.lib.constants.AutoConstants;
+import frc.lib.constants.VisionConstants;
 import frc.lib.constants.ControlConstants;
 import frc.lib.constants.CoralArmConstants;
 import frc.lib.constants.SwerveConstants;
@@ -71,6 +78,15 @@ public class CompInputProcessor extends MasterInputProcessor {
     // tuner swerve
     // private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+        // tracking mode
+    private final SwerveRequest.FieldCentricFacingAngle driveTracking = new SwerveRequest.FieldCentricFacingAngle()
+            .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance)
+            .withDriveRequestType(DriveRequestType.Velocity)
+            .withHeadingPID(5.0, 0.0, 0.1);
+    
+    private final PIDController distanceController = new PIDController(0.005, 0.0, 0.1);
+    private Double trackingDistance = null;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.RobotCentricFacingAngle driveRobotRelativeFacingAngle = new SwerveRequest.RobotCentricFacingAngle()
@@ -272,12 +288,72 @@ public class CompInputProcessor extends MasterInputProcessor {
 
     double coralArmIdleVoltage = 0.2;
 
+    Rotation2d filteredTargetAngle = Rotation2d.kZero;
+
     // - defaults
     public void configureDefaults() {
         swerve.setDefaultCommand(
             // Drivetrain will execute this command periodically
             swerve.applyRequest(() -> {
                 if (Robot.inAutoMode) return new SwerveRequest.Idle();
+                // Tracking Mode (Left Bumper)
+                if (driver.leftBumper().getAsBoolean()) {
+                    // 1. Get Robot Pose (includes vision measurements via RobotContainer)
+                    Pose2d robotPose = swerve.getState().Pose;
+
+                    // 2. Get Target Tag Pose
+                    var tagPoseOpt = AutoConstants.layout.getTagPose(VisionConstants.TRACKING_TAG_ID);
+                    
+                    if (tagPoseOpt.isPresent()) {
+                        Translation2d tagLocation = tagPoseOpt.get().getTranslation().toTranslation2d();
+                        Translation2d robotLocation = robotPose.getTranslation();
+                        Translation2d toTag = tagLocation.minus(robotLocation);
+
+                        double currentDist = toTag.getNorm();
+                        Rotation2d angleToTag = toTag.getAngle();
+
+                        // 3. Record distance on first run
+                        if (trackingDistance == null) {
+                            trackingDistance = currentDist;
+                            distanceController.reset();
+                            filteredTargetAngle = angleToTag;
+                        }
+
+                        // 3b. Filter Heading (Low Pass) to prevent shudder
+                        if (filteredTargetAngle == null) filteredTargetAngle = angleToTag;
+                        // Interpolate towards the raw target by 15% every loop (smooths out noise)
+                        filteredTargetAngle = filteredTargetAngle.interpolate(angleToTag, 0.15);
+
+                        // 4. Calculate Velocities
+                        // Radial Velocity: Maintain distance using P controller
+                        // We want positive velocity along toTag vector if we are too far (current > target)
+                        // calculate(current, target) -> (target - current) * kp -> negative if too far
+                        // so we negate the output
+                        double radialSpeed = -distanceController.calculate(currentDist, trackingDistance);
+
+                        // Tangential Velocity: Orbit based on Left Stick X (Horizontal)
+                        // Standard Left X is negative left, positive right.
+                        // We interpret Right (+X) as orbiting Clockwise (Right relative to facing tag).
+                        double tangentialSpeed = driver.getLeftX() * SwerveConstants.ROBOT_TRANSLATIONAL_MAX_SPEED.in(MetersPerSecond);
+
+                        // 5. Compose Field-Relative Velocity Vector
+                        Translation2d radialUnit = toTag.div(currentDist);
+                        // Rotate radial vector -90 degrees (CW) for tangent direction
+                        Translation2d tangentialUnit = radialUnit.rotateBy(Rotation2d.fromDegrees(-90));
+
+                        Translation2d velocity = radialUnit.times(radialSpeed).plus(tangentialUnit.times(tangentialSpeed));
+
+                        return driveTracking
+                            .withVelocityX(MetersPerSecond.of(velocity.getX()))
+                            .withVelocityY(MetersPerSecond.of(velocity.getY()))
+                            .withTargetDirection(filteredTargetAngle);
+                    }
+                } else {
+                    // Reset tracking state when bumper is released
+                    trackingDistance = null;
+                    filteredTargetAngle = null;
+                }
+
 
                 // Note that X is defined as forward according to WPILib convention,
                 // and Y is defined as to the left according to WPILib convention.
